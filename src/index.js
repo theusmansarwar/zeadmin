@@ -8,7 +8,7 @@ import { AlertProvider } from "./Components/Alert/AlertContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <BrowserRouter basename="/">
+  <BrowserRouter basename="/admin">
     <AlertProvider>
       <App />
     </AlertProvider>
