@@ -22,3 +22,13 @@ export const updateCategory = async (id,data) => {
   };
   return invokeApi(reqObj);
 };
+export const updateComment = async (data) => {
+ 
+  const reqObj = {
+    path: `/comment/approve`,
+    method: "PUT",
+    headers: {},
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};

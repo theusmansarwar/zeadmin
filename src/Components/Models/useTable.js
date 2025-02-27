@@ -28,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import AddCategories from "./addcategorie";
 import { deleteAllBlogs, deleteAllCategories, deleteAllComments } from "../../DAL/delete";
 import { useAlert } from "../Alert/AlertContext";
+import ApproveComment from "./approveComment";
 
 export function useTable({ attributes, tableType, limitPerPage = 10 }) {
     const { showAlert } = useAlert(); // Since you created a custom hook
@@ -39,6 +40,7 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
   const [totalRecords, setTotalRecords] = useState(0);
   const navigate = useNavigate();
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
+  const [openCommentModal, setOpenCommentModal] = useState(false);
   const [modeltype, setModeltype] = useState("Add");
   const [modelData, setModelData] = useState({});
   useEffect(() => {
@@ -97,6 +99,11 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       }
       else if (tableType === "Lead") {
         navigate(`/view-lead/${category._id}`);
+      }
+      else if (tableType === "Comments") {
+        setModelData(category); 
+        setModeltype("Update"); 
+        setOpenCommentModal(true);
       }
     
   };
@@ -162,6 +169,13 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
         <AddCategories
           open={openCategoryModal}
           setOpen={setOpenCategoryModal}
+          Modeltype={modeltype}
+          Modeldata={modelData}
+          onResponse={handleResponse}
+        />
+          <ApproveComment
+          open={openCommentModal}
+          setOpen={setOpenCommentModal}
           Modeltype={modeltype}
           Modeldata={modelData}
           onResponse={handleResponse}
