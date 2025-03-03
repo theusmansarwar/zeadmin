@@ -21,14 +21,19 @@ import {
   fetchallcategorylist,
   fetchallCommentlist,
   fetchallLeads,
+  fetchallRoles,
+  fetchallTeamCategories,
+  fetchTeamMember,
 } from "../../DAL/fetch";
 import { formatDate } from "../../Utils/Formatedate";
 import truncateText from "../../truncateText";
 import { useNavigate } from "react-router-dom";
 import AddCategories from "./addcategorie";
-import { deleteAllBlogs, deleteAllCategories, deleteAllComments } from "../../DAL/delete";
+import { deleteAllBlogs, deleteAllCategories, deleteAllComments, deleteAllRole, deleteAllTeam, deleteAllTeamCategories } from "../../DAL/delete";
 import { useAlert } from "../Alert/AlertContext";
 import ApproveComment from "./approveComment";
+import AddTeamCategories from "./addTeamCategory";
+import Roles from "./addRole";
 
 export function useTable({ attributes, tableType, limitPerPage = 10 }) {
     const { showAlert } = useAlert(); // Since you created a custom hook
@@ -40,7 +45,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
   const [totalRecords, setTotalRecords] = useState(0);
   const navigate = useNavigate();
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
+  const [openTeamCategoryModal, setOpenTeamCategoryModal] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
+  const [openRoleModal, setOpenRoleModal] = useState(false);
   const [modeltype, setModeltype] = useState("Add");
   const [modelData, setModelData] = useState({});
   useEffect(() => {
@@ -70,6 +77,21 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
         setData(response.leads);
         setTotalRecords(response.totalLeads); 
       }
+      else if (tableType === "Team Category") {
+        response = await fetchallTeamCategories(page,rowsPerPage );
+        setData(response.categories);
+        setTotalRecords(response.totalCategories); 
+      }
+      else if (tableType === "Role") {
+        response = await fetchallRoles(page,rowsPerPage );
+        setData(response.roles);
+        setTotalRecords(response.totalRoles); 
+      }
+      else if (tableType === "Team") {
+        response = await fetchTeamMember(page,rowsPerPage );
+        setData(response.members);
+        setTotalRecords(response?.totalMembers); 
+      }
   };
   
   
@@ -94,8 +116,21 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
         setModelData(category); 
         setModeltype("Update"); 
         setOpenCategoryModal(true);
-      } else if (tableType === "Blogs") {
+      }
+      else if (tableType === "Role") {
+        setModelData(category); 
+        setModeltype("Update"); 
+        setOpenRoleModal(true);
+      }
+      else if (tableType === "Team Category") {
+        setModelData(category); 
+        setModeltype("Update"); 
+        setOpenTeamCategoryModal(true);
+      }  else if (tableType === "Blogs") {
         navigate(`/edit-blog/${category._id}`);
+      }
+      else if (tableType === "Team") {
+        navigate(`/edit-team/${category._id}`);
       }
       else if (tableType === "Lead") {
         navigate(`/view-lead/${category._id}`);
@@ -125,6 +160,15 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       } else if (tableType === "Comments") {
         response = await deleteAllComments({ ids: selected });
       }
+      else if (tableType === "Team Category") {
+        response = await deleteAllTeamCategories({ ids: selected });
+      }
+      else if (tableType === "Team") {
+        response = await deleteAllTeam({ ids: selected });
+      }
+      else if (tableType === "Role") {
+        response = await deleteAllRole({ ids: selected });
+      }
 
       if (response.status === 200) {
         showAlert("success", response.message || "Deleted successfully");
@@ -146,6 +190,19 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       setModelData();
     } else if (tableType === "Blogs") {
       navigate("/add-blog");
+    }
+    else if (tableType === "Team") {
+      navigate("/add-team");
+    }
+    if (tableType === "Team Category") {
+      setOpenTeamCategoryModal(true);
+      setModeltype("Add");
+      setModelData();
+    }
+    if (tableType === "Role") {
+      setOpenRoleModal(true);
+      setModeltype("Add");
+      setModelData();
     }
   };
 
@@ -173,9 +230,23 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
           Modeldata={modelData}
           onResponse={handleResponse}
         />
+         <AddTeamCategories
+          open={openTeamCategoryModal}
+          setOpen={setOpenTeamCategoryModal}
+          Modeltype={modeltype}
+          Modeldata={modelData}
+          onResponse={handleResponse}
+        />
           <ApproveComment
           open={openCommentModal}
           setOpen={setOpenCommentModal}
+          Modeltype={modeltype}
+          Modeldata={modelData}
+          onResponse={handleResponse}
+        />
+           <Roles
+          open={openRoleModal}
+          setOpen={setOpenRoleModal}
           Modeltype={modeltype}
           Modeldata={modelData}
           onResponse={handleResponse}

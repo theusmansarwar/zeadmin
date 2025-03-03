@@ -9,6 +9,10 @@ import Categories from "./Pages/Categories/Categories";
 import Comments from "./Pages/Comments/Comments";
 import Leads from "./Pages/Leads/Leads";
 import ViewLead from "./Pages/Leads/ViewLead";
+import TeamCategory from "./Pages/TeamCategory/TeamCategory";
+import Team from "./Pages/Team/Team";
+import AddTeam from "./Pages/Team/AddTeam";
+import Roles from "./Pages/Roles/Roles";
 
 const App = ({ onLogout, message }) => {
   const navigate = useNavigate();
@@ -22,6 +26,9 @@ const App = ({ onLogout, message }) => {
       { id: 3, name: "Blogs", route: "/blogs" },
       { id: 4, name: "Categories", route: "/categories" },
       { id: 5, name: "Comments", route: "/comments" },
+      { id: 6, name: "Teams", route: "/teams" },
+      { id: 7, name: "Team Categories", route: "/team-categories" },
+      { id: 8, name: "Roles", route: "/roles" },
     
     ],
     []
@@ -78,6 +85,11 @@ const App = ({ onLogout, message }) => {
             <Route path="/add-categories" element={<AddBlog />} />
             <Route path="/edit-blog/:id" element={<AddBlog />} />
             <Route path="/categories" element={<Categories />} />
+            <Route path="/roles" element={<Roles />} />
+            <Route path="/team-categories" element={<TeamCategory />} />
+            <Route path="/teams" element={<Team />} />
+            <Route path="/add-team" element={<AddTeam />} />
+            <Route path="/edit-team/:id" element={<AddTeam />} />
             <Route path="/comments" element={<Comments />} />
             <Route path="/leads" element={<Leads />} />
             <Route path="/view-lead/:id" element={<ViewLead />} />
