@@ -6,6 +6,7 @@ export const deleteAllBlogs = async (data) => {
     method: "DELETE", // Ensure correct capitalization
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -18,6 +19,7 @@ export const deleteAllCategories = async (data) => {
     method: "DELETE", // Ensure correct capitalization
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -30,6 +32,7 @@ export const deleteAllTeamCategories = async (data) => {
     method: "DELETE", // Ensure correct capitalization
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -42,6 +45,7 @@ export const deleteAllTeam = async (data) => {
     method: "DELETE", // Ensure correct capitalization
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -54,6 +58,7 @@ export const deleteAllRole = async (data) => {
     method: "DELETE", // Ensure correct capitalization
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -68,6 +73,7 @@ export const deleteAllComments = async (data) => {
     method: "DELETE", // Ensure correct capitalization
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -80,6 +86,7 @@ export const deleteAllServices = async (data) => {
     method: "DELETE", // Ensure correct capitalization
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -92,6 +99,7 @@ export const deleteAllSubServices = async (id,data) => {
     method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -104,6 +112,7 @@ export const deleteAllProcess = async (id,data) => {
     method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -116,6 +125,7 @@ export const deleteAllBenifits = async (id,data) => {
     method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -128,6 +138,7 @@ export const deleteAllPrice = async (data) => {
     method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };

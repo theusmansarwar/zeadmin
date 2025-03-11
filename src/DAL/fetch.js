@@ -5,7 +5,7 @@ export const fetchcategorylist = async () => {
     path: "/category/live",
     method: "GET",
     headers: {
-
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     postData: {},
@@ -18,7 +18,7 @@ export const fetchDashboard = async () => {
     path: "/admin/stats",
     method: "GET",
     headers: {
-
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     postData: {},
@@ -31,7 +31,7 @@ export const fetchDashboardChart = async () => {
     path: "/views/get/count",
     method: "GET",
     headers: {
-
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     postData: {},
@@ -43,6 +43,7 @@ export const fetchallcategorylist = async (page, rowsPerPages) => {
     path: `/category/view?limit=${rowsPerPages}&page=${page}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -54,6 +55,7 @@ export const fetchallBloglist = async ( page, rowsPerPages) => {
     path: `/blog/adminlist?limit=${rowsPerPages}&page=${page}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -65,6 +67,7 @@ export const fetchBlogById = async (id) => {
     path: `/blog/viewbyid/${id}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -76,6 +79,7 @@ export const fetchallCommentlist = async (page, rowsPerPages) => {
     path: `/comment/view?limit=${rowsPerPages}&page=${page}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -87,6 +91,7 @@ export const fetchallLeads = async ( page, rowsPerPages) => {
     path: `/LeadsList?limit=${rowsPerPages}&page=${page}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -98,6 +103,7 @@ export const fetchSingleLeads = async (id) => {
     path: `/Lead/${id}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -109,6 +115,7 @@ export const fetchallTeamCategories = async (id) => {
     path: `/teamcategory/view`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -120,6 +127,7 @@ export const fetchTeamCategoryList = async (id) => {
     path: `/teamcategory/live`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -132,6 +140,7 @@ export const fetchRoleList = async (id) => {
     path: `/role/live`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -144,6 +153,7 @@ export const fetchallRoles = async (page, rowsPerPages) => {
     path: `/role/view?limit=${rowsPerPages}&page=${page}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -155,6 +165,7 @@ export const fetchTeamMemberById = async (id) => {
     path: `/team/view/${id}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -166,6 +177,7 @@ export const fetchTeamMember = async (page, rowsPerPages) => {
     path: `/team/view?limit=${rowsPerPages}&page=${page}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -177,6 +189,7 @@ export const fetchServices = async (page, rowsPerPages) => {
     path: `/service/view?limit=${rowsPerPages}&page=${page}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
@@ -188,6 +201,7 @@ export const fetchServicesbyid = async (id) => {
     path: `/service/view/${id}`,
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},

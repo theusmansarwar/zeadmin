@@ -6,6 +6,7 @@ export const updateBlog = async ( id,data) => {
     method: "PUT",
     headers: {
       "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -17,7 +18,7 @@ export const updateCategory = async (id,data) => {
   const reqObj = {
     path: `/category/update/${id}`,
     method: "PUT",
-    headers: {},
+    headers: {      Authorization: `Bearer ${localStorage.getItem("Token")}`,},
     postData: data,
   };
   return invokeApi(reqObj);
@@ -27,7 +28,7 @@ export const updateTeamCategory = async (id,data) => {
   const reqObj = {
     path: `/teamcategory/update/${id}`,
     method: "PUT",
-    headers: {},
+    headers: {      Authorization: `Bearer ${localStorage.getItem("Token")}`,},
     postData: data,
   };
   return invokeApi(reqObj);
@@ -37,7 +38,7 @@ export const updateTeamMember = async (id,data) => {
   const reqObj = {
     path: `/team/update/${id}`,
     method: "PUT",
-    headers: {},
+    headers: {      Authorization: `Bearer ${localStorage.getItem("Token")}`,},
     postData: data,
   };
   return invokeApi(reqObj);
@@ -48,7 +49,8 @@ export const updateService = async (id,data) => {
     path: `/service/update/${id}`,
     method: "PUT",
     headers: {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -60,7 +62,8 @@ export const updateSubService = async (data) => {
     path: `/service/subdata/update`,
     method: "PUT",
     headers: {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -72,7 +75,8 @@ export const updateProcess = async (data) => {
     path: `/service/process/update`,
     method: "PUT",
     headers: {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -84,7 +88,8 @@ export const updateBenifit = async (data) => {
     path: `/service/benifit/update`,
     method: "PUT",
     headers: {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -96,6 +101,7 @@ export const updatePrice = async (data) => {
     path: `/service/pricing/update/`,
     method: "PUT",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
@@ -107,7 +113,9 @@ export const updateRole = async (id,data) => {
   const reqObj = {
     path: `/role/update/${id}`,
     method: "PUT",
-    headers: {},
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
     postData: data,
   };
   return invokeApi(reqObj);
@@ -118,7 +126,9 @@ export const updateComment = async (data) => {
   const reqObj = {
     path: `/comment/approve`,
     method: "PUT",
-    headers: {},
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
     postData: data,
   };
   return invokeApi(reqObj);
