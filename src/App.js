@@ -13,6 +13,10 @@ import TeamCategory from "./Pages/TeamCategory/TeamCategory";
 import Team from "./Pages/Team/Team";
 import AddTeam from "./Pages/Team/AddTeam";
 import Roles from "./Pages/Roles/Roles";
+import Services from "./Pages/Services/Services";
+import AddServices from "./Pages/Services/AddServices";
+import ViewPage from "./Pages/Services/ViewPage";
+import Dashboard from "./Pages/Dashboard/Dashboard";
 
 const App = ({ onLogout, message }) => {
   const navigate = useNavigate();
@@ -29,6 +33,7 @@ const App = ({ onLogout, message }) => {
       { id: 6, name: "Teams", route: "/teams" },
       { id: 7, name: "Team Categories", route: "/team-categories" },
       { id: 8, name: "Roles", route: "/roles" },
+      { id: 9, name: "Services", route: "/services" },
     
     ],
     []
@@ -81,6 +86,7 @@ const App = ({ onLogout, message }) => {
       <div className="app-right">
       
           <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/add-blog" element={<AddBlog />} />
             <Route path="/add-categories" element={<AddBlog />} />
             <Route path="/edit-blog/:id" element={<AddBlog />} />
@@ -94,6 +100,11 @@ const App = ({ onLogout, message }) => {
             <Route path="/leads" element={<Leads />} />
             <Route path="/view-lead/:id" element={<ViewLead />} />
             <Route path="/blogs" element={<Blogs />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/services/detail/:id" element={<ViewPage />} />
+             <Route path="/add-services" element={<AddServices />} />
+             <Route path="/edit-service/:id" element={<AddServices />} />
+           
            
           </Routes>
     

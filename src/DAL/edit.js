@@ -42,6 +42,65 @@ export const updateTeamMember = async (id,data) => {
   };
   return invokeApi(reqObj);
 };
+export const updateService = async (id,data) => {
+ 
+  const reqObj = {
+    path: `/service/update/${id}`,
+    method: "PUT",
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const updateSubService = async (data) => {
+ 
+  const reqObj = {
+    path: `/service/subdata/update`,
+    method: "PUT",
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const updateProcess = async (data) => {
+ 
+  const reqObj = {
+    path: `/service/process/update`,
+    method: "PUT",
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const updateBenifit = async (data) => {
+ 
+  const reqObj = {
+    path: `/service/benifit/update`,
+    method: "PUT",
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const updatePrice = async (data) => {
+ 
+  const reqObj = {
+    path: `/service/pricing/update/`,
+    method: "PUT",
+    headers: {
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 
 export const updateRole = async (id,data) => {
  

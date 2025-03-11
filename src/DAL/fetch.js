@@ -12,6 +12,32 @@ export const fetchcategorylist = async () => {
   };
   return invokeApi(reqObj);
 };
+
+export const fetchDashboard = async () => {
+  const reqObj = {
+    path: "/admin/stats",
+    method: "GET",
+    headers: {
+
+    },
+
+    postData: {},
+  };
+  return invokeApi(reqObj);
+};
+
+export const fetchDashboardChart = async () => {
+  const reqObj = {
+    path: "/views/get/count",
+    method: "GET",
+    headers: {
+
+    },
+
+    postData: {},
+  };
+  return invokeApi(reqObj);
+};
 export const fetchallcategorylist = async (page, rowsPerPages) => {
   const reqObj = {
     path: `/category/view?limit=${rowsPerPages}&page=${page}`,
@@ -138,6 +164,28 @@ export const fetchTeamMemberById = async (id) => {
 export const fetchTeamMember = async (page, rowsPerPages) => {
   const reqObj = {
     path: `/team/view?limit=${rowsPerPages}&page=${page}`,
+    method: "GET",
+    headers: {
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
+export const fetchServices = async (page, rowsPerPages) => {
+  const reqObj = {
+    path: `/service/view?limit=${rowsPerPages}&page=${page}`,
+    method: "GET",
+    headers: {
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
+export const fetchServicesbyid = async (id) => {
+  const reqObj = {
+    path: `/service/view/${id}`,
     method: "GET",
     headers: {
     },

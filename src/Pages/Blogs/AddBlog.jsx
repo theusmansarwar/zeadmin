@@ -15,6 +15,7 @@ const AddBlog = () => {
   const { id } = useParams();
   const { showAlert } = useAlert();
   const navigate = useNavigate();
+  const [selectedDateTime, setSelectedDateTime] = useState("");
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -36,11 +37,11 @@ const AddBlog = () => {
       readonly: false,
       uploader: { insertImageAsBase64URI: true },
       placeholder: "Start typing...",
+      imageExtensions: ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"]
     }),
     []
   );
 
-  // 🔹 Fetch Blog Data if ID exists (Editing Mode)
   useEffect(() => {
     if (id) {
       const fetchBlog = async () => {
@@ -58,6 +59,11 @@ const AddBlog = () => {
             setCategoryId(blog.category?._id || "");
             setImage(baseUrl + blog.thumbnail || dummyimg);
             setIsVisible(blog?.published);
+            if (blog?.publishedDate) {
+              const dateObj = new Date(blog.publishedDate);
+              const formattedDateTime = dateObj.toISOString().slice(0, 16); // Extracts YYYY-MM-DDTHH:mm
+              setSelectedDateTime(formattedDateTime);
+            }
           }
         } catch (error) {
           console.error("Error fetching blog:", error);
@@ -94,7 +100,7 @@ const AddBlog = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-
+    const formattedDateTime = new Date(selectedDateTime).toISOString();
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -105,6 +111,8 @@ const AddBlog = () => {
     formData.append("slug", slug);
     formData.append("category", categoryId);
     formData.append("published", isVisible);
+    formData.append("publishedDate", formattedDateTime);
+
 
     if (fileInputRef.current?.files[0]) {
       formData.append("thumbnail", fileInputRef.current.files[0]);
@@ -221,6 +229,7 @@ const AddBlog = () => {
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
         />
+
         {errors.tags && <p className="error">{errors.tags}</p>}
         <input
           type="text"
@@ -229,6 +238,15 @@ const AddBlog = () => {
           value={tags}
           onChange={(e) => setTags(e.target.value)}
         />
+
+
+
+<input
+  type="datetime-local"
+  value={selectedDateTime}
+  onChange={(e) => setSelectedDateTime(e.target.value)} // Stores `YYYY-MM-DDTHH:mm`
+/>
+{errors.date && <p className="error">{errors.date}</p>}
         {errors.detail && <p className="error">{errors.detail}</p>}
         <JoditEditor
           ref={editor}

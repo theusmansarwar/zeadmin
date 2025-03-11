@@ -208,7 +208,7 @@ justify-content: flex-end;
         padding: 5px;
        height: auto;
     }
-    .image-container {
+    .image-container2 {
         position: relative;
         display: inline-block;
         width: 100%;
@@ -223,7 +223,7 @@ justify-content: flex-end;
     
     }
     
-    .image-container img {
+    .image-container2 img {
         width: 100%;
         height: auto;
         display: flex;

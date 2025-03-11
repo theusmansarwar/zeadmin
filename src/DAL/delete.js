@@ -74,4 +74,63 @@ export const deleteAllComments = async (data) => {
   
   return invokeApi(reqObj);
 };
-
+export const deleteAllServices = async (data) => {
+  const reqObj = {
+    path: `/service/delete`,
+    method: "DELETE", // Ensure correct capitalization
+    headers: {
+      "Content-Type": "application/json",
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
+export const deleteAllSubServices = async (id,data) => {
+  const reqObj = {
+    path: `/service/subdata/delete/${id}`,
+    method: "DELETE", 
+    headers: {
+      "Content-Type": "application/json",
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
+export const deleteAllProcess = async (id,data) => {
+  const reqObj = {
+    path: `/service/process/delete/${id}`,
+    method: "DELETE", 
+    headers: {
+      "Content-Type": "application/json",
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
+export const deleteAllBenifits = async (id,data) => {
+  const reqObj = {
+    path: `/service/benifit/delete/${id}`,
+    method: "DELETE", 
+    headers: {
+      "Content-Type": "application/json",
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
+export const deleteAllPrice = async (data) => {
+  const reqObj = {
+    path: `/service/pricing/delete`,
+    method: "DELETE", 
+    headers: {
+      "Content-Type": "application/json",
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};

@@ -6,6 +6,7 @@ import {
   Modal,
   Switch,
   FormControlLabel,
+  TextField,
 } from "@mui/material";
 import { updateComment } from "../../DAL/edit";
 
@@ -23,10 +24,12 @@ const style = {
 
 export default function ApproveComment({ open, setOpen, Modeldata, onResponse }) {
   const [published, setPublished] = React.useState(Modeldata?.published || false);
+  const [comment, setComment] = React.useState(Modeldata?.comment || "");
   const commentId = Modeldata?._id || "";
 
   React.useEffect(() => {
     setPublished(Modeldata?.published || false);
+    setComment(Modeldata?.comment || "");
   }, [Modeldata]);
 
   const handleClose = () => setOpen(false);
@@ -37,6 +40,7 @@ export default function ApproveComment({ open, setOpen, Modeldata, onResponse })
     const updatedData = {
       status: published,
       commentId,
+      comment,
     };
 
     try {
@@ -58,10 +62,9 @@ export default function ApproveComment({ open, setOpen, Modeldata, onResponse })
     <Modal open={open} onClose={handleClose} aria-labelledby="modal-title">
       <Box sx={style}>
         <Typography id="modal-title" variant="h6" component="h2">
-          Edit Comment Status
+          Edit Comment
         </Typography>
 
-        {/* Read-Only Fields as Plain Text */}
         <Box sx={{ marginTop: "10px" }}>
           <Typography variant="body1"><strong>Name:</strong> {Modeldata?.name || "N/A"}</Typography>
         </Box>
@@ -71,9 +74,18 @@ export default function ApproveComment({ open, setOpen, Modeldata, onResponse })
         <Box sx={{ marginTop: "10px" }}>
           <Typography variant="body1"><strong>Blog Title:</strong> {Modeldata?.blogId?.title || "N/A"}</Typography>
         </Box>
-        <Box sx={{ marginTop: "10px" }}>
-          <Typography variant="body1"><strong>Comment:</strong> {Modeldata?.comment || "N/A"}</Typography>
-        </Box>
+
+        {/* Editable Comment Field */}
+        <TextField
+          fullWidth
+          multiline
+          rows={4}
+          label="Comment"
+          variant="outlined"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          sx={{ marginTop: "10px" }}
+        />
 
         {/* Toggle Publish Status */}
         <FormControlLabel

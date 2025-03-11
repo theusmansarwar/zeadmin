@@ -8,6 +8,7 @@ const Blogs = () => {
     { id: "category.name", label: "Category" },
     { id: "published", label: "Visibility" },
     { id: "views", label: "Views" },
+    { id: "publishedDate", label: "Published At" },
     { id: "createdAt", label: "Created At" },
   ];
 

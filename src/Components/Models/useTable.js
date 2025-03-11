@@ -23,13 +23,14 @@ import {
   fetchallLeads,
   fetchallRoles,
   fetchallTeamCategories,
+  fetchServices,
   fetchTeamMember,
 } from "../../DAL/fetch";
 import { formatDate } from "../../Utils/Formatedate";
 import truncateText from "../../truncateText";
 import { useNavigate } from "react-router-dom";
 import AddCategories from "./addcategorie";
-import { deleteAllBlogs, deleteAllCategories, deleteAllComments, deleteAllRole, deleteAllTeam, deleteAllTeamCategories } from "../../DAL/delete";
+import { deleteAllBlogs, deleteAllCategories, deleteAllComments, deleteAllRole, deleteAllServices, deleteAllTeam, deleteAllTeamCategories } from "../../DAL/delete";
 import { useAlert } from "../Alert/AlertContext";
 import ApproveComment from "./approveComment";
 import AddTeamCategories from "./addTeamCategory";
@@ -69,7 +70,7 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       setTotalRecords(response.totalBlogs);  
     } else if (tableType === "Comments") {
       response = await fetchallCommentlist(page,rowsPerPage );
-      setData(response.comment);
+      setData(response.comments);
       setTotalRecords(response.totalComments); 
     }
     else if (tableType === "Lead") {
@@ -91,6 +92,11 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
         response = await fetchTeamMember(page,rowsPerPage );
         setData(response.members);
         setTotalRecords(response?.totalMembers); 
+      }
+      else if (tableType === "Services") {
+        response = await fetchServices(page,rowsPerPage );
+        setData(response.services);
+        setTotalRecords(response?.total); 
       }
   };
   
@@ -128,6 +134,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
         setOpenTeamCategoryModal(true);
       }  else if (tableType === "Blogs") {
         navigate(`/edit-blog/${category._id}`);
+      }
+      else if (tableType === "Services") {
+        navigate(`/services/detail/${category._id}`);
       }
       else if (tableType === "Team") {
         navigate(`/edit-team/${category._id}`);
@@ -169,6 +178,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       else if (tableType === "Role") {
         response = await deleteAllRole({ ids: selected });
       }
+      else if (tableType === "Services") {
+        response = await deleteAllServices({ ids: selected });
+      }
 
       if (response.status === 200) {
         showAlert("success", response.message || "Deleted successfully");
@@ -190,6 +202,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       setModelData();
     } else if (tableType === "Blogs") {
       navigate("/add-blog");
+    }
+    else if (tableType === "Services") {
+      navigate("/add-services");
     }
     else if (tableType === "Team") {
       navigate("/add-team");
@@ -332,7 +347,7 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
                               key={attr.id}
                               sx={{ color: "var(--black-color)" }}
                             >
-                              {attr.id === "createdAt" ? (
+                              {(attr.id === "createdAt" || attr.id === "publishedDate") ? (
                                 formatDate(row[attr.id])
                               ) : attr.id === "published" ? (
                                 <span

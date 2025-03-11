@@ -58,6 +58,67 @@ export const createnewRole = async (data) => {
   };
   return invokeApi(reqObj);
 };
+export const createService = async (data) => {
+
+  const reqObj = {
+    path: "/service/create",
+    method: "POST",
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const addService = async (data) => {
+
+  const reqObj = {
+    path: "/service/subdata/add",
+    method: "POST",
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const addProcess = async (data) => {
+
+  const reqObj = {
+    path: "/service/process/add",
+    method: "POST",
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+
+
+export const addBenifit= async (data) => {
+
+  const reqObj = {
+    path: "/service/benifit/add",
+    method: "POST",
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+
+export const createnewPrice= async (data) => {
+
+  const reqObj = {
+    path: "/service/pricing/add",
+    method: "POST",
+    headers: {},
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 
 
 export const createSyllabus = async (data) => {

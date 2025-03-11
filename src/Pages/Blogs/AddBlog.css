@@ -80,6 +80,24 @@ margin-top: 10px;
 
 
 }
+.image-container3 {
+  position: relative;
+  display: inline-block;
+  width: 260px;
+  height: 150px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px var(--secondary-color);
+  border-style: dashed;
+  overflow: hidden;
+  border-radius: 12px;
+
+}
+
+
 .image-container.error-border{
     border: 1px solid var(--warning-color);
 }
@@ -89,7 +107,11 @@ margin-top: 10px;
 height: 100%;
 width: 100%;
 }
+.image-container3 img {
 
+  height: 100%;
+  width: 100%;
+  }
 .image-container .remove-icon {
     position: absolute;
     top: 5px;
@@ -98,6 +120,15 @@ width: 100%;
     color: red;
     cursor: pointer;
     font-size: 1.5rem;
+}
+.image-container3 .remove-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+  color: red;
+  cursor: pointer;
+  font-size: 1.5rem;
 }
 
 .published {
