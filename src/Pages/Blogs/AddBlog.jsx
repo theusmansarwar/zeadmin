@@ -99,6 +99,21 @@ const AddBlog = () => {
   // 🔹 Handle Submit (Create or Update)
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const errorObj = {};
+  if (!categoryId) {
+    errorObj.category = "Category is required.";
+  }
+
+  // Validate Date Selection
+  if (!selectedDateTime) {
+    errorObj.date = "Published Date is required.";
+  }
+
+  if (Object.keys(errorObj).length > 0) {
+    setErrors(errorObj);
+    setLoading(false);
+    return;
+  }
     setLoading(true);
     const formattedDateTime = new Date(selectedDateTime).toISOString();
     const formData = new FormData();
@@ -128,9 +143,11 @@ const AddBlog = () => {
 
       if (response.status == 201) {
         showAlert("success", response.message);
+        setLoading(false);
         navigate("/blogs");
       } else if (response.status == 200) {
         showAlert("success", response.message);
+        setLoading(false);
         navigate("/blogs");
       } else if (response.status === 400 && response.missingFields) {
         // Handle validation errors
@@ -139,6 +156,7 @@ const AddBlog = () => {
           errorObj[field.name] = field.message;
         });
         setErrors(errorObj);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -191,13 +209,14 @@ const AddBlog = () => {
               className="remove-icon"
               onClick={() => setImage(dummyimg)}
             />
-            <input
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              ref={fileInputRef}
-              onChange={handleFileChange}
-            />
+          <input
+  type="file"
+  accept="image/png, image/jpeg"
+  style={{ display: "none" }}
+  ref={fileInputRef}
+  onChange={handleFileChange}
+/>
+
           </div>
         </div>
         {errors.slug && <p className="error">{errors.slug}</p>}
@@ -240,13 +259,13 @@ const AddBlog = () => {
         />
 
 
-
+{errors.date && <p className="error">{errors.date}</p>}
 <input
   type="datetime-local"
   value={selectedDateTime}
   onChange={(e) => setSelectedDateTime(e.target.value)} // Stores `YYYY-MM-DDTHH:mm`
 />
-{errors.date && <p className="error">{errors.date}</p>}
+
         {errors.detail && <p className="error">{errors.detail}</p>}
         <JoditEditor
           ref={editor}

@@ -35,6 +35,7 @@ import { useAlert } from "../Alert/AlertContext";
 import ApproveComment from "./approveComment";
 import AddTeamCategories from "./addTeamCategory";
 import Roles from "./addRole";
+import DeleteModal from "./confirmDeleteModel";
 
 export function useTable({ attributes, tableType, limitPerPage = 10 }) {
     const { showAlert } = useAlert(); // Since you created a custom hook
@@ -51,6 +52,7 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
   const [openRoleModal, setOpenRoleModal] = useState(false);
   const [modeltype, setModeltype] = useState("Add");
   const [modelData, setModelData] = useState({});
+  const [openDeleteModal,setOpenDeleteModal]=useState(false);
   useEffect(() => {
     fetchData();
   }, [page, rowsPerPage]);
@@ -234,6 +236,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
     showAlert(response.messageType, response.message);
     fetchData();
   };
+  const handleDeleteClick = () => {
+   setOpenDeleteModal(true);
+  };
 
   return {
     tableUI: (
@@ -266,6 +271,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
           Modeldata={modelData}
           onResponse={handleResponse}
         />
+           <DeleteModal
+        open={openDeleteModal} setOpen={setOpenDeleteModal} onConfirm={handleDelete}
+        />
 
         <Box sx={{ width: "100%" }}>
           <Paper sx={{ width: "100%", maxHeight: "95vh", boxShadow: "none" }}>
@@ -275,7 +283,7 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
               </Typography>
 
               {selected.length > 0 ? (
-                <IconButton onClick={handleDelete} sx={{ color: "red" }}>
+                <IconButton onClick={handleDeleteClick} sx={{ color: "red" }}>
                   <DeleteIcon />
                 </IconButton>
               ) : (
