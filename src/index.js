@@ -9,7 +9,7 @@ import AppWrapper from "./Appwraper";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <BrowserRouter basename="/admin">
+  <BrowserRouter >
     <AlertProvider>
       <AppWrapper  />
     </AlertProvider>
