@@ -39,6 +39,19 @@ export const deleteAllLeads = async (data) => {
   
   return invokeApi(reqObj);
 };
+export const deleteAllTestimonials = async (data) => {
+  const reqObj = {
+    path: `/testimonial/delete`,
+    method: "DELETE", // Ensure correct capitalization
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
 export const deleteAllTeamCategories = async (data) => {
   const reqObj = {
     path: `/teamcategory/delete`,

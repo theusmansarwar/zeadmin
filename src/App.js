@@ -17,6 +17,8 @@ import Services from "./Pages/Services/Services";
 import AddServices from "./Pages/Services/AddServices";
 import ViewPage from "./Pages/Services/ViewPage";
 import Dashboard from "./Pages/Dashboard/Dashboard";
+import Testimonial from "./Pages/Testimonials/Testimonial";
+import AddTestimonial from "./Pages/Testimonials/AddTestimonial";
 
 const App = ({ onLogout, message }) => {
   const navigate = useNavigate();
@@ -34,6 +36,7 @@ const App = ({ onLogout, message }) => {
       { id: 7, name: "Team Categories", route: "/team-categories" },
       { id: 8, name: "Roles", route: "/roles" },
       { id: 9, name: "Services", route: "/services" },
+      { id: 10, name: "Testimonials", route: "/testimonials" },
     
     ],
     []
@@ -91,11 +94,14 @@ const App = ({ onLogout, message }) => {
             <Route path="/add-categories" element={<AddBlog />} />
             <Route path="/edit-blog/:id" element={<AddBlog />} />
             <Route path="/categories" element={<Categories />} />
+            <Route path="/testimonials" element={<Testimonial />} />
             <Route path="/roles" element={<Roles />} />
             <Route path="/team-categories" element={<TeamCategory />} />
             <Route path="/teams" element={<Team />} />
             <Route path="/add-team" element={<AddTeam />} />
             <Route path="/edit-team/:id" element={<AddTeam />} />
+            <Route path="/add-testimonial" element={<AddTestimonial />} />
+            <Route path="/edit-testimonial/:id" element={<AddTestimonial />} />
             <Route path="/comments" element={<Comments />} />
             <Route path="/leads" element={<Leads />} />
             <Route path="/view-lead/:id" element={<ViewLead />} />

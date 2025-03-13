@@ -23,6 +23,7 @@ import {
   fetchallLeads,
   fetchallRoles,
   fetchallTeamCategories,
+  fetchallTestimonialslist,
   fetchServices,
   fetchTeamMember,
 } from "../../DAL/fetch";
@@ -30,7 +31,7 @@ import { formatDate } from "../../Utils/Formatedate";
 import truncateText from "../../truncateText";
 import { useNavigate } from "react-router-dom";
 import AddCategories from "./addcategorie";
-import { deleteAllBlogs, deleteAllCategories, deleteAllComments, deleteAllLeads, deleteAllRole, deleteAllServices, deleteAllTeam, deleteAllTeamCategories } from "../../DAL/delete";
+import { deleteAllBlogs, deleteAllCategories, deleteAllComments, deleteAllLeads, deleteAllRole, deleteAllServices, deleteAllTeam, deleteAllTeamCategories, deleteAllTestimonials } from "../../DAL/delete";
 import { useAlert } from "../Alert/AlertContext";
 import ApproveComment from "./approveComment";
 import AddTeamCategories from "./addTeamCategory";
@@ -74,6 +75,11 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       response = await fetchallCommentlist(page,rowsPerPage );
       setData(response.comments);
       setTotalRecords(response.totalComments); 
+    }
+    else if (tableType === "Testimonial") {
+      response = await fetchallTestimonialslist(page,rowsPerPage );
+      setData(response.testimonials);
+      setTotalRecords(response.totalTestimonials); 
     }
     else if (tableType === "Lead") {
         response = await fetchallLeads(page,rowsPerPage );
@@ -143,6 +149,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       else if (tableType === "Team") {
         navigate(`/edit-team/${category._id}`);
       }
+      else if (tableType === "Testimonial") {
+        navigate(`/edit-testimonial/${category._id}`);
+      }
       else if (tableType === "Lead") {
         navigate(`/view-lead/${category._id}`);
       }
@@ -186,6 +195,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       else if (tableType === "Lead") {
         response = await deleteAllLeads({ ids: selected });
       }
+      else if (tableType === "Testimonial") {
+        response = await deleteAllTestimonials({ ids: selected });
+      }
 
       if (response.status === 200) {
         showAlert("success", response.message || "Deleted successfully");
@@ -213,6 +225,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
     }
     else if (tableType === "Team") {
       navigate("/add-team");
+    }
+    else if (tableType === "Testimonial") {
+      navigate("/add-testimonial");
     }
     if (tableType === "Team Category") {
       setOpenTeamCategoryModal(true);

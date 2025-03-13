@@ -86,6 +86,42 @@ export const fetchallCommentlist = async (page, rowsPerPages) => {
   };
   return invokeApi(reqObj);
 };
+export const fetchallTestimonialslist = async (page, rowsPerPages) => {
+  const reqObj = {
+    path: `/testimonial/view?limit=${rowsPerPages}&page=${page}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
+export const fetchServiceList = async () => {
+  const reqObj = {
+    path: `/service/live`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
+export const fetchTestimonialbyid = async (id) => {
+  const reqObj = {
+    path: `/testimonial/view/${id}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
 export const fetchallLeads = async ( page, rowsPerPages) => {
   const reqObj = {
     path: `/LeadsList?limit=${rowsPerPages}&page=${page}`,

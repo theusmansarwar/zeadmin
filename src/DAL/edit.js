@@ -133,3 +133,15 @@ export const updateComment = async (data) => {
   };
   return invokeApi(reqObj);
 };
+export const updateTestimonial = async (id,data) => {
+ 
+  const reqObj = {
+    path: `/testimonial/update/${id}`,
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
