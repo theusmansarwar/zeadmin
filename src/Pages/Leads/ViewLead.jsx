@@ -32,7 +32,7 @@ const ViewLead = () => {
         <p><strong>Email:</strong> <a href={`mailto:${data.email}`}>{data.email}</a></p>
         <p><strong>Phone:</strong> <a href={`tel:${data.phone}`}>{data.phone}</a></p>
         <p><strong>Subject:</strong> {data.subject}</p>
-        <p><strong>Query:</strong> {data.query}</p>
+        <pre className='pretag'><strong>Query:</strong> {data.query}</pre>
       </div>
    
     </div>

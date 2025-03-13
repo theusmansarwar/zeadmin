@@ -29,6 +29,10 @@
   .email-body p {
     margin: 10px 0;
   }
+  .pretag{
+    font-family: Arial, sans-serif;
+    white-space: pre-wrap;
+  }
   
   .email-body a {
     color: #007bff;

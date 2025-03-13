@@ -30,7 +30,7 @@ import { formatDate } from "../../Utils/Formatedate";
 import truncateText from "../../truncateText";
 import { useNavigate } from "react-router-dom";
 import AddCategories from "./addcategorie";
-import { deleteAllBlogs, deleteAllCategories, deleteAllComments, deleteAllRole, deleteAllServices, deleteAllTeam, deleteAllTeamCategories } from "../../DAL/delete";
+import { deleteAllBlogs, deleteAllCategories, deleteAllComments, deleteAllLeads, deleteAllRole, deleteAllServices, deleteAllTeam, deleteAllTeamCategories } from "../../DAL/delete";
 import { useAlert } from "../Alert/AlertContext";
 import ApproveComment from "./approveComment";
 import AddTeamCategories from "./addTeamCategory";
@@ -182,6 +182,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       }
       else if (tableType === "Services") {
         response = await deleteAllServices({ ids: selected });
+      }
+      else if (tableType === "Lead") {
+        response = await deleteAllLeads({ ids: selected });
       }
 
       if (response.status === 200) {
