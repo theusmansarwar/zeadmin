@@ -39,10 +39,14 @@ const AddTestimonial = () => {
   useEffect(() => {
     const fetchTestimonial = async () => {
       try {
-        const response = await fetchTestimonialbyid();
-        if (response && response.services) {
-          setServices(response.services);
-        }
+        const response = await fetchTestimonialbyid(id);
+        setName(response.name);
+        setService(response.service);
+        setRating(response.rating);
+        setDate(response.date)
+         setLocation(response.location);
+         setDescription(response.description);
+         setPublished(response.published)
       } catch (error) {
         console.error("Error fetching services:", error);
       }
@@ -121,7 +125,7 @@ const AddTestimonial = () => {
         <select value={service} onChange={(e) => setService(e.target.value)}>
           <option value="">Select a Service</option>
           {services.map((srv) => (
-            <option key={srv._id} value={srv._id}>
+            <option key={srv._id} value={srv.name}>
               {srv.name}
             </option>
           ))}
