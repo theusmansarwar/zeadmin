@@ -148,7 +148,7 @@ const AddBlog = () => {
         showAlert("success", response.message);
         setLoading(false);
         navigate("/blogs");
-      } else if (response.status === 400) {
+      } else if (response.status == 400) {
         localStorage.removeItem("Token");
         navigate("");
       } else if (response.missingFields) {

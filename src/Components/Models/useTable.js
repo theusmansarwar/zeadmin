@@ -64,53 +64,86 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
       response = await fetchallcategorylist(page,rowsPerPage);
       setData(response.categories);
       setTotalRecords(response.categories.length);
+      if(response.status == 400 ){
+        localStorage.removeItem("Token");
+        navigate("/login");
+      }
     } else if (tableType === "Blogs") {
       response = await fetchallBloglist(page,rowsPerPage ); 
       console.log("Response:", response);
       
       setData(response.blogs);
       setPage(response.currentPage); 
-      setTotalRecords(response.totalBlogs);  
+      setTotalRecords(response.totalBlogs); 
+      if(response.status == 400 ){
+        localStorage.removeItem("Token");
+        navigate("/login");
+      } 
     } else if (tableType === "Comments") {
       response = await fetchallCommentlist(page,rowsPerPage );
       setData(response.comments);
       setTotalRecords(response.totalComments); 
+      if(response.status == 400 ){
+        localStorage.removeItem("Token");
+        navigate("/login");
+      }
     }
     else if (tableType === "Testimonial") {
       response = await fetchallTestimonialslist(page,rowsPerPage );
       setData(response.testimonials);
       setTotalRecords(response.totalTestimonials); 
+      if(response.status == 400 ){
+        localStorage.removeItem("Token");
+        navigate("/login");
+      }
     }
     else if (tableType === "Lead") {
         response = await fetchallLeads(page,rowsPerPage );
         setData(response.leads);
-        setTotalRecords(response.totalLeads); 
+        setTotalRecords(response.totalLeads);
+        if(response.status == 400 ){
+          localStorage.removeItem("Token");
+          navigate("/login");
+        } 
       }
       else if (tableType === "Team Category") {
         response = await fetchallTeamCategories(page,rowsPerPage );
         setData(response.categories);
         setTotalRecords(response.totalCategories); 
+        if(response.status == 400 ){
+          localStorage.removeItem("Token");
+          navigate("/login");
+        }
       }
       else if (tableType === "Role") {
         response = await fetchallRoles(page,rowsPerPage );
         setData(response.roles);
         setTotalRecords(response.totalRoles); 
+        if(response.status == 400 ){
+          localStorage.removeItem("Token");
+          navigate("/login");
+        }
       }
       else if (tableType === "Team") {
         response = await fetchTeamMember(page,rowsPerPage );
         setData(response.members);
         setTotalRecords(response?.totalMembers); 
+        if(response.status == 400 ){
+          localStorage.removeItem("Token");
+          navigate("/login");
+        }
       }
       else if (tableType === "Services") {
         response = await fetchServices(page,rowsPerPage );
         setData(response.services);
         setTotalRecords(response?.total); 
+        if(response.status == 400 ){
+          localStorage.removeItem("Token");
+          navigate("/login");
+        }
       }
 
-      else if(response.status == 400 ){
-        localStorage.removeItem("Token");
-        navigate("/login");
-      }
+  
   };
   
   
