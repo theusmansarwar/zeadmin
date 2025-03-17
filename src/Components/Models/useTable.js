@@ -107,9 +107,9 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
         setTotalRecords(response?.total); 
       }
 
-      else if(response.status==400 ){
+      else if(response.status == 400 ){
         localStorage.removeItem("Token");
-        navigate("");
+        navigate("/login");
       }
   };
   
