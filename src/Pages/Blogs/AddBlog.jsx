@@ -37,7 +37,7 @@ const AddBlog = () => {
       readonly: false,
       uploader: { insertImageAsBase64URI: true },
       placeholder: "Start typing...",
-      imageExtensions: ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"]
+      imageExtensions: ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"],
     }),
     []
   );
@@ -100,20 +100,20 @@ const AddBlog = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errorObj = {};
-  if (!categoryId) {
-    errorObj.category = "Category is required.";
-  }
+    if (!categoryId) {
+      errorObj.category = "Category is required.";
+    }
 
-  // Validate Date Selection
-  if (!selectedDateTime) {
-    errorObj.date = "Published Date is required.";
-  }
+    // Validate Date Selection
+    if (!selectedDateTime) {
+      errorObj.date = "Published Date is required.";
+    }
 
-  if (Object.keys(errorObj).length > 0) {
-    setErrors(errorObj);
-    setLoading(false);
-    return;
-  }
+    if (Object.keys(errorObj).length > 0) {
+      setErrors(errorObj);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const formattedDateTime = new Date(selectedDateTime).toISOString();
     const formData = new FormData();
@@ -127,7 +127,6 @@ const AddBlog = () => {
     formData.append("category", categoryId);
     formData.append("published", isVisible);
     formData.append("publishedDate", formattedDateTime);
-
 
     if (fileInputRef.current?.files[0]) {
       formData.append("thumbnail", fileInputRef.current.files[0]);
@@ -149,8 +148,10 @@ const AddBlog = () => {
         showAlert("success", response.message);
         setLoading(false);
         navigate("/blogs");
-      } else if (response.status === 400 && response.missingFields) {
-        // Handle validation errors
+      } else if (response.status === 400) {
+        localStorage.removeItem("Token");
+        navigate("");
+      } else if (response.missingFields) {
         const errorObj = {};
         response.missingFields.forEach((field) => {
           errorObj[field.name] = field.message;
@@ -199,7 +200,10 @@ const AddBlog = () => {
               onChange={(e) => setMetaDescription(e.target.value)}
             />
           </div>
-          <div className="image-container" style={{ border: errors.thumbnail ? "2px solid red" : "" }}>
+          <div
+            className="image-container"
+            style={{ border: errors.thumbnail ? "2px solid red" : "" }}
+          >
             <img
               src={image}
               alt="Thumbnail"
@@ -209,14 +213,13 @@ const AddBlog = () => {
               className="remove-icon"
               onClick={() => setImage(dummyimg)}
             />
-          <input
-  type="file"
-  accept="image/png, image/jpeg"
-  style={{ display: "none" }}
-  ref={fileInputRef}
-  onChange={handleFileChange}
-/>
-
+            <input
+              type="file"
+              accept="image/png, image/jpeg"
+              style={{ display: "none" }}
+              ref={fileInputRef}
+              onChange={handleFileChange}
+            />
           </div>
         </div>
         {errors.slug && <p className="error">{errors.slug}</p>}
@@ -258,13 +261,12 @@ const AddBlog = () => {
           onChange={(e) => setTags(e.target.value)}
         />
 
-
-{errors.date && <p className="error">{errors.date}</p>}
-<input
-  type="datetime-local"
-  value={selectedDateTime}
-  onChange={(e) => setSelectedDateTime(e.target.value)} // Stores `YYYY-MM-DDTHH:mm`
-/>
+        {errors.date && <p className="error">{errors.date}</p>}
+        <input
+          type="datetime-local"
+          value={selectedDateTime}
+          onChange={(e) => setSelectedDateTime(e.target.value)} // Stores `YYYY-MM-DDTHH:mm`
+        />
 
         {errors.detail && <p className="error">{errors.detail}</p>}
         <JoditEditor

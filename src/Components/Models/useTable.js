@@ -106,6 +106,11 @@ export function useTable({ attributes, tableType, limitPerPage = 10 }) {
         setData(response.services);
         setTotalRecords(response?.total); 
       }
+
+      else if(response.status==400 ){
+        localStorage.removeItem("Token");
+        navigate("");
+      }
   };
   
   

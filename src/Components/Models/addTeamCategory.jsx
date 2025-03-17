@@ -46,7 +46,8 @@ export default function AddTeamCategories({ open, setOpen, Modeltype, Modeldata,
       };
   let response;
     if (Modeltype === "Add") {
-      response =await createnewTeamCategory(categoryData); // Send FormData
+      response =await createnewTeamCategory(categoryData); 
+      
     }else{
         response =await updateTeamCategory(id,categoryData); 
     }
