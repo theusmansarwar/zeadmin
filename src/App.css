@@ -1,55 +1,24 @@
 :root {
-  --primary-color: #334eac;
-  --primary-transparent-color: #334dac2e;
-  --secondary-transparent-color: #334dac80;
-  --black-transparent-color: #000000ac;
-  --secondary-color: #081f5c;
-  --tertiory-color: #1f007d;
-  --accent-color: #f78f08;
-  --warning-color: #ff0033;
-  --success-color: #016117;
-  --warning-bgcolor: #fb2a545c;
-  --success-bgcolor: #00a5263d;
-  --white-color: #ffffff;
-  --grey-color: #ededed;
-  --dark-grey-color: #adadad;
-  --black-color: #000000;
-  --horizontal-gradient: linear-gradient(to right, #334eac, #081f5c);
-  --vertical-gradient: linear-gradient(to bottom, #334eac, #081f5c);
-  --background-blackScreen: linear-gradient(to bottom, #ffffff00, #000000ac);
-  --border-radius: 20px;
-  --border-radius-secondary: 4px;
-  --fontsize-small: 12px;
-  --fontsize-medium: 14px;
-  --fontsize-large: 16px;
-  --all-side-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.733);
-  --all-side-box-shadow2: 0px 0px 3px #334eac;
-  --fontsize-heading: 40px;
-  --fontsize-heading-responsive: 30px;
-  --space-bellow-hero-section: 88px;
-  --default-width: 90%;
-  --side-padding: 5%;
-  --margin-below-cards: 50px;
-  --heading-top-space: 50px;
-  --heading-bottom-space: 30px;
-  --span-heading-space: 33px;
-
-  --heading-font: 24px;
-
-  --avatar: 106px;
-
-  --card-p-size: 18px;
-  --hero-section-heading: 76px;
-  --hero-section-description: 18px;
-  --hero-section-height: 500px;
-
-  --service-card-height: 445px;
-  --service-card-img-height: 230px;
-  --service-card-p-height: 150px;
-
-  --team-background-height: 500px;
+  --background-color: #688ECA;
+  --headings-color: var(--background-color);
+  --shadow-low1: hsla(217, 48%, 60%, 0.299);
+  --shadow-low2: #006bcf00;
+  --shadow-low3: #8daee4;
+  --default-box-shadow: 0 0 4px var(--background-color);
+  --left-space: 5%;
+  --mid-space: 90%;
+  --right-space: 5%;
+  --default-border: 1px solid var(--headings-color);
+  --text-color: white;
+  --font-family-base: var(--font-montserrat);
+  --default-p-size: 16px;
+  --default-p-size2: 14px;
+  --default-border-radius: 6px;
+  --warning-color: rgb(255, 38, 0);
+   --warning-bgcolor: rgba(255, 38, 0, 0.426);
+  --success-color: rgb(0, 101, 0);
+  --success-bgcolor:rgba(2, 216, 2, 0.512);
 }
-
 
 body {
   font-family: "Nunito", sans-serif;
@@ -61,50 +30,47 @@ body {
   display: flex;
   height: 100vh;
 }
-p, h1, h2, h3, h4, h5, h6{
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   padding: 0%;
   margin: 0%;
-
 }
 
-
-
-.home-zemalt-logo {
-  width: 60%;
-  margin-top: 15px;
+.home-digitalaura-logo {
+  width: 80%;
+  margin-top: 20px;
 }
 
-
-.userprofile{
- 
+.userprofile {
   height: 90px;
   width: 100%;
- display: flex;
+  display: flex;
 
- align-items: center;
-
+  align-items: center;
 }
-.userprofile .avatar{
+.userprofile .avatar {
   height: 50px;
   width: 50px;
   margin-left: 10px;
   border-radius: 50%;
-
 }
-.userprofile .avatar-data{
- 
+.userprofile .avatar-data {
   margin-left: 10px;
-
 }
-.userprofile .avatar-data p{
-font-size: 12px;
-
-
+.userprofile .avatar-data p {
+  font-size: 12px;
 }
 
 .app-side-bar {
   width: 15%;
   height: 100vh;
+
+  gap: 30px;
   border-right: 1px solid rgb(217, 217, 217);
   display: flex;
   flex-direction: column;
@@ -113,17 +79,17 @@ font-size: 12px;
 .app-right {
   width: 81%;
   height: calc(100vh - 60px);
- padding: 30px;
+  padding: 30px;
   overflow-y: scroll;
   scrollbar-width: none;
 }
 
-.Dashboard , .admin-body{
+.Dashboard,
+.admin-body {
   height: 96vh;
   padding: 2vh 3%;
   overflow-y: scroll;
 }
-
 
 .mini-search-section {
   display: flex;
@@ -169,11 +135,11 @@ scrollbar-width: none;
 }
 .unselected {
   padding: 10px;
-  color: #7b7b7b;
+  color: black;
 }
 .selected-item {
-  background: var( --horizontal-gradient);
-  color: rgb(228, 228, 228);
+  background: var(--background-color);
+  color: var(--text-color);
   border-radius: 4px;
   padding: 10px;
   transition: background-color 0.3s ease;
@@ -192,10 +158,10 @@ scrollbar-width: none;
   bottom: 50px;
   display: flex;
   justify-content: center;
-  animation:slideIn 0.5s ease-in ; /* Animation for sliding in */
+  animation: slideIn 0.5s ease-in; /* Animation for sliding in */
 }
 .Alert-message-area.hidden {
-  animation:slideOut 0.5s ease-out ;
+  animation: slideOut 0.5s ease-out;
 }
 /* Slide-in animation */
 @keyframes slideIn {
@@ -212,18 +178,11 @@ scrollbar-width: none;
 @keyframes slideOut {
   0% {
     bottom: 50px; /* Starts from below the screen */
-
   }
   100% {
     bottom: -20px; /* Ends at the defined position */
-  
-
   }
 }
-
-
-
-
 
 @media screen and (max-width: 820px) {
   .app-side-bar {

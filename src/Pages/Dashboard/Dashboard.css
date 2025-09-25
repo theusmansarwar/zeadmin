@@ -14,7 +14,7 @@
     height: fit-content;
     display: flex;
    
-    box-shadow:var(--all-side-box-shadow2);
+    box-shadow:var(--default-box-shadow);
     align-items: center;
   }
   
@@ -23,7 +23,7 @@
     margin: 0 auto;
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
 
   .card0 .card-lower-section,
@@ -48,7 +48,7 @@
     line-height: 1;
     width: 100%;
     font-size: 18px;
-    color: var(--secondary-color);
+    color: var(--background-color);
   }
   .card .card-lower-section p,
   .card0 .card-lower-section p,

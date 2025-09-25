@@ -1,13 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./AddTeam.css";
-import { IoMdCloseCircle } from "react-icons/io";
-import dummyimg from "../../Assets/upload-background.PNG";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Typography,
+  Switch,
+  FormControlLabel,
+  FormHelperText,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../Components/Alert/AlertContext";
-import { fetchTeamMemberById, fetchTeamCategoryList, fetchRoleList } from "../../DAL/fetch";
+import {
+  fetchTeamMemberById,
+  fetchTeamCategoryList,
+  fetchRoleList,
+} from "../../DAL/fetch";
 import { updateTeamMember } from "../../DAL/edit";
 import { createTeamMember } from "../../DAL/create";
-import { baseUrl } from "../../Config/Config";
+import UploadFile from "../../Components/Models/UploadFile";
 
 const AddTeam = () => {
   const { id } = useParams();
@@ -15,38 +29,37 @@ const AddTeam = () => {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
-  
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [roleId, setRoleId] = useState(""); // Add this to state
-const [roles, setRoles] = useState([]);
+  const [roleId, setRoleId] = useState("");
+  const [roles, setRoles] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [socialLinks, setSocialLinks] = useState({
     linkedin: "",
     instagram: "",
     facebook: "",
   });
-  const [image, setImage] = useState(dummyimg);
+  const [singlePath, setSinglePath] = useState(""); // ✅ uploaded file path
   const [isVisible, setIsVisible] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [isHomeShow, setIsHomeshow] = useState(true);
   const [loading, setLoading] = useState(false);
-  const fileInputRef = useRef(null);
   const [errors, setErrors] = useState({});
-  // Fetch Team Member if ID exists (Edit Mode)
+
+  // Fetch team member (edit mode)
   useEffect(() => {
     if (id) {
       const fetchTeamMember = async () => {
         try {
           const response = await fetchTeamMemberById(id);
-        
-            const member = response.member;
-            setName(member.name || "");
-            setRoleId(member.role?._id || "");
-            setDescription(member.description || "");
-            setCategoryId(member.category?._id || "");
-            setSocialLinks(member.socialLinks || {});
-            setImage(member.image ? baseUrl + member.image : dummyimg);
-            setIsVisible(member.published);
-       
+          const member = response.member;
+          setName(member.name || "");
+          setRoleId(member.role?._id || "");
+          setDescription(member.description || "");
+          setCategoryId(member.category?._id || "");
+          setSocialLinks(member.socialLinks || {});
+          setSinglePath(member.image || "");
+          setIsVisible(member.published);
+          setIsHomeshow(member.showonteamsection)
         } catch (error) {
           console.error("Error fetching team member:", error);
         }
@@ -55,12 +68,12 @@ const [roles, setRoles] = useState([]);
     }
   }, [id]);
 
-  // Fetch Categories
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await fetchTeamCategoryList();
-        if (response && response.categories) {
+        if (response?.categories) {
           setCategories(response.categories);
         }
       } catch (error) {
@@ -70,11 +83,12 @@ const [roles, setRoles] = useState([]);
     fetchCategories();
   }, []);
 
+  // Fetch roles
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await fetchRoleList(); // You need to create this API call in DAL
-        if (response && response.roles) {
+        const response = await fetchRoleList();
+        if (response?.roles) {
           setRoles(response.roles);
         }
       } catch (error) {
@@ -83,170 +97,199 @@ const [roles, setRoles] = useState([]);
     };
     fetchRoles();
   }, []);
-  // Handle File Upload
-  const handleFileChange = (event) => {
-    if (event.target.files?.[0]) {
-      const file = event.target.files[0];
-      setImage(URL.createObjectURL(file));
-    }
-  };
 
-  // Handle Submit
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  // Handle form submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setErrors({});
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("role", roleId);
-    formData.append("description", description);
-    formData.append("category", categoryId);
-    formData.append("published", isVisible);
 
-    formData.append("socialLinks", JSON.stringify(socialLinks));
+    const payload = {
+      name,
+      role: roleId,
+      description,
+      category: categoryId,
+      published: isVisible,
+      showonteamsection:isHomeShow,
+      socialLinks,
+      image: singlePath, // ✅ comes from UploadFile
+    };
 
-    if (fileInputRef.current?.files[0]) {
-      formData.append("image", fileInputRef.current.files[0]);
+    let response;
+    if (id) {
+      response = await updateTeamMember(id, payload);
+    } else {
+      response = await createTeamMember(payload);
     }
 
-      let response;
-      if (id) {
-        response = await updateTeamMember(id, formData); // Update if ID exists
-      } else {
-        response = await createTeamMember(formData); // Create if no ID
-      }
-
-      if (response.status == 201) {
-        showAlert("success", response.message);
-        navigate("/teams");
-      } else if (response.status == 200) {
-        showAlert("success", response.message);
-        navigate("/teams");
-      }
-      else if (response.status === 400 && response.missingFields) {
+    if (response.status === 201 || response.status === 200) {
+      showAlert("success", response.message);
+      navigate("/teams");
+    } else if (response.missingFields) {
         const newErrors = {};
         response.missingFields.forEach((field) => {
           newErrors[field.name] = field.message;
         });
         setErrors(newErrors);
-        showAlert("error", "Please fill all required fields.");
-   
+     
+      showAlert("error", response.message);
     }
+
     setLoading(false);
   };
 
   return (
-    <div className="AddTeam">
+    <Box maxWidth="100%" mx="auto"  p={3}>
+      <Typography variant="h5" mb={2}>
+        {id ? "Edit Team Member" : "Add Team Member"}
+      </Typography>
+
       <form onSubmit={handleSubmit}>
-        <h3>{id ? "Edit Team Member" : "Add Team Member"}</h3>
-
-
-        <div className="upper-section2">
-        <div className="left">
-        {errors.name && <p className="error">{errors.name}</p>}
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
+        {/* Name */}
+        <TextField
+          fullWidth
+          label="Name"
+          margin="normal"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          error={!!errors.name}
+          helperText={errors.name}
         />
-        {errors.role && <p className="error">{errors.role}</p>}
-          <select
-          value={roleId}
-          onChange={(e) => setRoleId(e.target.value)}
-        >
-          <option value="">Select a role</option>
-          {roles.map((role) => (
-            <option key={role._id} value={role._id}>
-              {role.name}
-            </option>
-          ))}
-        </select>
-        {errors.category && <p className="error">{errors.category}</p>}
-        <select
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
-        >
-          <option value="">Select a category</option>
-          {categories.map((category) => (
-            <option key={category._id} value={category._id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-      
-       
-       
+        <Box display="flex" gap={2} mt={2}>
+          {/* Role */}
+          <FormControl fullWidth margin="normal" error={!!errors.role}>
+            <InputLabel id="role-label">Role</InputLabel>
+            <Select
+              labelId="role-label"
+              id="role"
+              value={roleId}
+              label="Role"
+                error={!!errors.role}
+          helperText={errors.role}
+              onChange={(e) => setRoleId(e.target.value)}
+            >
+              <MenuItem value="">Select a role</MenuItem>
+              {roles.map((role) => (
+                <MenuItem key={role._id} value={role._id}>
+                  {role.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.role && <FormHelperText>{errors.role}</FormHelperText>}
+          </FormControl>
+
+          {/* Category */}
+          <FormControl fullWidth margin="normal" error={!!errors.category}>
+            <InputLabel id="category-label">Category</InputLabel>
+            <Select
+              labelId="category-label"
+              id="category"
+              value={categoryId}
+              label="Category"
+                error={!!errors.category}
+          helperText={errors.category}
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
+              <MenuItem value="">Select a category</MenuItem>
+              {categories.map((cat) => (
+                <MenuItem key={cat._id} value={cat._id}>
+                  {cat.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.category && <FormHelperText>{errors.category}</FormHelperText>}
+          </FormControl>
+        </Box>
+        {/* Description */}
+        <TextField
+          fullWidth
+          label="Description"
+          margin="normal"
+          multiline
+          rows={3}
+          value={description}
+              error={!!errors.description}
+          helperText={errors.description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
 
         {/* Social Links */}
-        <input
-          type="text"
-          name="linkedin"
-          placeholder="LinkedIn"
+        <TextField
+          fullWidth
+          label="LinkedIn"
+          margin="normal"
           value={socialLinks.linkedin}
           onChange={(e) =>
             setSocialLinks({ ...socialLinks, linkedin: e.target.value })
           }
         />
-        <input
-          type="text"
-          name="instagram"
-          placeholder="Instagram"
+        <TextField
+          fullWidth
+          label="Instagram"
+          margin="normal"
           value={socialLinks.instagram}
           onChange={(e) =>
             setSocialLinks({ ...socialLinks, instagram: e.target.value })
           }
         />
-        <input
-          type="text"
-          name="facebook"
-          placeholder="Facebook"
+        <TextField
+          fullWidth
+          label="Facebook"
+          margin="normal"
           value={socialLinks.facebook}
           onChange={(e) =>
             setSocialLinks({ ...socialLinks, facebook: e.target.value })
           }
         />
- </div>
-        <div className="image-container2" style={{ border: errors.image ? "2px solid red" : "" }}>
-                    <img src={image} alt="image" onClick={() => fileInputRef.current?.click()} />
-                    <IoMdCloseCircle className="remove-icon" onClick={() => setImage(dummyimg)} />
-                    <input type="file" accept="image/*" style={{ display: "none" }} ref={fileInputRef} onChange={handleFileChange} />
-                  </div>
-        </div>
-        {/* Image Upload */}
-      
 
+        <Typography
+          variant="h5"
+          sx={{
+            color: "var(--background-color)",
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+        >
+          {" "}
+          Profile Picture
+        </Typography>
+        <UploadFile
+          multiple={false}
+          accept="image/*"
+          initialFiles={singlePath}
+          onUploadComplete={(path) => setSinglePath(path)}
+        />
+<FormControlLabel
+          control={
+            <Switch
+              checked={isHomeShow}
+              onChange={() => setIsHomeshow(!isHomeShow)}
+            />
+          }
+          label={`Featured Member: ${isHomeShow ? "Yes" : "No"}`}
+        />
         {/* Visibility Toggle */}
-        <div className="toggle-container">
-          <span>
-            Visibility: <strong>{isVisible ? "Public" : "Draft"}</strong>
-          </span>
-          <label className="toggle-switch">
-            <input
-              type="checkbox"
+        <FormControlLabel
+          control={
+            <Switch
               checked={isVisible}
               onChange={() => setIsVisible(!isVisible)}
             />
-            <span className="slider"></span>
-          </label>
-        </div>
+          }
+          label={`Visibility: ${isVisible ? "Public" : "Draft"}`}
+        />
 
         {/* Buttons */}
-        <div className="button-sections">
-          <button
-            type="button"
-            className="cancelbtn"
-            onClick={() => navigate("/teams")}
-          >
+        <Box mt={3} display="flex" justifyContent="space-between">
+          <Button variant="outlined" onClick={() => navigate("/teams")}>
             Cancel
-          </button>
-          <button className="published" type="submit" disabled={loading}>
+          </Button>
+          <Button type="submit" variant="contained" disabled={loading}>
             {loading ? "Saving..." : id ? "Update" : "Save"}
-          </button>
-        </div>
+          </Button>
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 };
 

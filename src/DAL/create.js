@@ -5,17 +5,15 @@ export const createBlog = async (data) => {
     path: "/blog/create",
     method: "POST",
     headers: {
-   'Content-Type': 'multipart/form-data',
-   Authorization: `Bearer ${localStorage.getItem("Token")}`,
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
   return invokeApi(reqObj);
 };
-export const createnewCategory = async (data) => {
-
+export const createNewFaq = async (data) => {
   const reqObj = {
-    path: "/category/add",
+    path: "/faqs/add",
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -24,10 +22,9 @@ export const createnewCategory = async (data) => {
   };
   return invokeApi(reqObj);
 };
-export const createTestimonial = async (data) => {
-
+export const createnewuser = async (data) => {
   const reqObj = {
-    path: "/testimonial/add",
+    path: "/admin/register",
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -48,24 +45,22 @@ export const createnewTeamCategory = async (data) => {
   };
   return invokeApi(reqObj);
 };
-export const createTeamMember = async (data) => {
 
+export const uploadimage = async (data) => {
   const reqObj = {
-    path: "/team/add",
+    path: "/upload-image",
     method: "POST",
     headers: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
   return invokeApi(reqObj);
 };
-
-export const createnewRole = async (data) => {
-
+export const createNewWhyService = async (data) => {
   const reqObj = {
-    path: "/role/add",
+    path: "/WhyService/add",
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -74,95 +69,131 @@ export const createnewRole = async (data) => {
   };
   return invokeApi(reqObj);
 };
-export const createService = async (data) => {
+export const createnewCategory = async (data) => {
+  const reqObj = {
+    path: "/category/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+//////////////////////
+export const createnewServicesCategory = async (data) => {
+  const reqObj = {
+    path: "/servicecategory/add",
+    method: "POST",
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
 
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+/////////////////////
+export const createNewService = async (data) => {
   const reqObj = {
     path: "/service/create",
     method: "POST",
     headers: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
+
     postData: data,
   };
   return invokeApi(reqObj);
 };
-export const addService = async (data) => {
-
+export const createNewPortfolio = async (data) => {
   const reqObj = {
-    path: "/service/subdata/add",
-    method: "POST",
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
-    postData: data,
-  };
-  return invokeApi(reqObj);
-};
-export const addProcess = async (data) => {
-
-  const reqObj = {
-    path: "/service/process/add",
-    method: "POST",
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
-    postData: data,
-  };
-  return invokeApi(reqObj);
-};
-
-
-export const addBenifit= async (data) => {
-
-  const reqObj = {
-    path: "/service/benifit/add",
-    method: "POST",
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
-    postData: data,
-  };
-  return invokeApi(reqObj);
-};
-
-export const createnewPrice= async (data) => {
-
-  const reqObj = {
-    path: "/service/pricing/add",
+    path: "/portfolio/add",
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
+
     postData: data,
   };
   return invokeApi(reqObj);
 };
-
-
-export const createSyllabus = async (data) => {
-  console.log(...data, "djskfhjksdfks");
+export const createNewHowwedo = async (data) => {
   const reqObj = {
-    path: "/api/syllabus/create",
+    path: "/howwedo/create",
     method: "POST",
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
       "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const createNewSuccessStory = async (data) => {
+  const reqObj = {
+    path: "/successstories/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const createTestimonial = async (data) => {
+  const reqObj = {
+    path: "/testimonial/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
     postData: data,
   };
   return invokeApi(reqObj);
 };
-export const enrollUser = async (data) => {
-  console.log(...data, "djskfhjksdfks");
+export const createnewusertype = async (data) => {
   const reqObj = {
-    path: "/api/admin/enrolluser",
+    path: "/usertype/add",
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const createTeamMember = async (data) => {
+  const reqObj = {
+    path: "/team/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const createnewticket = async (id) => {
+  const reqObj = {
+    path: "/ticket/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: id,
+  };
+  return invokeApi(reqObj);
+};
+export const createMessage = async (data) => {
+  const reqObj = {
+    path: "/chat/add",
+    method: "POST",
+    headers: {
       "Content-Type": "multipart/form-data",
     },
     postData: data,

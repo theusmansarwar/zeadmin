@@ -1,88 +1,73 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Switch,
+  FormControlLabel,
+  CircularProgress,
+} from "@mui/material";
 import { useAlert } from "../../Components/Alert/AlertContext";
-import { fetchServiceList, fetchTestimonialbyid } from "../../DAL/fetch";
-import "./AddTestimonial.css";
+import { fetchTestimonialbyid } from "../../DAL/fetch";
 import { updateTestimonial } from "../../DAL/edit";
 import { createTestimonial } from "../../DAL/create";
+import UploadFile from "../../Components/Models/UploadFile";
 
 const AddTestimonial = () => {
   const { id } = useParams();
   const { showAlert } = useAlert();
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [service, setService] = useState("");
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
+  const [singlePath, setSinglePath] = useState("");
+  const [image, setImage] = useState("");
+  const [whatwedid, setWhatwedid] = useState("");
+  const [clientsays, setClientsays] = useState("");
   const [rating, setRating] = useState("");
-  const [description, setDescription] = useState("");
   const [published, setPublished] = useState(true);
-  const [services, setServices] = useState([]);
+  const [boost, setBoost] = useState("");
+  const [boosttext, setBoosttext] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // Fetch Services List for Dropdown
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const response = await fetchServiceList();
-        if (response && response.services) {
-          setServices(response.services);
-        }
-      } catch (error) {
-        console.error("Error fetching services:", error);
-      }
-    };
-    fetchServices();
-  }, []);
   useEffect(() => {
     const fetchTestimonial = async () => {
       try {
         const response = await fetchTestimonialbyid(id);
-        setName(response.name);
-        setService(response.service);
-        setRating(response.rating);
-        setDate(response.date)
-         setLocation(response.location);
-         setDescription(response.description);
-         setPublished(response.published)
+        if (response) {
+          setImage(response.image || "");
+          setWhatwedid(response.whatwedid || "");
+          setClientsays(response.clientsays || "");
+          setRating(response.rating || "");
+          setPublished(response.published ?? true);
+          setBoost(response.boost || "");
+          setBoosttext(response.boosttext || "");
+        }
       } catch (error) {
-        console.error("Error fetching services:", error);
+        console.error("Error fetching testimonial:", error);
       }
     };
-    fetchTestimonial();
+    if (id) fetchTestimonial();
   }, [id]);
 
-  // Handle Form Submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     setErrors({});
 
-    // Form Validation
-    const newErrors = {};
-    if (!name) newErrors.name = "Name is required";
-    if (!service) newErrors.service = "Service is required";
-    if (!location) newErrors.location = "Location is required";
-    if (!date) newErrors.date = "Date is required";
-    if (!rating) newErrors.rating = "Rating is required";
-    if (!description) newErrors.description = "Description is required";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setLoading(false);
-      return;
-    }
-
     const formData = {
-      name,
-      service,
-      location,
-      date,
+      image: singlePath || image,
+      whatwedid,
+      clientsays,
       rating,
-      description,
       published,
+      boost,
+      boosttext,
     };
 
     try {
@@ -96,6 +81,14 @@ const AddTestimonial = () => {
       if (response.status === 201 || response.status === 200) {
         showAlert("success", response.message);
         navigate("/testimonials");
+      } else if (response.status === 400 && response.missingFields) {
+        // backend validation errors
+        const fieldErrors = {};
+        response.missingFields.forEach((f) => {
+          fieldErrors[f.name] = f.message;
+        });
+        setErrors(fieldErrors);
+        showAlert("error", response.message);
       } else {
         showAlert("error", "Something went wrong!");
       }
@@ -103,98 +96,124 @@ const AddTestimonial = () => {
       console.error("Error saving testimonial:", error);
       showAlert("error", "Internal server error.");
     }
+
     setLoading(false);
   };
 
   return (
-    <div className="AddTestimonial">
-      <form onSubmit={handleSubmit}>
-        <h3>{id ? "Edit Testimonial" : "Add Testimonial"}</h3>
+    <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
+      <Typography variant="h5" gutterBottom>
+        {id ? "Edit Testimonial" : "Add Testimonial"}
+      </Typography>
 
-        {/* Name Input */}
-        {errors.name && <p className="error">{errors.name}</p>}
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      <Typography
+        variant="h5"
+        sx={{
+          color: "var(--background-color)",
+          marginTop: "20px",
+          marginBottom: "20px",
+        }}
+      >
+        Company Logo
+      </Typography>
+      <UploadFile
+        multiple={false}
+        accept="image/*"
+        initialFiles={image}
+        onUploadComplete={(path) => setSinglePath(path)}
+      />
 
-        {/* Service Dropdown */}
-        {errors.service && <p className="error">{errors.service}</p>}
-        <select value={service} onChange={(e) => setService(e.target.value)}>
-          <option value="">Select a Service</option>
-          {services.map((srv) => (
-            <option key={srv._id} value={srv.name}>
-              {srv.name}
-            </option>
-          ))}
-        </select>
+      {/* What We Did */}
+      <TextField
+        fullWidth
+        label="What We Did"
+        value={whatwedid}
+        onChange={(e) => setWhatwedid(e.target.value)}
+        error={!!errors.whatwedid}
+        helperText={errors.whatwedid}
+        margin="normal"
+      />
 
-        {/* Location Input */}
-        {errors.location && <p className="error">{errors.location}</p>}
-        <input
-          type="text"
-          placeholder="Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
+      {/* Client Says */}
+      <TextField
+        fullWidth
+        label="Client Says"
+        multiline
+        minRows={3}
+        value={clientsays}
+        onChange={(e) => setClientsays(e.target.value)}
+        error={!!errors.clientsays}
+        helperText={errors.clientsays}
+        margin="normal"
+      />
 
-        {/* Date Picker */}
-        {errors.date && <p className="error">{errors.date}</p>}
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
-
-        {/* Rating Dropdown */}
-        {errors.rating && <p className="error">{errors.rating}</p>}
-        <select value={rating} onChange={(e) => setRating(e.target.value)}>
-          <option value="">Select Rating</option>
+      {/* Rating */}
+      <FormControl fullWidth margin="normal" error={!!errors.rating}>
+        <InputLabel>Rating</InputLabel>
+        <Select value={rating} onChange={(e) => setRating(e.target.value)}>
+          <MenuItem value="">
+            <em>Select Rating</em>
+          </MenuItem>
           {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((r) => (
-            <option key={r} value={r}>
+            <MenuItem key={r} value={r}>
               {r}
-            </option>
+            </MenuItem>
           ))}
-        </select>
+        </Select>
+        {errors.rating && <Typography color="error">{errors.rating}</Typography>}
+      </FormControl>
 
-        {/* Description Text Area */}
-        {errors.description && <p className="error">{errors.description}</p>}
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+      {/* Boost */}
+      <TextField
+        fullWidth
+        label="Boost"
+        value={boost}
+        onChange={(e) => setBoost(e.target.value)}
+        error={!!errors.boost}
+        helperText={errors.boost}
+        margin="normal"
+      />
 
-        {/* Published Toggle */}
-        <div className="toggle-container">
-          <span>Published: {published ? "Yes" : "No"}</span>
-          <label className="toggle-switch">
-            <input
-              type="checkbox"
-              checked={published}
-              onChange={() => setPublished(!published)}
-            />
-            <span className="slider"></span>
-          </label>
-        </div>
+      {/* Boost Text */}
+      <TextField
+        fullWidth
+        label="Boost Text"
+        multiline
+        minRows={2}
+        value={boosttext}
+        onChange={(e) => setBoosttext(e.target.value)}
+        error={!!errors.boosttext}
+        helperText={errors.boosttext}
+        margin="normal"
+      />
 
-        {/* Submit Buttons */}
-        <div className="button-sections">
-          <button
-            type="button"
-            className="cancelbtn"
-            onClick={() => navigate("/testimonials")}
-          >
-            Cancel
-          </button>
-          <button className="published" type="submit" disabled={loading}>
-            {loading ? "Saving..." : id ? "Update" : "Save"}
-          </button>
-        </div>
-      </form>
-    </div>
+      {/* Published */}
+      <FormControlLabel
+        control={
+          <Switch
+            checked={published}
+            onChange={() => setPublished(!published)}
+            color="primary"
+          />
+        }
+        label={`Published: ${published ? "Yes" : "No"}`}
+        sx={{ mt: 2 }}
+      />
+
+      {/* Buttons */}
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3, gap: 2 }}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => navigate("/testimonials")}
+        >
+          Cancel
+        </Button>
+        <Button type="submit" variant="contained" disabled={loading}>
+          {loading ? <CircularProgress size={24} /> : id ? "Update" : "Save"}
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

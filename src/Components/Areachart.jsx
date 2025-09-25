@@ -55,7 +55,7 @@ const Areachart = () => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Area type="monotone" dataKey="Impressions" stroke="#004ab8" fill="var(--primary-color)" />
+          <Area type="monotone" dataKey="Impressions" stroke="#004ab8" fill="var(--background-color)" />
         </AreaChart>
       </ResponsiveContainer>
     </div>

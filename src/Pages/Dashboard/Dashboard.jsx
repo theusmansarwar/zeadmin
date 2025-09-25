@@ -28,8 +28,6 @@ const Dashboard = () => {
   return (
     <>
       <h2 className="dashboard-text">Dashboard</h2>
-      
-      {/* ✅ Only Render When Data is Available */}
       {data && (
         <>
           <div className="cards">
@@ -52,6 +50,27 @@ const Dashboard = () => {
               <div className="card-lower-section">
                 <h3>{data.totalLeads}</h3>
                 <p>Total Leads</p>
+              </div>
+            </div>
+               <div className="card0">
+              <HiMiniUsers className="card-icon" />
+              <div className="card-lower-section">
+                <h3>{data.todayApplications}</h3>
+                <p>Today Application</p>
+              </div>
+            </div>
+            <div className="card2">
+              <HiMiniUsers className="card-icon" />
+              <div className="card-lower-section">
+                <h3>{data.yesterdayApplications}</h3>
+                <p>Yesterday Applications</p>
+              </div>
+            </div>
+            <div className="card3">
+              <HiMiniUsers className="card-icon" />
+              <div className="card-lower-section">
+                <h3>{data.totalApplications}</h3>
+                <p>Total Application</p>
               </div>
             </div>
             <div className="card4">
@@ -89,26 +108,9 @@ const Dashboard = () => {
                 <p>All Time Impressions</p>
               </div>
             </div>
-            <div className="card4">
-              <FaRegUser className="card-icon" />
-              <div className="card-lower-section">
-                <h3>{data.totalUsers}</h3>
-                <p>Total Users</p>
-              </div>
-            </div>
-            <div className="card5">
-              <IoMdStats className="card-icon" />
-              <div className="card-lower-section">
-                <h3>{data.totalServices}</h3>
-                <p>Total Services</p>
-              </div>
-            </div>
           </div>
-
-          {/* ✅ Render Areachart in the Correct Div */}
           <div className="charts-areas">
               <Areachart />
-           
           </div>
         </>
       )}

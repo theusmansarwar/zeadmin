@@ -4,9 +4,7 @@ import { useTable } from "../../Components/Models/useTable";
 const Services = () => {
   const attributes = [
    
-    { id: "name", label: "Name" },
-    { id: "introduction", label: "Introduction" },
-    { id: "slug", label: "Slug" },
+    { id: "title", label: "Service Title" },
     { id: "published", label: "Visibility" },
     { id: "createdAt", label: "Created At" },
   ];
@@ -19,4 +17,3 @@ const Services = () => {
 };
 
 export default Services;
- 

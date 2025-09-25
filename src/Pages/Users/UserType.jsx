@@ -1,18 +1,18 @@
 import React from "react";
 import { useTable } from "../../Components/Models/useTable";
 
-const Roles = () => {
+const UserType = () => {
   const attributes = [
    
-    { id: "name", label: "Role" },
+    { id: "name", label: "User Type" },
     { id: "published", label: "Visibility" },
     { id: "createdAt", label: "Created At" },
   ];
 
   
-  const { tableUI } = useTable({  attributes, tableType: "Role" });
+  const { tableUI } = useTable({  attributes, tableType: "UserType" });
 
   return <>{tableUI}</>;
 };
 
-export default Roles;
+export default UserType;

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-
-import axios from "axios";
 import App from "./App";
 import Login from "./Pages/Login";
+
 function AppWrapper() {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem("Token")
+    !!localStorage.getItem("Token")
   );
   const navigate = useNavigate();
   const [message, setMessage] = useState({ type: "", text: "" });
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userType = user?.type?.name || "";
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -20,48 +22,39 @@ function AppWrapper() {
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
     setMessage({ type: "success", text: "Login Successfully" });
-    navigate("/dashboard");
+    navigate("/blogs"); // writers land here
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     const confirmed = window.confirm("Are you sure you want to log out?");
     if (confirmed) {
       setIsAuthenticated(false);
       localStorage.removeItem("Token");
-      navigate("");
+      localStorage.removeItem("user");
+      navigate("/login");
     }
   };
-  useEffect(() => {
-    if (message.text) {
-      const timer = setTimeout(() => {
-        setMessage({ type: "", text: "" });
-      }, 5000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [message, setMessage]);
   return (
-    <>
-      <Routes>
-        {isAuthenticated ? (
-          <Route
-            path="/*"
-            element={
-              <App
-                onLogout={handleLogout}
-                message={message}
-                setMessage={setMessage}
-              />
-            }
-          />
-        ) : (
-          <Route
-            path="/login"
-            element={<Login onLoginSuccess={handleLoginSuccess} />}
-          />
-        )}
-      </Routes>
-    </>
+    <Routes>
+      {isAuthenticated ? (
+        <Route
+          path="/*"
+          element={
+            <App
+              onLogout={handleLogout}
+              message={message}
+              userType={userType}
+            />
+          }
+        />
+      ) : (
+        <Route
+          path="/login"
+          element={<Login onLoginSuccess={handleLoginSuccess} />}
+        />
+      )}
+    </Routes>
   );
 }
 

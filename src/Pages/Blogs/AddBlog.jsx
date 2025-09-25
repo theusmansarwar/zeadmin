@@ -1,48 +1,70 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import "./AddBlog.css";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
 import { IoMdCloseCircle } from "react-icons/io";
 import JoditEditor from "jodit-react";
-import dummyimg from "../../Assets/upload-background.PNG";
-
 import { useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../Components/Alert/AlertContext";
 import { fetchBlogById, fetchcategorylist } from "../../DAL/fetch";
 import { updateBlog } from "../../DAL/edit";
 import { createBlog } from "../../DAL/create";
 import { baseUrl } from "../../Config/Config";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import UploadFile from "../../Components/Models/UploadFile";
+
+const style = {
+  Width: "100%",
+  margin: "40px auto",
+  bgcolor: "background.paper",
+};
 
 const AddBlog = () => {
   const { id } = useParams();
   const { showAlert } = useAlert();
   const navigate = useNavigate();
-  const [selectedDateTime, setSelectedDateTime] = useState("");
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [detail, setDetail] = useState("");
   const [author, setAuthor] = useState("");
-  const [tags, setTags] = useState("");
+  const [newauthor, setNewAuthor] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [slug, setSlug] = useState("");
-  const [image, setImage] = useState(dummyimg);
+  const [faqSchemaText, setFaqSchemaText] = useState("{}");
+  const [image, setImage] = useState("");
   const [isVisible, setIsVisible] = useState(true);
+  const [isFeatured, setIsFeatured] = useState(false);
   const [categoryId, setCategoryId] = useState("");
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
   const fileInputRef = useRef(null);
   const editor = useRef(null);
-  const [errors, setErrors] = useState({});
+
   const config = useMemo(
     () => ({
       readonly: false,
       uploader: { insertImageAsBase64URI: true },
       placeholder: "Start typing...",
-      imageExtensions: ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"],
     }),
     []
   );
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userName = user?.name || "";
+    setNewAuthor(userName);
     if (id) {
       const fetchBlog = async () => {
         try {
@@ -53,17 +75,14 @@ const AddBlog = () => {
             setDescription(blog.description || "");
             setDetail(blog.detail || "");
             setAuthor(blog.author || "");
-            setTags(blog.tags || "");
             setMetaDescription(blog.metaDescription || "");
             setSlug(blog.slug || "");
             setCategoryId(blog.category?._id || "");
-            setImage(baseUrl + blog.thumbnail || dummyimg);
+            setImage(blog.thumbnail ? baseUrl + blog.thumbnail : "");
+            setFaqSchemaText(blog.faqSchema || "{}");
+            setIsFeatured(blog?.featured);
             setIsVisible(blog?.published);
-            if (blog?.publishedDate) {
-              const dateObj = new Date(blog.publishedDate);
-              const formattedDateTime = dateObj.toISOString().slice(0, 16); // Extracts YYYY-MM-DDTHH:mm
-              setSelectedDateTime(formattedDateTime);
-            }
+            setAuthor(blog.author || "");
           }
         } catch (error) {
           console.error("Error fetching blog:", error);
@@ -73,7 +92,6 @@ const AddBlog = () => {
     }
   }, [id]);
 
-  // 🔹 Fetch Categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -88,76 +106,54 @@ const AddBlog = () => {
     fetchCategories();
   }, []);
 
-  // 🔹 Handle File Upload
-  const handleFileChange = (event) => {
-    if (event.target.files?.[0]) {
-      const file = event.target.files[0];
-      setImage(URL.createObjectURL(file));
-    }
-  };
+  
 
-  // 🔹 Handle Submit (Create or Update)
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const errorObj = {};
-    if (!categoryId) {
-      errorObj.category = "Category is required.";
-    }
 
-    // Validate Date Selection
-    if (!selectedDateTime) {
-      errorObj.date = "Published Date is required.";
+    const errorObj = {};
+
+    try {
+      JSON.parse(faqSchemaText);
+    } catch {
+      errorObj.faqSchema = "Schema JSON is invalid.";
     }
 
     if (Object.keys(errorObj).length > 0) {
       setErrors(errorObj);
-      setLoading(false);
       return;
     }
+
     setLoading(true);
-    const formattedDateTime = new Date(selectedDateTime).toISOString();
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("detail", detail);
-    formData.append("author", author);
-    formData.append("tags", tags);
     formData.append("metaDescription", metaDescription);
     formData.append("slug", slug);
     formData.append("category", categoryId);
     formData.append("published", isVisible);
-    formData.append("publishedDate", formattedDateTime);
-
-    if (fileInputRef.current?.files[0]) {
-      formData.append("thumbnail", fileInputRef.current.files[0]);
-    }
+    formData.append("featured", isFeatured);
+    formData.append("faqSchema", faqSchemaText);
+    formData.append("author", author || newauthor);
+    formData.append("thumbnail",image);
+    
 
     try {
-      let response;
-      if (id) {
-        response = await updateBlog(id, formData); // Update if ID exists
-      } else {
-        response = await createBlog(formData); // Create if no ID
-      }
+      const response = id
+        ? await updateBlog(id, formData)
+        : await createBlog(formData);
 
-      if (response.status == 201) {
+      if (response.status == 200 || response.status == 201) {
         showAlert("success", response.message);
-        setLoading(false);
         navigate("/blogs");
-      } else if (response.status == 200) {
-        showAlert("success", response.message);
-        setLoading(false);
-        navigate("/blogs");
-      } else if (response.status == 400) {
-        localStorage.removeItem("Token");
-        navigate("");
       } else if (response.missingFields) {
-        const errorObj = {};
+        const newErrors = {};
         response.missingFields.forEach((field) => {
-          errorObj[field.name] = field.message;
+          newErrors[field.name] = field.message;
         });
-        setErrors(errorObj);
-        setLoading(false);
+        setErrors(newErrors);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -168,107 +164,109 @@ const AddBlog = () => {
   };
 
   return (
-    <div className="AddPost">
+    <Box sx={style}>
+      <Typography variant="h5" mb={2}>
+        {id ? "Edit Blog" : "Add Blog"}
+      </Typography>
+
       <form onSubmit={handleSubmit}>
-        <h3>{id ? "Edit Blog" : "Add Blog"}</h3>
-        <div className="upper-section">
-          <div className="left">
-            {errors.title && <p className="error">{errors.title}</p>}
-            <input
-              type="text"
-              name="title"
-              placeholder="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            {errors.description && (
-              <p className="error">{errors.description}</p>
-            )}
-            <textarea
-              name="description"
-              placeholder="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            {errors.metaDescription && (
-              <p className="error">{errors.metaDescription}</p>
-            )}
-            <textarea
-              name="metaDescription"
-              placeholder="Meta Description"
-              value={metaDescription}
-              onChange={(e) => setMetaDescription(e.target.value)}
-            />
-          </div>
-          <div
-            className="image-container"
-            style={{ border: errors.thumbnail ? "2px solid red" : "" }}
-          >
-            <img
-              src={image}
-              alt="Thumbnail"
-              onClick={() => fileInputRef.current?.click()}
-            />
-            <IoMdCloseCircle
-              className="remove-icon"
-              onClick={() => setImage(dummyimg)}
-            />
-            <input
-              type="file"
-              accept="image/png, image/jpeg"
-              style={{ display: "none" }}
-              ref={fileInputRef}
-              onChange={handleFileChange}
-            />
-          </div>
-        </div>
-        {errors.slug && <p className="error">{errors.slug}</p>}
-        <input
-          type="text"
-          name="slug"
-          placeholder="Slug"
+        <TextField
+          fullWidth
+          label="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          error={!!errors.title}
+          helperText={errors.title}
+          sx={{ mb: 2 }}
+        />
+
+        <TextField
+          fullWidth
+          multiline
+          rows={2}
+          label="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          error={!!errors.description}
+          helperText={errors.description}
+          sx={{ mb: 2 }}
+        />
+
+        <TextField
+          fullWidth
+          multiline
+          rows={2}
+          label="Meta Description"
+          value={metaDescription}
+          onChange={(e) => setMetaDescription(e.target.value)}
+          error={!!errors.metaDescription}
+          helperText={errors.metaDescription}
+          sx={{ mb: 2 }}
+        />
+
+        <TextField
+          fullWidth
+          multiline
+          rows={4}
+          label="FAQ Schema (JSON)"
+          value={faqSchemaText}
+          onChange={(e) => setFaqSchemaText(e.target.value)}
+          error={!!errors.faqSchema}
+          helperText={errors.faqSchema}
+          sx={{ mb: 2 }}
+        />
+
+        <Typography
+          variant="h5"
+          sx={{
+            color: "var(--background-color)",
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+        >
+          {" "}
+          Blog Thumbnail
+        </Typography>
+        <UploadFile
+          multiple={false}
+          accept="image/*"
+          initialFiles={image}
+          onUploadComplete={(path) => setImage(path)}
+        />
+        <TextField
+          fullWidth
+          label="Slug"
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
+          error={!!errors.slug}
+          helperText={errors.slug}
+          sx={{ mb: 2 }}
         />
+        <Box sx={{ minWidth: 120, mb: 2 }}>
+          <FormControl fullWidth error={!!errors.category}>
+            <InputLabel id="category-select-label">Category</InputLabel>
+            <Select
+              labelId="category-select-label"
+              id="category-select"
+              value={categoryId}
+              label="Category"
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
+              <MenuItem value="">Select a category</MenuItem>
+              {categories.map((category) => (
+                <MenuItem key={category._id} value={category._id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.category && (
+              <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                {errors.category}
+              </Typography>
+            )}
+          </FormControl>
+        </Box>
 
-        {errors.category && <p className="error">{errors.category}</p>}
-        <select
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
-        >
-          <option value="">Select a category</option>
-          {categories.map((category) => (
-            <option key={category._id} value={category._id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-        {errors.author && <p className="error">{errors.author}</p>}
-        <input
-          type="text"
-          name="author"
-          placeholder="Author"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-        />
-
-        {errors.tags && <p className="error">{errors.tags}</p>}
-        <input
-          type="text"
-          name="tags"
-          placeholder="Tags (comma-separated)"
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-        />
-
-        {errors.date && <p className="error">{errors.date}</p>}
-        <input
-          type="datetime-local"
-          value={selectedDateTime}
-          onChange={(e) => setSelectedDateTime(e.target.value)} // Stores `YYYY-MM-DDTHH:mm`
-        />
-
-        {errors.detail && <p className="error">{errors.detail}</p>}
         <JoditEditor
           ref={editor}
           value={detail}
@@ -276,38 +274,67 @@ const AddBlog = () => {
           tabIndex={1}
           onChange={(newContent) => setDetail(newContent)}
         />
+        {errors.detail && (
+          <Typography color="error">{errors.detail}</Typography>
+        )}
 
-        <div className="toggle-container">
-          <span className="toggle-label">
-            Blog Visibility:{" "}
-            <span className={isVisible ? "Public" : "Draft"}>
-              {isVisible ? "Public" : "Draft"}
-            </span>
-          </span>
-          <label className="toggle-switch">
-            <input
-              type="checkbox"
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isFeatured}
+              onChange={() => setIsFeatured(!isFeatured)}
+              color="primary"
+            />
+          }
+          label="Featured"
+          sx={{ mt: 2 }}
+        />
+
+        <FormControlLabel
+          control={
+            <Switch
               checked={isVisible}
               onChange={() => setIsVisible(!isVisible)}
+              color="primary"
             />
-            <span className="slider"></span>
-          </label>
-        </div>
+          }
+          label={`Visibility: ${isVisible ? "Public" : "Draft"}`}
+          sx={{ mt: 1 }}
+        />
 
-        <div className="button-sections">
-          <button
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            justifyContent: "flex-end",
+            mt: 3,
+          }}
+        >
+          <Button
             type="button"
-            className="cancelbtn"
+            variant="contained"
+            sx={{ backgroundColor: "#B1B1B1" }}
             onClick={() => navigate("/blogs")}
           >
             Cancel
-          </button>
-          <button className="published" type="submit" disabled={loading}>
+          </Button>
+
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            sx={{
+              background: "var(--background-color)",
+              color: "var(--white-color)",
+              borderRadius: "var(--default-border-radius)",
+              "&:hover": { background: "var(--vertical-gradient)" },
+            }}
+          >
             {loading ? "Saving..." : id ? "Update Blog" : "Save"}
-          </button>
-        </div>
+          </Button>
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 };
 

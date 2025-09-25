@@ -109,9 +109,9 @@ export default function ApproveComment({ open, setOpen, Modeldata, onResponse })
             onClick={handleSubmit}
             variant="contained"
             sx={{
-              background: "var(--horizontal-gradient)",
+              background: "var(--background-color)",
               color: "var(--white-color)",
-              borderRadius: "var(--border-radius-secondary)",
+              borderRadius: "var(--default-border-radius)",
               "&:hover": { background: "var(--vertical-gradient)" },
             }}
           >

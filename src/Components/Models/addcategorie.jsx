@@ -116,9 +116,9 @@ export default function AddCategories({ open, setOpen, Modeltype, Modeldata,onRe
             type="submit"
             variant="contained"
             sx={{
-                background: "var(--horizontal-gradient)",
+                background: "var(--background-color)",
                 color: "var(--white-color)",
-                borderRadius: "var(--border-radius-secondary)",
+                borderRadius: "var(--default-border-radius)",
                 "&:hover": { background: "var(--vertical-gradient)" },
               }}
           >

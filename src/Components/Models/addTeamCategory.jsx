@@ -9,7 +9,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import {createnewTeamCategory } from "../../DAL/create";
-import { updateCategory, updateTeamCategory } from "../../DAL/edit";
+import { updateTeamCategory } from "../../DAL/edit";
 
 
 const style = {
