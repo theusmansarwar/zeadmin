@@ -607,7 +607,8 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                             ) : attr.id === "image" ||
                               attr.id === "thumbnail" ? (
                               tableType === "Testimonial" ||
-                              tableType === "Blogs" ? (
+                              tableType === "Blogs"||
+                              tableType === "Featured Blogs" ? (
                                 row[attr.id] ? (
                                   <img
                                     alt=""

@@ -3,7 +3,7 @@ import { useTable } from "../../Components/Models/useTable";
 
 const FeaturedBlogs = () => {
   const attributes = [
-
+{ id: "thumbnail", label: "Thumbnail" },
     { id: "title", label: "Blog Title" },
     { id: "category.name", label: "Category" },
     { id: "published", label: "Visibility" },
