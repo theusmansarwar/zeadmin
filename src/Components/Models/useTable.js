@@ -23,8 +23,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   fetchallApplication,
   fetchallBloglist,
+  fetchallCaseStudieslist,
   fetchallcategorylist,
   fetchallCommentlist,
+  fetchallIndustrieslist,
   fetchallLeads,
   fetchallservicescategorylist,
   fetchallserviceslist,
@@ -46,9 +48,11 @@ import AddCategories from "./addcategorie";
 import {
   deleteAllApplications,
   deleteAllBlogs,
+  deleteAllCaseStudy,
   deleteAllCategories,
   deleteAllComments,
   deleteAllFeaturedBlogs,
+  deleteAllIndustries,
   deleteAllLeads,
   deleteAllServices,
   deleteAllServicesCategories,
@@ -93,6 +97,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
   const [openUserTypeModal, setOpenUserTypeModal] = useState(false);
   const [openUserModal, setOpenUserModal] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
+  const [openIndustriesModal, setOpenIndustriesModal] = useState(false);
   const [openLeadsModal, setOpenLeadsModal] = useState(false);
   const [modeltype, setModeltype] = useState("Add");
   const [modelData, setModelData] = useState({});
@@ -167,7 +172,25 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setData(response?.userType || []);
       setPage(response.currentPage);
       setTotalRecords(response.totalUserType);
-    } else if (tableType === "Tickets") {
+    } 
+    else if (tableType === "Industries") {
+      response = await fetchallIndustrieslist(page, rowsPerPage);
+      console.log("Response:", response);
+
+      setData(response?.industries || []);
+      setPage(response.currentPage);
+      setTotalRecords(response.totalIndustries);
+    }
+    
+    else if (tableType === "CaseStudies") {
+      response = await fetchallCaseStudieslist(page, rowsPerPage);
+      console.log("Response:", response);
+
+      setData(response?.CaseStudies || []);
+      setPage(response.currentPage);
+      setTotalRecords(response.totalCaseStudies);
+    }
+    else if (tableType === "Tickets") {
       response = await fetchallTickets(page, rowsPerPage);
       console.log("Response:", response);
 
@@ -249,7 +272,13 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
     } else if (tableType === "Services") {
       ///////////////////////////
       navigate(`/edit-service/${category._id}`);
-    } else if (tableType === "UserType") {
+    }
+    else if (tableType === "CaseStudies") {
+      navigate(`/edit-casestudies/${category._id}`);
+    
+    }
+      
+      else if (tableType === "UserType") {
       setModelData(category);
       setModeltype("Update");
       setOpenUserTypeModal(true);
@@ -282,6 +311,8 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setModelData(category);
       setModeltype("Update");
       setOpenTeamCategoryModal(true);
+    }  else if (tableType === "Industries") {
+    navigate(`/edit-industry/${category._id}`);
     } else if (tableType === "Team") {
       navigate(`/edit-team/${category._id}`);
     }
@@ -326,7 +357,12 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       } else if (tableType === "Team") {
         response = await deleteAllTeam({ ids: selected });
       }
-
+else if (tableType === "CaseStudies") {
+        response = await deleteAllCaseStudy({ ids: selected });
+      }
+      else if (tableType === "Industries") {
+        response = await deleteAllIndustries({ ids: selected });
+      }
       if (response.status === 200) {
         showAlert("success", response.message || "Deleted successfully");
         fetchData();
@@ -373,6 +409,12 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setOpenTeamCategoryModal(true);
       setModeltype("Add");
       setModelData();
+    }
+    else if (tableType === "Industries") {
+     navigate("/add-industry");
+    }
+    else if (tableType === "CaseStudies") {
+     navigate("/add-casestudies");
     }
   };
 
@@ -608,7 +650,9 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                               attr.id === "thumbnail" ? (
                               tableType === "Testimonial" ||
                               tableType === "Blogs"||
-                              tableType === "Featured Blogs" ? (
+                              tableType === "Featured Blogs"||
+                              tableType === "Industries"||
+                              tableType === "CaseStudies" ? (
                                 row[attr.id] ? (
                                   <img
                                     alt=""

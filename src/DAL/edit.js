@@ -136,6 +136,24 @@ export const updateuser = async (id, data) => {
   };
   return invokeApi(reqObj);
 };
+export const updateIndustries = async (id, data) => {
+  const reqObj = {
+    path: `/industry/update/${id}`,
+    method: "PUT",
+    headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const updateCaseStudy= async (id, data) => {
+  const reqObj = {
+    path: `/casestudy/update/${id}`,
+    method: "PUT",
+    headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 
 export const updateSubService = async (data) => {
   const reqObj = {

@@ -33,6 +33,28 @@ export const createnewuser = async (data) => {
   };
   return invokeApi(reqObj);
 };
+export const createIndustries = async (data) => {
+  const reqObj = {
+    path: "/industry/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const createCaseStudy = async (data) => {
+  const reqObj = {
+    path: "/casestudy/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 export const createnewTeamCategory = async (data) => {
 
   const reqObj = {

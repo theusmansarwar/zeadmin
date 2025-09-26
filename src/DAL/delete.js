@@ -54,6 +54,33 @@ export const deleteAllTeam = async (data) => {
   
   return invokeApi(reqObj);
 };
+export const deleteAllCaseStudy = async (data) => {
+  const reqObj = {
+    path: `/casestudy/delete`,
+    method: "DELETE", // Ensure correct capitalization
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
+export const deleteAllIndustries = async (data) => {
+  const reqObj = {
+    path: `/industry/delete`,
+    method: "DELETE", // Ensure correct capitalization
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
+
 export const deleteAllTeamCategories = async (data) => {
   const reqObj = {
     path: `/teamcategory/delete`,

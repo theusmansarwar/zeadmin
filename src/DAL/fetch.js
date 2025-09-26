@@ -158,6 +158,54 @@ export const fetchallTickets = async ( page, rowsPerPages) => {
   };
   return invokeApi(reqObj);
 };
+export const fetchallIndustrieslist = async ( page, rowsPerPages) => {
+  const reqObj = {
+    path: `/industry/view?limit=${rowsPerPages}&page=${page}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
+export const fetchallCaseStudieslist = async ( page, rowsPerPages) => {
+  const reqObj = {
+    path: `/casestudy/view?limit=${rowsPerPages}&page=${page}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
+export const fetchcasestudy = async ( id) => {
+  const reqObj = {
+    path: `/casestudy/get/${id}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
+export const fetchindustry = async ( id) => {
+  const reqObj = {
+    path: `/industry/get/${id}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
 export const fetchTicket = async ( id) => {
   const reqObj = {
     path: `/ticket/view/${id}`,

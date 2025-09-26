@@ -29,6 +29,10 @@ import Users from "./Pages/Users/Users";
 import FeaturedBlogs from "./Pages/FeaturedBlogs/FeaturedBlogs";
 import AddServices from "./Pages/Services/AddServices";
 import Services from "./Pages/Services/Services";
+import Industries from "./Pages/Industries/Industries";
+import CaseStudies from "./Pages/CaseStudies/CaseStudies";
+import AddCaseStudies from "./Pages/CaseStudies/AddCaseStudies";
+import AddIndustries from "./Pages/Industries/AddIndustries";
 const App = ({ onLogout, message, userType }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,7 +41,7 @@ const App = ({ onLogout, message, userType }) => {
   const allItems = [
     { id: 1, name: "Dashboard", route: "/dashboard" },
     { id: 2, name: "Leads", route: "/leads" },
-    // { id: 3, name: "Applications", route: "/applications" },
+    { id: 3, name: "Industries", route: "/industries" },
     { id: 4, name: "Blogs", route: "/blogs" },
     { id: 5, name: "Featured Blogs", route: "/blogs/featured" },
     { id: 6, name: "Categories", route: "/categories" },
@@ -46,7 +50,7 @@ const App = ({ onLogout, message, userType }) => {
     { id: 8, name: "Testimonials", route: "/testimonials" },
     { id: 9, name: "Users", route: "/users" },
     { id: 10, name: "UsersType", route: "/usertype" },
-    // { id: 12, name: "Services", route: "/services" },
+    { id: 12, name: "Case Studies", route: "/casestudies" },
      { id: 13, name: "Teams", route: "/teams" },
       { id: 14, name: "Team Categories", route: "/team-categories" },
  
@@ -130,8 +134,14 @@ const App = ({ onLogout, message, userType }) => {
               <Route path="/applications" element={<Applications />} />
                <Route path="/team-categories" element={<TeamCategory />} />
             <Route path="/teams" element={<Team />} />
+             <Route path="/industries" element={<Industries />} />
+             <Route path="/casestudies" element={<CaseStudies />} />
             <Route path="/add-team" element={<AddTeam />} />
             <Route path="/edit-team/:id" element={<AddTeam />} />
+              <Route path="/add-casestudies" element={<AddCaseStudies />} />
+            <Route path="/edit-casestudies/:id" element={<AddCaseStudies />} />
+                 <Route path="/add-industry" element={<AddIndustries />} />
+            <Route path="/edit-industry/:id" element={<AddIndustries />} />
               <Route
                 path="/view-application/:id"
                 element={<ViewApplication />}
