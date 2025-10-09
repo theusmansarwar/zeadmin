@@ -41,47 +41,104 @@ h6 {
   margin: 0%;
 }
 
-.home-digitalaura-logo {
-  width: 80%;
-  margin-top: 20px;
-}
-
-.userprofile {
-  height: 90px;
-  width: 100%;
-  display: flex;
-
-  align-items: center;
-}
-.userprofile .avatar {
-  height: 50px;
-  width: 50px;
-  margin-left: 10px;
-  border-radius: 50%;
-}
-.userprofile .avatar-data {
-  margin-left: 10px;
-}
-.userprofile .avatar-data p {
-  font-size: 12px;
-}
-
 .app-side-bar {
-  width: 15%;
-  height: 100vh;
-
+  width: 17%;
+  height: 94vh;
+  margin: 3vh 1%;
+  position: relative;
   gap: 30px;
-  border-right: 1px solid rgb(217, 217, 217);
+  box-shadow: var(--default-box-shadow);
+  border-radius: var(--default-border-radius);
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: width 0.3s ease; /* ✅ smooth sidebar resize */
 }
+
+.app-side-bar.closed {
+  width: 70px;
+}
+
+
+.app-side-bar .opencloseicon {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  height: 35px;
+  width: 35px;
+  position: absolute;
+  z-index: 10;
+  right: -15px;
+  top: 10vh;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+.app-side-bar.closed .opencloseicon {
+   height: 30px;
+  width: 30px;
+  top: 8vh;
+ transition: height 0.3s ease, width 0.3s ease, top 0.3s ease;
+ 
+}
+.app-side-bar .logo-area{
+width: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+
+
+}
+.app-side-bar.closed .logo-area{
+width: 50px;
+height: 58px;
+margin-top: 20px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 0%;
+border: var(--default-border);
+
+}
+.app-side-bar .logo-area img {
+  width: 60%;
+  margin-top: 20px;
+  transition: opacity 0.3s ease, width 0.3s ease;
+}
+.app-side-bar.closed .logo-area img {
+  width: 40px;
+  margin-top: 0px;
+  transition: opacity 0.3s ease, width 0.3s ease;
+}
+
+.opencloseicon:hover {
+  background-color: var(--shadow-low3);
+  cursor: pointer;
+}
+
+.opencloseicon svg {
+  transition: transform 0.3s ease;
+}
+
+.opencloseicon svg.rotated {
+  transform: rotate(180deg);
+}
+
+
 .app-right {
   width: 81%;
   height: calc(100vh - 60px);
   padding: 30px;
   overflow-y: scroll;
   scrollbar-width: none;
+  transition: width 0.3s ease; 
+}
+
+.app-side-bar.closed ~ .app-right {
+  width: calc(100% - 80px); 
 }
 
 .Dashboard,
@@ -127,21 +184,81 @@ scrollbar-width: none;
 
 } */
 
-.app-side-bar ul {
+.app-side-bar .Parent-ul {
   list-style: none;
   margin: 0%;
   padding: 0%;
   width: 90%;
+  position: relative;
+  height: 100%;
 }
-.unselected {
+.app-side-bar .Parent-ul .Child-ul {
+ background-color: #f3f4f682;
+  margin: 0%;
+  padding: 0%;
+}
+.app-side-bar .Parent-ul li:last-child {
+  position: absolute;
+  bottom: 10px;
+  width:90%;
+  
+}
+.app-side-bar.closed .Parent-ul li:last-child {
+  position: absolute;
+  bottom: 10px;
+  width:38px;
+  
+}
+.app-side-bar .Child-ul li:last-child {
+  position: relative;
+  bottom: 0px;
+  width:90%;
+ 
+  
+}
+.app-side-bar.closed .Child-ul li:last-child {
+  position: relative;
+
+    bottom: 0px;
+}
+.app-side-bar.closed .unselected {
   padding: 10px;
-  color: black;
+  color: rgb(44, 44, 44);
+  display: flex;
+  justify-content: center;
+  margin: 5px 1px;
+  gap: 10px;
+  font-size: 16px;
 }
-.selected-item {
+.app-side-bar.closed .selected-item {
   background: var(--background-color);
   color: var(--text-color);
   border-radius: 4px;
   padding: 10px;
+    display: flex;
+    justify-content: center;
+  margin: 5px 1px;
+  gap: 10px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+.app-side-bar .unselected {
+  padding: 10px;
+  color: rgb(44, 44, 44);
+  display: flex;
+  margin: 1px;
+  gap: 10px;
+  font-size: 16px;
+}
+.app-side-bar .selected-item {
+  background: var(--background-color);
+  color: var(--text-color);
+  border-radius: 4px;
+  padding: 10px;
+    display: flex;
+  margin: 1px;
+  gap: 10px;
+  font-size: 16px;
   transition: background-color 0.3s ease;
 }
 

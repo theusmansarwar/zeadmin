@@ -8,84 +8,80 @@ import {
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf"; // 📄 PDF Icon
 import axios from "axios";
 import { baseUrl } from "../../Config/Config";
 
-const VisuallyHiddenInput = React.forwardRef(
-  ({ onChange, multiple, accept }, ref) => (
-    <input
-      ref={ref}
-      type="file"
-      multiple={multiple}
-      accept={accept}
-      style={{ display: "none" }}
-      onChange={onChange}
-    />
-  )
-);
+const VisuallyHiddenInput = React.forwardRef(({ onChange, accept }, ref) => (
+  <input
+    ref={ref}
+    type="file"
+    accept={accept}
+    style={{ display: "none" }}
+    onChange={onChange}
+  />
+));
 
 const UploadFile = ({
   endpoint = "/upload-image",
   fieldName = "image",
-  multiple = false,
-  accept = "*/*",
+  accept = "image/*,application/pdf",
   onUploadComplete,
-  initialFiles = null, // <-- 🔄 new prop
+  initialFile = null,
+  error = "",
 }) => {
-  const [files, setFiles] = useState([]);
+  const [fileObj, setFileObj] = useState(null);
   const inputRef = useRef(null);
 
-  // 🔄 Load initial files (API data)
+  // Load initial file if exists
   useEffect(() => {
-    if (initialFiles) {
-      const normalized = (Array.isArray(initialFiles) ? initialFiles : [initialFiles])
-        .filter(Boolean)
-        .map((path) => ({
-          file: null,
-          preview: path.startsWith("http") ? path : `${baseUrl}${path}`,
-          progress: 100,
-          uploading: false,
-          speed: "--",
-          eta: "Done",
-          uploadedPath: path,
-        }));
-      setFiles(normalized);
-    }
-  }, [initialFiles]);
+    if (!initialFile || initialFile === "null") return;
 
-  const handleSelectFiles = (event) => {
-    const selectedFiles = Array.from(event.target.files).map((file) => ({
+    const filePath =
+      initialFile.startsWith("http") || initialFile.startsWith("data:")
+        ? initialFile
+        : `${baseUrl}${initialFile}`;
+
+    setFileObj({
+      file: null,
+      preview: filePath,
+      isPDF: filePath.toLowerCase().endsWith(".pdf"),
+      progress: 100,
+      uploading: false,
+      uploadedPath: initialFile,
+      speed: "--",
+      eta: "Done",
+    });
+  }, [initialFile]);
+
+  // Select single file
+  const handleSelectFile = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const isPDF = file.type === "application/pdf";
+
+    setFileObj({
       file,
-      preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : null,
+      preview: isPDF ? null : URL.createObjectURL(file),
+      isPDF,
       progress: 0,
       uploading: false,
+      uploadedPath: null,
       speed: "--",
       eta: "--",
-      uploadedPath: null,
-    }));
-    setFiles(multiple ? (prev) => [...prev, ...selectedFiles] : selectedFiles);
-  };
-
-  const handleRemoveFile = (index) => {
-    setFiles((prev) => {
-      const updated = prev.filter((_, i) => i !== index);
-
-      // 🔄 Update parent when file removed
-      if (onUploadComplete) {
-        if (multiple) {
-          const remainingPaths = updated.map((f) => f.uploadedPath).filter(Boolean);
-          onUploadComplete(remainingPaths);
-        } else {
-          onUploadComplete(""); // empty payload for single
-        }
-      }
-
-      return updated;
     });
   };
 
-  const handleUpload = async (fileObj, index) => {
-    if (!fileObj.file) return; // skip already uploaded initial files
+  // Remove file
+  const handleRemoveFile = () => {
+    setFileObj(null);
+    if (onUploadComplete) onUploadComplete("");
+  };
+
+  // Upload file
+  const handleUpload = async () => {
+    if (!fileObj?.file) return;
 
     const formData = new FormData();
     formData.append(fieldName, fileObj.file);
@@ -94,9 +90,7 @@ const UploadFile = ({
     let lastLoaded = 0;
 
     try {
-      setFiles((prev) =>
-        prev.map((f, i) => (i === index ? { ...f, uploading: true, progress: 0 } : f))
-      );
+      setFileObj((prev) => ({ ...prev, uploading: true, progress: 0 }));
 
       const res = await axios.post(`${baseUrl}${endpoint}`, formData, {
         headers: {
@@ -106,145 +100,148 @@ const UploadFile = ({
         onUploadProgress: (progressEvent) => {
           const { loaded, total } = progressEvent;
           const progress = Math.round((loaded * 100) / total);
-
           const elapsed = (Date.now() - startTime) / 1000;
-          const bytesSinceLast = loaded - lastLoaded;
-          const speed = bytesSinceLast / elapsed;
+          const speed = (loaded - lastLoaded) / elapsed;
           lastLoaded = loaded;
 
           const speedMB = speed / (1024 * 1024);
           const remaining = total - loaded;
           const eta = speed > 0 ? remaining / speed : 0;
 
-          setFiles((prev) =>
-            prev.map((f, i) =>
-              i === index
-                ? {
-                    ...f,
-                    progress,
-                    speed: `${speedMB.toFixed(2)} MB/s`,
-                    eta: `${Math.round(eta)}s left`,
-                  }
-                : f
-            )
-          );
+          setFileObj((prev) => ({
+            ...prev,
+            progress,
+            speed: `${speedMB.toFixed(2)} MB/s`,
+            eta: `${Math.round(eta)}s left`,
+          }));
         },
       });
 
       const uploadedPath = res?.data?.file || "";
 
-      setFiles((prev) =>
-        prev.map((f, i) =>
-          i === index
-            ? {
-                ...f,
-                uploading: false,
-                progress: 100,
-                uploadedPath,
-                speed: "--",
-                eta: "Done",
-              }
-            : f
-        )
-      );
+      setFileObj((prev) => ({
+        ...prev,
+        uploading: false,
+        progress: 100,
+        uploadedPath,
+        speed: "--",
+        eta: "Done",
+      }));
 
-      if (onUploadComplete) {
-        if (multiple) {
-          const allPaths = files
-            .map((f, i) => (i === index ? uploadedPath : f.uploadedPath))
-            .filter(Boolean);
-          onUploadComplete(allPaths);
-        } else {
-          onUploadComplete(uploadedPath);
-        }
-      }
+      if (onUploadComplete) onUploadComplete(uploadedPath);
     } catch (error) {
       console.error("Upload failed:", error);
+      setFileObj((prev) => ({ ...prev, uploading: false }));
     }
   };
 
   return (
     <Box>
-      <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-        Upload files
+      <Button
+        component="label"
+        variant="contained"
+        startIcon={<CloudUploadIcon />}
+        sx={{ backgroundColor: "var(--background-color)" }}
+      >
+        Upload file
         <VisuallyHiddenInput
           ref={inputRef}
-          multiple={multiple}
           accept={accept}
-          onChange={handleSelectFiles}
+          onChange={handleSelectFile}
         />
       </Button>
 
-      <Box mt={2} display="flex" flexWrap="wrap" gap={2}>
-        {files.map((fileObj, index) => (
-          <Box
-            key={index}
-            sx={{
-              width: 180,
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              overflow: "hidden",
-              position: "relative",
-              p: 1,
-            }}
-          >
-            {fileObj.preview ? (
-              <img
-                src={fileObj.preview}
-                alt="preview"
-                style={{
-                  width: "100%",
-                  height: "100px",
-                  objectFit: "cover",
-                  borderRadius: "4px",
-                }}
-              />
-            ) : (
-              <Typography variant="body2" noWrap>
-                {fileObj.file?.name}
-              </Typography>
-            )}
+      {error && (
+        <Typography variant="caption" color="error" display="block" mt={0.5}>
+          {error}
+        </Typography>
+      )}
 
-            <IconButton
-              size="small"
-              sx={{ position: "absolute", top: 4, right: 4, background: "white" }}
-              onClick={() => handleRemoveFile(index)}
+      {fileObj && (
+        <Box
+          sx={{
+            width: 180,
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+            overflow: "hidden",
+            position: "relative",
+            p: 1,
+            mt: 2,
+          }}
+        >
+          {/* ✅ Show image or PDF preview */}
+          {fileObj.isPDF ? (
+            <Box
+              sx={{
+                height: "100px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                bgcolor: "#f5f5f5",
+              }}
             >
-              <CloseIcon fontSize="small" color="error" />
-            </IconButton>
-
-            {fileObj.uploading ? (
-              <Box textAlign="center" mt={1}>
-                <CircularProgress variant="determinate" value={fileObj.progress} />
-                <Typography variant="caption" display="block">
-                  {fileObj.progress}%
-                </Typography>
-                <Typography variant="caption" display="block">
-                  {fileObj.speed} | {fileObj.eta}
-                </Typography>
-              </Box>
-            ) : fileObj.progress === 100 ? (
+              <PictureAsPdfIcon color="error" sx={{ fontSize: 40 }} />
               <Typography
                 variant="caption"
-                display="block"
-                color="success.main"
                 textAlign="center"
+                sx={{ wordBreak: "break-all", mt: 0.5 }}
               >
-                Uploaded
+                {fileObj.file?.name || "PDF File"}
               </Typography>
-            ) : (
-              <Button
-                fullWidth
-                size="small"
-                sx={{ mt: 1 }}
-                onClick={() => handleUpload(fileObj, index)}
-              >
-                Start Upload
-              </Button>
-            )}
-          </Box>
-        ))}
-      </Box>
+            </Box>
+          ) : (
+            <img
+              src={fileObj.preview}
+              alt="preview"
+              style={{
+                width: "100%",
+                height: "100px",
+                objectFit: "cover",
+                borderRadius: "4px",
+              }}
+            />
+          )}
+          <IconButton
+            size="small"
+            sx={{
+              position: "absolute",
+              top: 4,
+              right: 4,
+              background: "white",
+            }}
+            onClick={handleRemoveFile}
+          >
+            <CloseIcon fontSize="small" color="error" />
+          </IconButton>
+
+          {/* ⏳ Uploading / Upload button / Uploaded status */}
+          {fileObj.uploading ? (
+            <Box textAlign="center" mt={1}>
+              <CircularProgress variant="determinate" value={fileObj.progress} />
+              <Typography variant="caption" display="block">
+                {fileObj.progress}%
+              </Typography>
+              <Typography variant="caption" display="block">
+                {fileObj.speed} | {fileObj.eta}
+              </Typography>
+            </Box>
+          ) : fileObj.progress === 100 && fileObj.uploadedPath ? (
+            <Typography
+              variant="caption"
+              display="block"
+              color="success.main"
+              textAlign="center"
+            >
+              Uploaded
+            </Typography>
+          ) : (
+            <Button fullWidth size="small" sx={{ mt: 1 }} onClick={handleUpload}>
+              Start Upload
+            </Button>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Routes,
   Route,
@@ -9,7 +9,6 @@ import {
 import "./App.css";
 import logo from "./Assets/zemaltlogo.svg";
 
-// Pages
 import AddBlog from "./Pages/Blogs/AddBlog";
 import Team from "./Pages/Team/Team";
 import AddTeam from "./Pages/Team/AddTeam";
@@ -25,7 +24,6 @@ import Applications from "./Pages/Applications/Applications";
 import ViewApplication from "./Pages/Applications/ViewApplication";
 import UserType from "./Pages/Users/UserType";
 import Users from "./Pages/Users/Users";
-
 import FeaturedBlogs from "./Pages/FeaturedBlogs/FeaturedBlogs";
 import AddServices from "./Pages/Services/AddServices";
 import Services from "./Pages/Services/Services";
@@ -33,135 +31,284 @@ import Industries from "./Pages/Industries/Industries";
 import CaseStudies from "./Pages/CaseStudies/CaseStudies";
 import AddCaseStudies from "./Pages/CaseStudies/AddCaseStudies";
 import AddIndustries from "./Pages/Industries/AddIndustries";
-const App = ({ onLogout, message, userType }) => {
+import { GrServices } from "react-icons/gr";
+import { FaGears } from "react-icons/fa6";
+import { MdOutlineMiscellaneousServices } from "react-icons/md";
+import {
+  MdBusinessCenter,
+  MdCategory,
+  MdComment,
+  MdDashboard,
+  MdOutlineDoubleArrow,
+  MdOutlineFeaturedPlayList,
+  MdWork,
+  MdArticle,
+} from "react-icons/md";
+import { RiTeamFill, RiTeamLine } from "react-icons/ri";
+import {
+  FaBlog,
+  FaBookOpen,
+  FaQuoteRight,
+  FaUser,
+  FaUserCog,
+  FaUsers,
+  FaUsersCog,
+} from "react-icons/fa";
+import { PiUsersFourFill } from "react-icons/pi";
+import { IoLogOut } from "react-icons/io5";
+import { BsMicrosoftTeams } from "react-icons/bs";
+import { IoIosArrowDown, IoIosArrowForward, IoIosPeople } from "react-icons/io";
+import { SiLibreofficewriter } from "react-icons/si";
+const App = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeitems, setActiveitems] = useState(null);
+  const [isOpen, setIsOpen] = useState(true);
 
-  const allItems = [
-    { id: 1, name: "Dashboard", route: "/dashboard" },
-    { id: 2, name: "Leads", route: "/leads" },
-    { id: 3, name: "Industries", route: "/industries" },
-    { id: 4, name: "Blogs", route: "/blogs" },
-    { id: 5, name: "Featured Blogs", route: "/blogs/featured" },
-    { id: 6, name: "Categories", route: "/categories" },
-   
-    { id: 7, name: "Comments", route: "/comments" },
-    { id: 8, name: "Testimonials", route: "/testimonials" },
-    { id: 9, name: "Users", route: "/users" },
-    { id: 10, name: "UsersType", route: "/usertype" },
-    { id: 12, name: "Case Studies", route: "/casestudies" },
-     { id: 13, name: "Teams", route: "/teams" },
-      { id: 14, name: "Team Categories", route: "/team-categories" },
- 
-  ];
+  const [openDropdown, setOpenDropdown] = useState(null);
 
-  const allowedRoutesForWriter = ["/blogs", "/categories", "/add-blog","/blogs/featured",];
-  const isWriterRouteAllowed = () => {
-    const pathname = location.pathname;
-    return (
-      allowedRoutesForWriter.includes(pathname) ||
-      pathname.startsWith("/edit-blog/") || pathname.startsWith("/edit-featuredblog/")
-
-    );
+  const toggleMenu = () => {
+    setIsOpen((prev) => !prev);
   };
 
-  const filteredItems =
-    userType === "Writer"
-      ? allItems.filter((item) => allowedRoutesForWriter.includes(item.route))
-      : allItems;
+  const handleDropdownToggle = (menu) => {
+    setOpenDropdown(openDropdown === menu ? null : menu);
+  };
+
+  const allItems = [
+    { id: 1, name: "Dashboard", route: "/dashboard", icon: <MdDashboard /> },
+    { id: 2, name: "Leads", route: "/leads", icon: <MdWork /> },
+    {
+      id: 3,
+      name: "Industries",
+      route: "/industries",
+      icon: <MdBusinessCenter />,
+    },
+    {
+      id: 4,
+      name: "Blogs",
+      icon: <FaBlog />,
+      children: [
+        { id: 41, name: "All Blogs", route: "/blogs", icon: <MdArticle /> },
+        {
+          id: 42,
+          name: "Featured Blogs",
+          route: "/blogs/featured",
+          icon: <MdOutlineFeaturedPlayList />,
+        },
+        {
+          id: 43,
+          name: "Categories",
+          route: "/categories",
+          icon: <MdCategory />,
+        },
+        { id: 44, name: "Comments", route: "/comments", icon: <MdComment /> },
+      ],
+    },
+
+    {
+      id: 5,
+      name: "Testimonials",
+      route: "/testimonials",
+      icon: <FaQuoteRight />,
+    },
+    {
+      id: 6,
+      name: "Users",
+      icon: <FaUser />,
+      children: [
+        { id: 61, name: "All Users", route: "/users", icon: <FaUsers /> },
+        { id: 62, name: "User Types", route: "/usertype", icon: <FaUserCog /> },
+      ],
+    },
+    {
+      id: 7,
+      name: "Case Studies",
+      route: "/casestudies",
+      icon: <FaBookOpen />,
+    },
+    {
+      id: 8,
+      name: "Teams",
+      icon: <RiTeamFill />,
+      children: [
+        { id: 81, name: "All Teams", route: "/teams", icon: <IoIosPeople /> },
+        {
+          id: 82,
+          name: "Team Categories",
+          route: "/team-categories",
+          icon: <RiTeamLine />,
+        },
+      ],
+    },
+    {
+      id: 9,
+      name: "Services",
+      icon: <FaGears />,
+      children: [
+        { id: 91, name: "Services", route: "/services", icon: <GrServices /> },
+        {
+          id: 92,
+          name: "Sub Services",
+          route: "/subservices",
+          icon: <MdOutlineMiscellaneousServices />,
+        },
+      ],
+    },
+    {
+      id: 10,
+      name: "Jobs & Applicants",
+      icon: <BsMicrosoftTeams />,
+      children: [
+        {
+          id: 101,
+          name: "Jobs",
+          route: "/jobs",
+          icon: <SiLibreofficewriter />,
+        },
+        {
+          id: 102,
+          name: "Applicants",
+          route: "/applicants",
+          icon: <PiUsersFourFill />,
+        },
+      ],
+    },
+  ];
 
   useEffect(() => {
-    const currentItem = filteredItems.find(
-      (item) => item.route === location.pathname
+    const currentItem = allItems.find(
+      (item) =>
+        item.route === location.pathname ||
+        item.children?.some((child) => child.route === location.pathname)
     );
     setActiveitems(currentItem?.id || null);
-  }, [location.pathname, filteredItems]);
-
-  useEffect(() => {
-    if (userType === "Writer" && !isWriterRouteAllowed()) {
-      navigate("/blogs");
-    }
-  }, [location.pathname, userType, navigate]);
+  }, [location.pathname]);
 
   const handleitemsClick = (item) => {
-    setActiveitems(item.id);
-    navigate(item.route);
+    if (item.children) {
+      setActiveitems(item.id);
+      handleDropdownToggle(item.id);
+    } else {
+      setActiveitems(item.id);
+      handleDropdownToggle(item.id);
+      navigate(item.route);
+    }
+  };
+
+  const handleChildClick = (child) => {
+    navigate(child.route);
   };
 
   return (
     <div className="App">
-      <div className="app-side-bar">
-        <img
-          src={logo}
-          className="home-digitalaura-logo"
-          alt="digitalaura Logo"
-        />
-        <ul>
-          {filteredItems.map((item) => (
-            <li
-              key={item.id}
-              className={
-                activeitems === item.id ? "selected-item" : "unselected"
-              }
-              onClick={() => handleitemsClick(item)}
-            >
-              {item.name}
-            </li>
+      <div className={`app-side-bar ${isOpen ? "open" : "closed"}`}>
+        <div className="opencloseicon" onClick={toggleMenu}>
+          <MdOutlineDoubleArrow className={isOpen ? "rotated" : ""} />
+        </div>
+        <div className="logo-area">
+          <img src={logo} className="logo" alt="Zemalt Logo" />
+        </div>
+        <ul className="Parent-ul">
+          {allItems.map((item) => (
+            <>
+              <li
+                key={item.id}
+                className={
+                  activeitems === item.id ? "selected-item" : "unselected"
+                }
+                onClick={() => handleitemsClick(item)}
+              >
+                {item.icon}
+                {isOpen && (
+                  <span
+                    style={{ display: "flex", alignItems: "center", gap: 5 }}
+                  >
+                    {item.name}
+                    {item.children && (
+                      <>
+                        {openDropdown === item.id ? (
+                          <IoIosArrowDown />
+                        ) : (
+                          <IoIosArrowForward />
+                        )}
+                      </>
+                    )}
+                  </span>
+                )}
+              </li>
+
+              {item.children && openDropdown === item.id && (
+                <ul
+                  className="Child-ul"
+                  style={{
+                    listStyle: "none",
+                  }}
+                >
+                  {item.children.map((child) => (
+                    <li
+                      key={child.id}
+                      className={
+                        location.pathname === child.route
+                          ? "selected-item"
+                          : "unselected"
+                      }
+                      onClick={() => handleChildClick(child)}
+                    >
+                      {child.icon} {isOpen && <span>{child.name}</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
           ))}
+
           <li className="unselected" onClick={onLogout}>
-            Logout
+            <IoLogOut />
+            {isOpen && <span>Logout</span>}
           </li>
         </ul>
       </div>
 
       <div className="app-right">
         <Routes>
-          {/* Writer & Admin routes */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/leads" element={<Leads />} />
+          <Route path="/industries" element={<Industries />} />
+          <Route path="/add-industry" element={<AddIndustries />} />
+          <Route path="/edit-industry/:id" element={<AddIndustries />} />
+
           <Route path="/blogs" element={<Blogs />} />
-          <Route path="/categories" element={<Categories />} />
           <Route path="/add-blog" element={<AddBlog />} />
           <Route path="/edit-blog/:id" element={<AddBlog />} />
-          <Route path="/edit-featuredblog/:id" element={<AddBlog />} />
           <Route path="/blogs/featured" element={<FeaturedBlogs />} />
+          <Route path="/categories" element={<Categories />} />
 
-          {/* Admin-only routes */}
-          {userType !== "Writer" && (
-            <>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/comments" element={<Comments />} />
-              <Route path="/leads" element={<Leads />} />
-              <Route path="/applications" element={<Applications />} />
-               <Route path="/team-categories" element={<TeamCategory />} />
-            <Route path="/teams" element={<Team />} />
-             <Route path="/industries" element={<Industries />} />
-             <Route path="/casestudies" element={<CaseStudies />} />
-            <Route path="/add-team" element={<AddTeam />} />
-            <Route path="/edit-team/:id" element={<AddTeam />} />
-              <Route path="/add-casestudies" element={<AddCaseStudies />} />
-            <Route path="/edit-casestudies/:id" element={<AddCaseStudies />} />
-                 <Route path="/add-industry" element={<AddIndustries />} />
-            <Route path="/edit-industry/:id" element={<AddIndustries />} />
-              <Route
-                path="/view-application/:id"
-                element={<ViewApplication />}
-              />
-              <Route path="/testimonials" element={<Testimonial />} />
-              <Route path="/add-testimonial" element={<AddTestimonial />} />
-              <Route
-                path="/edit-testimonial/:id"
-                element={<AddTestimonial />}
-              />
-              <Route path="/usertype" element={<UserType />} />
-              <Route path="/users" element={<Users />} />
-                <Route path="/services" element={<Services />} />
-              <Route path="/add-service" element={<AddServices />} />
-              <Route path="/edit-service/:id" element={<AddServices />} />
-            </>
-          )}
+          <Route path="/comments" element={<Comments />} />
+          <Route path="/testimonials" element={<Testimonial />} />
+          <Route path="/add-testimonial" element={<AddTestimonial />} />
+          <Route path="/edit-testimonial/:id" element={<AddTestimonial />} />
 
-          {/* Fallback route */}
-          <Route path="*" element={<Navigate to="/blogs" />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/usertype" element={<UserType />} />
+
+          <Route path="/casestudies" element={<CaseStudies />} />
+          <Route path="/add-casestudies" element={<AddCaseStudies />} />
+          <Route path="/edit-casestudies/:id" element={<AddCaseStudies />} />
+
+          <Route path="/teams" element={<Team />} />
+          <Route path="/add-team" element={<AddTeam />} />
+          <Route path="/edit-team/:id" element={<AddTeam />} />
+          <Route path="/team-categories" element={<TeamCategory />} />
+
+          <Route path="/applications" element={<Applications />} />
+          <Route path="/view-application/:id" element={<ViewApplication />} />
+
+          <Route path="/services" element={<Services />} />
+          <Route path="/add-service" element={<AddServices />} />
+          <Route path="/edit-service/:id" element={<AddServices />} />
+
+          <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </div>
     </div>
