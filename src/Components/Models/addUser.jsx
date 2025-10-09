@@ -7,8 +7,16 @@ import {
   TextField,
   Switch,
   FormControlLabel,
+  MenuItem,
+  InputLabel,
+  Select,
+  FormControl,
 } from "@mui/material";
-import { createnewuser, createnewusertype, createTeamMember } from "../../DAL/create";
+import {
+  createnewuser,
+  createnewusertype,
+  createTeamMember,
+} from "../../DAL/create";
 import { updateuser, updateusertype } from "../../DAL/edit";
 import { fetchallUsertypeslist } from "../../DAL/fetch"; // Make sure this function exists
 
@@ -24,15 +32,24 @@ const style = {
   borderRadius: "12px",
 };
 
-export default function AddUser({ open, setOpen, Modeltype, Modeldata, onResponse }) {
+export default function AddUser({
+  open,
+  setOpen,
+  Modeltype,
+  Modeldata,
+  onResponse,
+}) {
   const [name, setName] = React.useState(Modeldata?.name || "");
   const [email, setEmail] = React.useState(Modeldata?.email || "");
   const [password, setPassword] = React.useState("");
-  const [published, setPublished] = React.useState(Modeldata?.published || false);
+  const [published, setPublished] = React.useState(
+    Modeldata?.published || false
+  );
   const [id, setId] = React.useState(Modeldata?._id || "");
 
   const [userTypes, setUserTypes] = React.useState([]);
   const [selectedTypeId, setSelectedTypeId] = React.useState("");
+  const [errors, setErrors] = React.useState({});
 
   React.useEffect(() => {
     setName(Modeldata?.name || "");
@@ -43,13 +60,13 @@ export default function AddUser({ open, setOpen, Modeltype, Modeldata, onRespons
 
     const fetchTypes = async () => {
       const res = await fetchallUsertypeslist();
-   
-        setUserTypes(res.userType);
-     
+
+      setUserTypes(res.userType);
     };
 
     fetchTypes();
-  }, [Modeldata]);
+    setErrors({});
+  }, [Modeldata, open, setOpen]);
 
   const handleClose = () => setOpen(false);
 
@@ -71,12 +88,17 @@ export default function AddUser({ open, setOpen, Modeltype, Modeldata, onRespons
       response = await updateuser(id, usertypeData);
     }
 
-    if (response.status === 201 || response.status === 200) {
+    if (response.status == 201 || response.status == 200) {
       onResponse({ messageType: "success", message: response.message });
-    } else {
-      onResponse({ messageType: "error", message: response.message });
+
+      setOpen(false);
+    } else if (response.missingFields) {
+      const newErrors = {};
+      response.missingFields.forEach((field) => {
+        newErrors[field.name] = field.message;
+      });
+      setErrors(newErrors);
     }
-    setOpen(false);
   };
 
   return (
@@ -93,6 +115,8 @@ export default function AddUser({ open, setOpen, Modeltype, Modeldata, onRespons
           label="Name"
           variant="outlined"
           value={name}
+          error={!!errors.name}
+          helperText={errors.name}
           onChange={(e) => setName(e.target.value)}
         />
 
@@ -103,41 +127,73 @@ export default function AddUser({ open, setOpen, Modeltype, Modeldata, onRespons
           label="Email"
           variant="outlined"
           value={email}
+          error={!!errors.email}
+          helperText={errors.email}
           onChange={(e) => setEmail(e.target.value)}
         />
-{Modeltype === "Add" && (
-        <TextField
-          sx={{ marginTop: "10px", borderRadius: "6px" }}
-          fullWidth
-          required
-          type="password"
-          label="Password"
-          variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-)}
+        {Modeltype === "Add" && (
+          <TextField
+            sx={{ marginTop: "10px", borderRadius: "6px" }}
+            fullWidth
+            required
+            type="password"
+            label="Password"
+            variant="outlined"
+            value={password}
+            error={!!errors.password}
+            helperText={errors.password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        )}
 
-        <select
-          style={{
-            marginTop: "10px",
-            borderRadius: "6px",
-            width: "100%",
-            padding: "15px",
-            borderColor: "#ccc",
-          }}
-          value={selectedTypeId}
-          onChange={(e) => setSelectedTypeId(e.target.value)}
-        >
-          <option value="" disabled>
-            Select User Type
-          </option>
-          {userTypes?.map((type) => (
-            <option key={type._id} value={type._id}>
-              {type.name}
-            </option>
-          ))}
-        </select>
+        <Box sx={{ minWidth: 120, mb: 2 }}>
+          <FormControl
+            fullWidth
+            error={!!errors.userType}
+            variant="outlined"
+            sx={{
+              "& .MuiInputLabel-root": {
+                top: "50%", // vertically center label when closed
+                transform: "translate(14px, -50%) scale(1)",
+              },
+              "& .MuiInputLabel-shrink": {
+                top: 0, // normal behavior when label shrinks
+                transform: "translate(14px, -9px) scale(0.75)",
+              },
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "6px",
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#1976d2", // blue highlight on focus
+                },
+                "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#d32f2f", // red border on error
+                },
+              },
+            }}
+          >
+            <InputLabel id="user-type-select-label">User Type</InputLabel>
+            <Select
+              labelId="user-type-select-label"
+              id="user-type-select"
+              value={selectedTypeId}
+              label="User Type"
+              onChange={(e) => setSelectedTypeId(e.target.value)}
+            >
+              <MenuItem value="">Select User Type</MenuItem>
+              {userTypes?.map((type) => (
+                <MenuItem key={type._id} value={type._id}>
+                  {type.name}
+                </MenuItem>
+              ))}
+            </Select>
+
+            {errors.userType && (
+              <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                {errors.userType}
+              </Typography>
+            )}
+          </FormControl>
+        </Box>
 
         <FormControlLabel
           control={
@@ -173,7 +229,7 @@ export default function AddUser({ open, setOpen, Modeltype, Modeldata, onRespons
             variant="contained"
             sx={{
               background: "var(--background-color)",
-              color: "var(--white-color)",
+              color: "var(--text-color)",
               borderRadius: "var(--default-border-radius)",
               "&:hover": { background: "var(--vertical-gradient)" },
             }}

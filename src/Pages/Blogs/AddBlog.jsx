@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { IoMdCloseCircle } from "react-icons/io";
 import JoditEditor from "jodit-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../Components/Alert/AlertContext";
 import { fetchBlogById, fetchcategorylist } from "../../DAL/fetch";
 import { updateBlog } from "../../DAL/edit";
@@ -32,6 +32,7 @@ const AddBlog = () => {
   const { id } = useParams();
   const { showAlert } = useAlert();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -78,7 +79,8 @@ const AddBlog = () => {
             setMetaDescription(blog.metaDescription || "");
             setSlug(blog.slug || "");
             setCategoryId(blog.category?._id || "");
-            setImage(blog.thumbnail ? baseUrl + blog.thumbnail : "");
+            setImage(blog.thumbnail);
+
             setFaqSchemaText(blog.faqSchema || "{}");
             setIsFeatured(blog?.featured);
             setIsVisible(blog?.published);
@@ -105,8 +107,6 @@ const AddBlog = () => {
     };
     fetchCategories();
   }, []);
-
-  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -137,8 +137,7 @@ const AddBlog = () => {
     formData.append("featured", isFeatured);
     formData.append("faqSchema", faqSchemaText);
     formData.append("author", author || newauthor);
-    formData.append("thumbnail",image);
-    
+    formData.append("thumbnail", image ? image.replace(baseUrl, "") : "");
 
     try {
       const response = id
@@ -147,13 +146,19 @@ const AddBlog = () => {
 
       if (response.status == 200 || response.status == 201) {
         showAlert("success", response.message);
-        navigate("/blogs");
+        if (location.pathname.includes("featured")) {
+          navigate("/blogs/featured");
+        } else {
+          navigate("/blogs");
+        }
       } else if (response.missingFields) {
         const newErrors = {};
         response.missingFields.forEach((field) => {
           newErrors[field.name] = field.message;
         });
         setErrors(newErrors);
+      } else {
+        showAlert("error", response.message);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -216,21 +221,14 @@ const AddBlog = () => {
           sx={{ mb: 2 }}
         />
 
-        <Typography
-          variant="h5"
-          sx={{
-            color: "var(--background-color)",
-            marginTop: "20px",
-            marginBottom: "20px",
-          }}
-        >
-          {" "}
-          Blog Thumbnail
+        <Typography variant="h6" mt={3} mb={1}>
+          Upload Thumbnail
         </Typography>
         <UploadFile
           multiple={false}
           accept="image/*"
-          initialFiles={image}
+          initialFile={image}
+          error={errors.thumbnail}
           onUploadComplete={(path) => setImage(path)}
         />
         <TextField
@@ -240,7 +238,7 @@ const AddBlog = () => {
           onChange={(e) => setSlug(e.target.value)}
           error={!!errors.slug}
           helperText={errors.slug}
-          sx={{ mb: 2 }}
+          sx={{ mb: 2, mt: 4 }}
         />
         <Box sx={{ minWidth: 120, mb: 2 }}>
           <FormControl fullWidth error={!!errors.category}>
@@ -325,9 +323,9 @@ const AddBlog = () => {
             disabled={loading}
             sx={{
               background: "var(--background-color)",
-              color: "var(--white-color)",
+              color: "var(--text-color)",
               borderRadius: "var(--default-border-radius)",
-              "&:hover": { background: "var(--vertical-gradient)" },
+              "&:hover": { background: "var(--background-color)" },
             }}
           >
             {loading ? "Saving..." : id ? "Update Blog" : "Save"}

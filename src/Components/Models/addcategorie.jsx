@@ -11,7 +11,6 @@ import {
 import { createnewCategory } from "../../DAL/create";
 import { updateCategory } from "../../DAL/edit";
 
-
 const style = {
   position: "absolute",
   top: "50%",
@@ -24,44 +23,55 @@ const style = {
   borderRadius: "12px",
 };
 
-export default function AddCategories({ open, setOpen, Modeltype, Modeldata,onResponse  }) {
+export default function AddCategories({
+  open,
+  setOpen,
+  Modeltype,
+  Modeldata,
+  onResponse,
+}) {
   const [name, setName] = React.useState(Modeldata?.name || "");
-  const [published, setPublished] = React.useState(Modeldata?.published || false);
+  const [published, setPublished] = React.useState(
+    Modeldata?.published || false
+  );
   const [id, setId] = React.useState(Modeldata?._id || "");
+  const [errors, setErrors] = React.useState({});
 
   React.useEffect(() => {
     setName(Modeldata?.name || "");
     setPublished(Modeldata?.published || false);
     setId(Modeldata?._id || "");
-  }, [Modeldata]);
+    setErrors({});
+  }, [Modeldata, open, setOpen]);
 
   const handleClose = () => setOpen(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const categoryData = {
-        name: name,
-        published: published,
-      };
-  let response;
+      name: name,
+      published: published,
+    };
+    let response;
     if (Modeltype === "Add") {
-      response =await createnewCategory(categoryData); // Send FormData
-    }else{
-        response =await updateCategory(id,categoryData); 
+      response = await createnewCategory(categoryData); // Send FormData
+      setName("");
+    } else {
+      response = await updateCategory(id, categoryData);
     }
-    if(response.status==201){
-        onResponse({ messageType: "success", message: response.message });
+    if (response.status == 201 || response.status == 200) {
+      onResponse({ messageType: "success", message: response.message });
+
+      setOpen(false);
+    } else if (response.missingFields) {
+      const newErrors = {};
+      response.missingFields.forEach((field) => {
+        newErrors[field.name] = field.message;
+      });
+      setErrors(newErrors);
     }
-    else if(response.status==200){
-        onResponse({ messageType: "success", message: response.message });
-    }
-  else{
-    onResponse({ messageType: "error", message: response.message });
-  }
-    setOpen(false);
   };
-  
 
   return (
     <Modal
@@ -82,6 +92,8 @@ export default function AddCategories({ open, setOpen, Modeltype, Modeldata,onRe
           variant="outlined"
           name="name"
           value={name}
+          error={!!errors.name}
+          helperText={errors.name}
           onChange={(e) => setName(e.target.value)}
         />
         <FormControlLabel
@@ -116,11 +128,11 @@ export default function AddCategories({ open, setOpen, Modeltype, Modeldata,onRe
             type="submit"
             variant="contained"
             sx={{
-                background: "var(--background-color)",
-                color: "var(--white-color)",
-                borderRadius: "var(--default-border-radius)",
-                "&:hover": { background: "var(--vertical-gradient)" },
-              }}
+              background: "var(--background-color)",
+              color: "var(--text-color)",
+              borderRadius: "var(--default-border-radius)",
+              "&:hover": { background: "var(--vertical-gradient)" },
+            }}
           >
             Submit
           </Button>

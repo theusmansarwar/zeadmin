@@ -8,7 +8,7 @@ import {
   Switch,
   FormControlLabel,
 } from "@mui/material";
-import {  createNewSuccessStory } from "../../DAL/create";
+import { createNewSuccessStory } from "../../DAL/create";
 import { updateSuccessStories } from "../../DAL/edit";
 
 const style = {
@@ -29,7 +29,7 @@ export default function SuccessStories({
   Modeltype,
   Modeldata,
   onResponse,
-  serviceid
+  serviceid,
 }) {
   const [name, setName] = React.useState(Modeldata?.name || "");
   const [itemsText, setItemsText] = React.useState(
@@ -144,7 +144,7 @@ export default function SuccessStories({
             variant="contained"
             sx={{
               background: "var(--background-color)",
-              color: "var(--white-color)",
+              color: "var(--text-color)",
               borderRadius: "var(--default-border-radius)",
               "&:hover": { background: "var(--vertical-gradient)" },
             }}

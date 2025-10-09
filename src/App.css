@@ -93,7 +93,7 @@ justify-content: center;
 }
 .app-side-bar.closed .logo-area{
 width: 50px;
-height: 58px;
+height: 50px;
 margin-top: 20px;
 border-radius: 50%;
 display: flex;
@@ -190,14 +190,22 @@ scrollbar-width: none;
   padding: 0%;
   width: 90%;
   position: relative;
-  height: 100%;
+  height: calc(100% - 75px);
+  overflow-y: auto;
+  scrollbar-width: none;
+
 }
+.app-side-bar .Parent-ul li span {
+   display: flex;
+   align-items: center;
+   gap: 5px;
+  }
 .app-side-bar .Parent-ul .Child-ul {
  background-color: #f3f4f682;
   margin: 0%;
   padding: 0%;
 }
-.app-side-bar .Parent-ul li:last-child {
+/* .app-side-bar .Parent-ul li:last-child {
   position: absolute;
   bottom: 10px;
   width:90%;
@@ -220,7 +228,7 @@ scrollbar-width: none;
   position: relative;
 
     bottom: 0px;
-}
+} */
 .app-side-bar.closed .unselected {
   padding: 10px;
   color: rgb(44, 44, 44);
@@ -301,19 +309,31 @@ scrollbar-width: none;
   }
 }
 
-@media screen and (max-width: 820px) {
+@media screen and (max-width: 900px) {
   .app-side-bar {
-    width: 10%;
-    height: 100vh;
+    width: 70px;
+    height: 94vh;
     border-right: 1px solid rgb(217, 217, 217);
-    display: flex;
     flex-direction: column;
     align-items: center;
   }
+
+  .app-side-bar .opencloseicon {
+    display: none;
+  }
+
+  .app-side-bar .Parent-ul li span {
+    display: none;
+  }
+
+  .app-side-bar .Parent-ul li {
+    justify-content: center;
+  }
+
   .app-right {
-    width: 90%;
+    width: calc(100% - 70px);
     height: 100vh;
-    padding: 0vh 0px;
+    padding: 0;
     overflow-y: scroll;
     scrollbar-width: none;
   }

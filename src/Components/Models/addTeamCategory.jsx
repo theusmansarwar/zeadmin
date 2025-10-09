@@ -8,9 +8,8 @@ import {
   Switch,
   FormControlLabel,
 } from "@mui/material";
-import {createnewTeamCategory } from "../../DAL/create";
+import { createnewTeamCategory } from "../../DAL/create";
 import { updateTeamCategory } from "../../DAL/edit";
-
 
 const style = {
   position: "absolute",
@@ -24,9 +23,17 @@ const style = {
   borderRadius: "12px",
 };
 
-export default function AddTeamCategories({ open, setOpen, Modeltype, Modeldata,onResponse  }) {
+export default function AddTeamCategories({
+  open,
+  setOpen,
+  Modeltype,
+  Modeldata,
+  onResponse,
+}) {
   const [name, setName] = React.useState(Modeldata?.name || "");
-  const [published, setPublished] = React.useState(Modeldata?.published || false);
+  const [published, setPublished] = React.useState(
+    Modeldata?.published || false
+  );
   const [id, setId] = React.useState(Modeldata?._id || "");
 
   React.useEffect(() => {
@@ -39,30 +46,26 @@ export default function AddTeamCategories({ open, setOpen, Modeltype, Modeldata,
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const categoryData = {
-        name: name,
-        published: published,
-      };
-  let response;
+      name: name,
+      published: published,
+    };
+    let response;
     if (Modeltype === "Add") {
-      response =await createnewTeamCategory(categoryData); 
-      
-    }else{
-        response =await updateTeamCategory(id,categoryData); 
+      response = await createnewTeamCategory(categoryData);
+    } else {
+      response = await updateTeamCategory(id, categoryData);
     }
-    if(response.status==201){
-        onResponse({ messageType: "success", message: response.message });
+    if (response.status == 201) {
+      onResponse({ messageType: "success", message: response.message });
+    } else if (response.status == 200) {
+      onResponse({ messageType: "success", message: response.message });
+    } else {
+      onResponse({ messageType: "error", message: response.message });
     }
-    else if(response.status==200){
-        onResponse({ messageType: "success", message: response.message });
-    }
-  else{
-    onResponse({ messageType: "error", message: response.message });
-  }
     setOpen(false);
   };
-  
 
   return (
     <Modal
@@ -117,11 +120,11 @@ export default function AddTeamCategories({ open, setOpen, Modeltype, Modeldata,
             type="submit"
             variant="contained"
             sx={{
-                background: "var(--horizontal-gradient)",
-                color: "var(--white-color)",
-                borderRadius: "var(--border-radius-secondary)",
-                "&:hover": { background: "var(--vertical-gradient)" },
-              }}
+              background: "var(--horizontal-gradient)",
+              color: "var(--text-color)",
+              borderRadius: "var(--border-radius-secondary)",
+              "&:hover": { background: "var(--vertical-gradient)" },
+            }}
           >
             Submit
           </Button>

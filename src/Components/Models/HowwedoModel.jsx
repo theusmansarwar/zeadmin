@@ -38,7 +38,9 @@ export default function Howwedos({
   const [description, setDescription] = React.useState(
     Modeldata?.description || ""
   );
-   const [howwedo_cta, setHowwedo_cta] = React.useState(Modeldata?.howwedo_cta||"");
+  const [howwedo_cta, setHowwedo_cta] = React.useState(
+    Modeldata?.howwedo_cta || ""
+  );
   const [itemsText, setItemsText] = React.useState(
     Modeldata?.items ? Modeldata.items.join("\n") : ""
   );
@@ -50,7 +52,7 @@ export default function Howwedos({
     setName(Modeldata?.name || "");
     setDescription(Modeldata?.description || "");
     setItemsText(Modeldata?.items ? Modeldata.items.join("\n") : "");
-setHowwedo_cta(Modeldata?.howwedo_cta || "")
+    setHowwedo_cta(Modeldata?.howwedo_cta || "");
     setId(Modeldata?._id || "");
     setPreview(Modeldata?.image);
   }, [Modeldata]);
@@ -143,7 +145,7 @@ setHowwedo_cta(Modeldata?.howwedo_cta || "")
           onChange={(e) => setItemsText(e.target.value)}
         />
 
-<TextField
+        <TextField
           sx={{ marginTop: "10px" }}
           fullWidth
           required
@@ -203,7 +205,7 @@ setHowwedo_cta(Modeldata?.howwedo_cta || "")
             variant="contained"
             sx={{
               background: "var(--background-color)",
-              color: "var(--white-color)",
+              color: "var(--text-color)",
               borderRadius: "var(--default-border-radius)",
               "&:hover": { background: "var(--vertical-gradient)" },
             }}

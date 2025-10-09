@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  Modal,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Typography, Modal, TextField } from "@mui/material";
 import { createNewWhyService } from "../../DAL/create";
 import { updateWhyNewService } from "../../DAL/edit";
 
@@ -122,7 +116,7 @@ export default function WhyServiceModel({
             variant="contained"
             sx={{
               background: "var(--background-color)",
-              color: "var(--white-color)",
+              color: "var(--text-color)",
               borderRadius: "var(--default-border-radius)",
               "&:hover": { background: "var(--vertical-gradient)" },
             }}

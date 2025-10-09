@@ -59,6 +59,7 @@ import { IoLogOut } from "react-icons/io5";
 import { BsMicrosoftTeams } from "react-icons/bs";
 import { IoIosArrowDown, IoIosArrowForward, IoIosPeople } from "react-icons/io";
 import { SiLibreofficewriter } from "react-icons/si";
+import { Tooltip } from "@mui/material";
 const App = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -212,31 +213,32 @@ const App = ({ onLogout }) => {
         <ul className="Parent-ul">
           {allItems.map((item) => (
             <>
-              <li
-                key={item.id}
-                className={
-                  activeitems === item.id ? "selected-item" : "unselected"
-                }
-                onClick={() => handleitemsClick(item)}
-              >
-                {item.icon}
-                {isOpen && (
-                  <span
-                    style={{ display: "flex", alignItems: "center", gap: 5 }}
-                  >
-                    {item.name}
-                    {item.children && (
-                      <>
-                        {openDropdown === item.id ? (
-                          <IoIosArrowDown />
-                        ) : (
-                          <IoIosArrowForward />
-                        )}
-                      </>
-                    )}
-                  </span>
-                )}
-              </li>
+              <Tooltip title={!isOpen ? item.name : ""} placement="right" arrow>
+                <li
+                  key={item.id}
+                  className={
+                    activeitems === item.id ? "selected-item" : "unselected"
+                  }
+                  onClick={() => handleitemsClick(item)}
+                  style={{ display: "flex", alignItems: "center", gap: 10 }}
+                >
+                  {item.icon}
+                  {isOpen && (
+                    <span>
+                      {item.name}
+                      {item.children && (
+                        <>
+                          {openDropdown === item.id ? (
+                            <IoIosArrowDown />
+                          ) : (
+                            <IoIosArrowForward />
+                          )}
+                        </>
+                      )}
+                    </span>
+                  )}
+                </li>
+              </Tooltip>
 
               {item.children && openDropdown === item.id && (
                 <ul
@@ -246,27 +248,41 @@ const App = ({ onLogout }) => {
                   }}
                 >
                   {item.children.map((child) => (
-                    <li
-                      key={child.id}
-                      className={
-                        location.pathname === child.route
-                          ? "selected-item"
-                          : "unselected"
-                      }
-                      onClick={() => handleChildClick(child)}
+                    <Tooltip
+                      title={!isOpen ? child.name : ""}
+                      placement="right"
+                      arrow
                     >
-                      {child.icon} {isOpen && <span>{child.name}</span>}
-                    </li>
+                      <li
+                        key={child.id}
+                        className={
+                          location.pathname === child.route
+                            ? "selected-item"
+                            : "unselected"
+                        }
+                        onClick={() => handleChildClick(child)}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                        }}
+                      >
+                        {child.icon}
+                        {isOpen && <span>{child.name}</span>}
+                      </li>
+                    </Tooltip>
                   ))}
                 </ul>
               )}
             </>
           ))}
 
-          <li className="unselected" onClick={onLogout}>
-            <IoLogOut />
-            {isOpen && <span>Logout</span>}
-          </li>
+          <Tooltip title={!isOpen ? "Logout" : ""} placement="right" arrow>
+            <li className="unselected" onClick={onLogout}>
+              <IoLogOut />
+              {isOpen && <span>Logout</span>}
+            </li>
+          </Tooltip>
         </ul>
       </div>
 
@@ -282,6 +298,7 @@ const App = ({ onLogout }) => {
           <Route path="/add-blog" element={<AddBlog />} />
           <Route path="/edit-blog/:id" element={<AddBlog />} />
           <Route path="/blogs/featured" element={<FeaturedBlogs />} />
+          <Route path="/edit-featuredblog/:id" element={<AddBlog />} />
           <Route path="/categories" element={<Categories />} />
 
           <Route path="/comments" element={<Comments />} />

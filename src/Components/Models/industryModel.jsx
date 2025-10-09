@@ -25,7 +25,13 @@ const style = {
   borderRadius: "12px",
 };
 
-export default function IndustryModel({ open, setOpen, Modeltype, Modeldata, onResponse }) {
+export default function IndustryModel({
+  open,
+  setOpen,
+  Modeltype,
+  Modeldata,
+  onResponse,
+}) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
@@ -150,7 +156,7 @@ export default function IndustryModel({ open, setOpen, Modeltype, Modeldata, onR
             variant="contained"
             sx={{
               background: "var(--background-color)",
-              color: "var(--white-color)",
+              color: "var(--text-color)",
               borderRadius: "var(--default-border-radius)",
               "&:hover": { background: "var(--vertical-gradient)" },
             }}

@@ -61,7 +61,7 @@ const AddTestimonial = () => {
     setErrors({});
 
     const formData = {
-      image: singlePath || image,
+      image: image,
       whatwedid,
       clientsays,
       rating,
@@ -106,21 +106,15 @@ const AddTestimonial = () => {
         {id ? "Edit Testimonial" : "Add Testimonial"}
       </Typography>
 
-      <Typography
-        variant="h5"
-        sx={{
-          color: "var(--background-color)",
-          marginTop: "20px",
-          marginBottom: "20px",
-        }}
-      >
-        Company Logo
+      <Typography variant="h6" mt={3} mb={1}>
+        Upload Image
       </Typography>
       <UploadFile
         multiple={false}
         accept="image/*"
-        initialFiles={image}
-        onUploadComplete={(path) => setSinglePath(path)}
+        initialFile={image}
+        error={errors.image}
+        onUploadComplete={(path) => setImage(path)}
       />
 
       {/* What We Did */}
@@ -160,7 +154,9 @@ const AddTestimonial = () => {
             </MenuItem>
           ))}
         </Select>
-        {errors.rating && <Typography color="error">{errors.rating}</Typography>}
+        {errors.rating && (
+          <Typography color="error">{errors.rating}</Typography>
+        )}
       </FormControl>
 
       {/* Boost */}

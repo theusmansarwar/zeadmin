@@ -30,10 +30,22 @@ export default function DeleteModal({ open, setOpen, onConfirm }) {
           Confirm Delete?
         </Typography>
         <Typography>
-          Are you sure you want to delete this item? This action cannot be undone.
+          Are you sure you want to delete this item? This action cannot be
+          undone.
         </Typography>
-        <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end", marginTop: "15px" }}>
-          <Button variant="contained" sx={{ backgroundColor: "#B1B1B1" }} onClick={handleClose}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            justifyContent: "flex-end",
+            marginTop: "15px",
+          }}
+        >
+          <Button
+            variant="contained"
+            sx={{ backgroundColor: "#B1B1B1" }}
+            onClick={handleClose}
+          >
             Cancel
           </Button>
           <Button
@@ -41,7 +53,7 @@ export default function DeleteModal({ open, setOpen, onConfirm }) {
             variant="contained"
             sx={{
               background: "var(--warning-color)",
-              color: "var(--white-color)",
+              color: "var(--text-color)",
               "&:hover": { background: "var(--warning-color)" },
             }}
           >

@@ -23,7 +23,7 @@ const AddIndustries = () => {
   // ✅ Separate states
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
- 
+
   const [image, setImage] = useState("");
   const [published, setPublished] = useState(false);
 
@@ -32,29 +32,27 @@ const AddIndustries = () => {
 
   // Load case study data in edit mode
   useEffect(() => {
- const fetchCaseStudy = async () =>{
-
- 
-
-     const response = await fetchindustry(id);
-     const data=response.industry;
+    if (id) {
+      const fetchCaseStudy = async () => {
+        const response = await fetchindustry(id);
+        const data = response.industry;
         setName(data?.name || "");
         setDescription(data?.description || "");
-     
+
         setImage(data?.image || "");
         setPublished(data?.published || false);
-     }
-  fetchCaseStudy();
+      };
+      fetchCaseStudy();
+    }
   }, [isEdit, id]);
 
   const handleSubmit = async () => {
-    const payload = { name, description,  image, published };
+    const payload = { name, description, image, published };
 
     try {
       let response;
       if (isEdit) {
         response = await updateIndustries(id, payload);
-        
       } else {
         response = await createIndustries(payload);
       }
@@ -96,13 +94,11 @@ const AddIndustries = () => {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         margin="normal"
-           multiline
+        multiline
         rows={3}
         error={!!errors.description}
         helperText={errors.description}
       />
-
-      
 
       <Typography variant="h6" mt={3} mb={1}>
         Upload Image
@@ -110,14 +106,10 @@ const AddIndustries = () => {
       <UploadFile
         multiple={false}
         accept="image/*"
-        initialFiles={image}
+        initialFile={image}
+        error={errors.image}
         onUploadComplete={(path) => setImage(path)}
       />
-      {errors.image && (
-        <Typography color="error" variant="body2">
-          {errors.image}
-        </Typography>
-      )}
 
       <FormControlLabel
         control={
@@ -134,7 +126,16 @@ const AddIndustries = () => {
         <Button onClick={() => navigate("/industries")} variant="outlined">
           Cancel
         </Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          sx={{
+              background: "var(--background-color)",
+              color: "var(--text-color)",
+              borderRadius: "var(--default-border-radius)",
+              "&:hover": { background: "var(--background-color)" },
+            }}
+        >
           {isEdit ? "Update" : "Add"}
         </Button>
       </Box>

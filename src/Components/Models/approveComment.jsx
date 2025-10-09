@@ -110,9 +110,9 @@ export default function ApproveComment({ open, setOpen, Modeldata, onResponse })
             variant="contained"
             sx={{
               background: "var(--background-color)",
-              color: "var(--white-color)",
+              color: "var(--text-color)",
               borderRadius: "var(--default-border-radius)",
-              "&:hover": { background: "var(--vertical-gradient)" },
+              "&:hover": { background: "var(--background-color)" },
             }}
           >
             Update
