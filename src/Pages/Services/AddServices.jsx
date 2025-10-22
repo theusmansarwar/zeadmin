@@ -2,13 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../Components/Alert/AlertContext";
 import { fetchservicebyid } from "../../DAL/fetch";
-import { createNewService, uploadimage } from "../../DAL/create";
+import { createNewService } from "../../DAL/create";
 import { updateService } from "../../DAL/edit";
 import { FaCircleInfo } from "react-icons/fa6";
 import { BsInfoCircle } from "react-icons/bs";
-import howwedelivered from "../../Assets/howwedelivered.png";
 import faqssectionimg from "../../Assets/Faqssection.png";
-import portfoliosectionimg from "../../Assets/portfolioimg.png";
 import serviceiconimg from "../../Assets/serviceiconimg.png";
 import {
   Box,
@@ -18,11 +16,8 @@ import {
   Switch,
   FormControlLabel,
 } from "@mui/material";
-import { IoMdCloseCircle } from "react-icons/io";
-import { FaCloudUploadAlt } from "react-icons/fa";
 import { baseUrl } from "../../Config/Config";
 import { useTable1 } from "../../Components/Models/useTable1";
-import { useTable2 } from "../../Components/Models/useTable2";
 import { useTable3 } from "../../Components/Models/useTable3";
 import InfoModal from "../../Components/Models/InfoModal";
 import InfoImageModel from "../../Components/Models/InfoImageModal";
@@ -42,12 +37,10 @@ const AddServices = () => {
   const [metaDescription, setMetaDescription] = useState("");
   const [slug, setSlug] = useState("");
   const [short_description, setShortDescription] = useState("");
-  const [detail, setDetail] = useState("");
   const [isVisible, setIsVisible] = useState(true);
   const [icon, setIcon] = useState(null);
   const [iconPreview, setIconPreview] = useState(null);
 
-  const iconInputRef = useRef(null);
   const [subServices, setSubServices] = useState({
     title: "",
     description: "",
@@ -63,7 +56,7 @@ const AddServices = () => {
   const [portfolio, setPortfolio] = useState({
     published: false,
   });
-  const [howWeDelivered, setHowWeDelivered] = useState({
+  const [imageSection, setImageSection] = useState({
     title: "",
     image: null,
     published: false,
@@ -76,11 +69,7 @@ const AddServices = () => {
     published: false,
   });
 
-  const fileInputRef = useRef(null);
-
   // Upload states
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
   // Misc
@@ -96,54 +85,56 @@ const AddServices = () => {
         const response = await fetchservicebyid(id);
         if (response.status === 200) {
           const service = response.service;
+
           setTitle(service.title || "");
           setDescription(service.description || "");
           setMetaDescription(service.metaDescription || "");
           setSlug(service.slug || "");
           setShortDescription(service.short_description || "");
-          setDetail(service.detail || "");
           setIsVisible(service.published || false);
-          setIcon(service?.icon || "");
+          setIcon(service.icon || "");
 
-          setFaqs(
-            service.faqs || { title: "", description: "", published: false }
-          );
-          setPortfolio(
-            service.portfolio || {
-              title: "",
-              description: "",
-              published: false,
-            }
-          );
-
-          // ✅ Load existing image
-          if (service.how_we_delivered?.image) {
-            setIconPreview(baseUrl + service.how_we_delivered.image);
-            setHowWeDelivered(service.how_we_delivered);
-            setUploadSuccess(true);
-          } else {
-            setHowWeDelivered({
-              title: "",
-              image: null,
-              published: false,
+          // ✅ FAQs
+          if (service.faqs) {
+            setFaqs({
+              title: service.faqs.title || "",
+              description: service.faqs.description || "",
+              published: service.faqs.published || false,
             });
           }
 
-          if (service?.icon) {
+          // ✅ Sub Services (capital S)
+          if (service.subServices) {
+            setSubServices({
+              title: service.subServices.title || "",
+              description: service.subServices.description || "",
+              published: service.subServices.published || false,
+              items: service.subServices.items || [],
+            });
+          }
+
+          // ✅ Image Section
+          if (service.imageSection) {
+            setImageSection({
+              title: service.imageSection.title || "",
+              image: service.imageSection.image || null,
+              published: service.imageSection.published || false,
+            });
+          }
+
+          // ✅ Last Section (capital S)
+          if (service.lastSection) {
+            setLastSection({
+              title: service.lastSection.title || "",
+              description: service.lastSection.description || "",
+              image: service.lastSection.image || null,
+              published: service.lastSection.published || false,
+            });
+          }
+
+          // ✅ Icon Preview
+          if (service.icon) {
             setIconPreview(baseUrl + service.icon);
-          }
-          // ✅ Load existing image
-          if (service.lastsection?.image) {
-            setIconPreview(baseUrl + service.lastsection.image);
-            setLastSection(service.lastsection);
-            setUploadSuccess(true);
-          } else {
-            setHowWeDelivered({
-              title: "",
-              description: "",
-              image: null,
-              published: false,
-            });
           }
         }
       } catch (error) {
@@ -153,7 +144,6 @@ const AddServices = () => {
 
     fetchService();
   }, [id]);
-
 
   // --- Submit handler ---
   const handleSubmit = async (event) => {
@@ -177,11 +167,9 @@ const AddServices = () => {
         formData.append("icon", iconPreview.replace(baseUrl, ""));
       }
 
-      formData.append("detail", detail);
       formData.append("published", isVisible);
-      // sub sevices
       formData.append(
-        "subservices",
+        "subServices",
         JSON.stringify({
           title: subServices.title,
           description: subServices.description,
@@ -190,7 +178,6 @@ const AddServices = () => {
         })
       );
 
-      // FAQs
       formData.append(
         "faqs",
         JSON.stringify({
@@ -200,28 +187,20 @@ const AddServices = () => {
         })
       );
 
-      // How We Delivered
       formData.append(
-        "how_we_delivered",
+        "imageSection",
         JSON.stringify({
-          title: howWeDelivered.title,
-          image: howWeDelivered.image,
-          published: howWeDelivered.published,
+          title: imageSection.title,
+          image: imageSection.image,
+          published: imageSection.published,
         })
       );
 
-      // portfolio
-      formData.append("portfolio_published", portfolio.published);
-      // If you are sending file upload
-      if (howWeDelivered.file) {
-        formData.append("file", howWeDelivered.file);
-      }
-
-      // Last Section
       formData.append(
-        "lastsection",
+        "lastSection",
         JSON.stringify({
           title: lastSection.title,
+          description: lastSection.description,
           image: lastSection.image,
           published: lastSection.published,
         })
@@ -267,17 +246,7 @@ const AddServices = () => {
     tableType: "FAQs",
     data: faqs?.items || [],
   });
-  const attributes2 = [
-    { id: "title", label: "Title" },
-    { id: "description", label: "Description" },
-    { id: "published", label: "Visibility" },
-  ];
 
-  const { tableUI2 } = useTable2({
-    attributes2,
-    tableType: "Portfolio",
-    data: portfolio?.items || [],
-  });
   const attributes3 = [
     { id: "title", label: "Sub Service Title" },
     { id: "description", label: "Description" },
@@ -422,12 +391,6 @@ const AddServices = () => {
                 sx={{ color: "var(--background-color)" }}
               >
                 Sub Services Section{" "}
-                <BsInfoCircle
-                  style={{ fontSize: "16px" }}
-                  onClick={() => {
-                    openinfobox("Sub Services Section", portfoliosectionimg);
-                  }}
-                />
               </Typography>
               <FormControlLabel
                 control={
@@ -467,7 +430,7 @@ const AddServices = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("How We Delivered Section", howwedelivered);
+                    openinfobox("Image Section", imageSection);
                   }}
                 />
               </Typography>
@@ -476,15 +439,15 @@ const AddServices = () => {
                 label="Image Section Title"
                 multiline
                 rows={1}
-                value={howWeDelivered.title}
+                value={imageSection.title}
                 onChange={(e) =>
-                  setHowWeDelivered({
-                    ...howWeDelivered,
+                  setImageSection({
+                    ...imageSection,
                     title: e.target.value,
                   })
                 }
-                error={!!errors["how_we_delivered.title"]}
-                helperText={errors["how_we_delivered.title"]}
+                error={!!errors["imageSection.title"]}
+                helperText={errors["imageSection.title"]}
               />
               <Typography
                 variant="h6"
@@ -496,24 +459,27 @@ const AddServices = () => {
               <UploadFile
                 multiple={false}
                 accept="image/*"
-                initialFile={icon}
-                error={errors.icon}
-                onUploadComplete={(path) => setIcon(path)}
+                initialFile={
+                  imageSection.image ? baseUrl + imageSection.image : null
+                }
+                onUploadComplete={(path) =>
+                  setImageSection({ ...imageSection, image: path })
+                }
               />
 
               <FormControlLabel
                 control={
                   <Switch
-                    checked={howWeDelivered.published}
+                    checked={imageSection.published}
                     onChange={() =>
-                      setHowWeDelivered({
-                        ...howWeDelivered,
-                        published: !howWeDelivered.published,
+                      setImageSection({
+                        ...imageSection,
+                        published: !imageSection.published,
                       })
                     }
                   />
                 }
-                label={howWeDelivered.published ? "Published" : "Draft"}
+                label={imageSection.published ? "Published" : "Draft"}
               />
             </Box>
             <Box
@@ -592,7 +558,7 @@ const AddServices = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("How We Delivered Section", howwedelivered);
+                    openinfobox("How We Delivered Section", imageSection);
                   }}
                 />
               </Typography>
@@ -601,30 +567,30 @@ const AddServices = () => {
                 label="Last Section Title"
                 multiline
                 rows={1}
-                value={howWeDelivered.title}
+                value={lastSection.title}
                 onChange={(e) =>
-                  setHowWeDelivered({
-                    ...howWeDelivered,
+                  setLastSection({
+                    ...lastSection,
                     title: e.target.value,
                   })
                 }
-                error={!!errors["how_we_delivered.title"]}
-                helperText={errors["how_we_delivered.title"]}
+                error={!!errors["lastsection.title"]}
+                helperText={errors["lastsection.title"]}
               />
               <TextField
                 fullWidth
                 label="Last Section description"
                 multiline
                 rows={6}
-                value={howWeDelivered.decription}
+                value={lastSection.description}
                 onChange={(e) =>
-                  setHowWeDelivered({
-                    ...howWeDelivered,
-                    title: e.target.value,
+                  setLastSection({
+                    ...lastSection,
+                    description: e.target.value,
                   })
                 }
-                error={!!errors["how_we_delivered.decription"]}
-                helperText={errors["how_we_delivered.decription"]}
+                error={!!errors["lastsection.description"]}
+                helperText={errors["lastsection.description"]}
               />
               <Typography
                 variant="h6"
@@ -636,40 +602,31 @@ const AddServices = () => {
               <UploadFile
                 multiple={false}
                 accept="image/*"
-                initialFile={icon}
-                error={errors.icon}
-                onUploadComplete={(path) => setIcon(path)}
+                initialFile={
+                  lastSection.image ? baseUrl + lastSection.image : null
+                }
+                onUploadComplete={(path) =>
+                  setLastSection({ ...lastSection, image: path })
+                }
               />
 
               <FormControlLabel
                 control={
                   <Switch
-                    checked={howWeDelivered.published}
+                    checked={lastSection.published}
                     onChange={() =>
-                      setHowWeDelivered({
-                        ...howWeDelivered,
-                        published: !howWeDelivered.published,
+                      setLastSection({
+                        ...lastSection,
+                        published: !lastSection.published,
                       })
                     }
                   />
                 }
-                label={howWeDelivered.published ? "Published" : "Draft"}
+                label={lastSection.published ? "Published" : "Draft"}
               />
             </Box>
-
-          
           </>
         )}
-        {/* <TextField
-          fullWidth
-          label="Detail"
-          multiline
-          rows={16}
-          value={detail}
-          onChange={(e) => setDetail(e.target.value)}
-          error={!!errors.detail}
-          helperText={errors.detail}
-        /> */}
 
         <FormControlLabel
           control={

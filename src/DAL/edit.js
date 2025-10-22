@@ -93,7 +93,6 @@ export const updateService = async (id, data) => {
     path: `/service/update/${id}`,
     method: "PUT",
     headers: {
-       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${localStorage.getItem("Token")}` },
     postData: data,
   };
