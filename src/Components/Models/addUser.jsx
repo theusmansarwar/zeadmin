@@ -109,7 +109,7 @@ export default function AddUser({
         </Typography>
 
         <TextField
-          sx={{ marginTop: "10px", borderRadius: "6px" }}
+          sx={{ marginTop: "20px", borderRadius: "6px" }}
           fullWidth
           required
           label="Name"
@@ -121,7 +121,7 @@ export default function AddUser({
         />
 
         <TextField
-          sx={{ marginTop: "10px", borderRadius: "6px" }}
+          sx={{ marginTop: "20px", borderRadius: "6px" }}
           fullWidth
           required
           label="Email"
@@ -133,7 +133,7 @@ export default function AddUser({
         />
         {Modeltype === "Add" && (
           <TextField
-            sx={{ marginTop: "10px", borderRadius: "6px" }}
+            sx={{ marginTop: "20px", borderRadius: "6px" }}
             fullWidth
             required
             type="password"
@@ -146,31 +146,8 @@ export default function AddUser({
           />
         )}
 
-        <Box sx={{ minWidth: 120, mb: 2 }}>
-          <FormControl
-            fullWidth
-            error={!!errors.userType}
-            variant="outlined"
-            sx={{
-              "& .MuiInputLabel-root": {
-                top: "50%", // vertically center label when closed
-                transform: "translate(14px, -50%) scale(1)",
-              },
-              "& .MuiInputLabel-shrink": {
-                top: 0, // normal behavior when label shrinks
-                transform: "translate(14px, -9px) scale(0.75)",
-              },
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "6px",
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#1976d2", // blue highlight on focus
-                },
-                "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#d32f2f", // red border on error
-                },
-              },
-            }}
-          >
+        <Box sx={{ minWidth: 120, mb: 2, mt: 2 }}>
+          <FormControl fullWidth error={!!errors.typeId}>
             <InputLabel id="user-type-select-label">User Type</InputLabel>
             <Select
               labelId="user-type-select-label"
@@ -187,9 +164,9 @@ export default function AddUser({
               ))}
             </Select>
 
-            {errors.userType && (
+            {errors.typeId && (
               <Typography variant="caption" color="error" sx={{ mt: 1 }}>
-                {errors.userType}
+                {errors.typeId}
               </Typography>
             )}
           </FormControl>
@@ -231,7 +208,7 @@ export default function AddUser({
               background: "var(--background-color)",
               color: "var(--text-color)",
               borderRadius: "var(--default-border-radius)",
-              "&:hover": { background: "var(--vertical-gradient)" },
+              "&:hover": { background: "var(--background-color)" },
             }}
           >
             Submit

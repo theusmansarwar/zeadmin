@@ -28,7 +28,7 @@ import InfoModal from "../../Components/Models/InfoModal";
 import InfoImageModel from "../../Components/Models/InfoImageModal";
 import UploadFile from "../../Components/Models/UploadFile";
 
-const AddServices = () => {
+const AddSubService = () => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
   const { id } = useParams();
@@ -330,7 +330,7 @@ const AddServices = () => {
         sx={{ color: "var(--background-color)" }}
         gutterBottom
       >
-        {id ? "Edit Service" : "Add Service"}
+        {id ? "Edit Sub Service" : "Add Sub Service"}
       </Typography>
 
       <Box
@@ -371,7 +371,7 @@ const AddServices = () => {
           mt={1}
           sx={{ color: "var(--background-color)" }}
         >
-          Service Icon{" "}
+          Sub Service Icon{" "}
           <BsInfoCircle
             style={{ fontSize: "16px" }}
             onClick={() => {
@@ -758,4 +758,4 @@ const AddServices = () => {
   );
 };
 
-export default AddServices;
+export default AddSubService;

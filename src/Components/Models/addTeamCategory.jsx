@@ -35,13 +35,13 @@ export default function AddTeamCategories({
     Modeldata?.published || false
   );
   const [id, setId] = React.useState(Modeldata?._id || "");
-
+  const [errors, setErrors] = React.useState({});
   React.useEffect(() => {
     setName(Modeldata?.name || "");
     setPublished(Modeldata?.published || false);
     setId(Modeldata?._id || "");
-  }, [Modeldata]);
-
+    setErrors({});
+  }, [Modeldata, open, setOpen]);
   const handleClose = () => setOpen(false);
 
   const handleSubmit = async (e) => {
@@ -57,14 +57,17 @@ export default function AddTeamCategories({
     } else {
       response = await updateTeamCategory(id, categoryData);
     }
-    if (response.status == 201) {
+    if (response.status == 201 || response.status == 200) {
       onResponse({ messageType: "success", message: response.message });
-    } else if (response.status == 200) {
-      onResponse({ messageType: "success", message: response.message });
-    } else {
-      onResponse({ messageType: "error", message: response.message });
+
+      setOpen(false);
+    } else if (response.missingFields) {
+      const newErrors = {};
+      response.missingFields.forEach((field) => {
+        newErrors[field.name] = field.message;
+      });
+      setErrors(newErrors);
     }
-    setOpen(false);
   };
 
   return (
@@ -86,6 +89,8 @@ export default function AddTeamCategories({
           variant="outlined"
           name="name"
           value={name}
+          error={!!errors.name}
+          helperText={errors.name}
           onChange={(e) => setName(e.target.value)}
         />
         <FormControlLabel
@@ -120,10 +125,10 @@ export default function AddTeamCategories({
             type="submit"
             variant="contained"
             sx={{
-              background: "var(--horizontal-gradient)",
+              background: "var(--background-color)",
               color: "var(--text-color)",
-              borderRadius: "var(--border-radius-secondary)",
-              "&:hover": { background: "var(--vertical-gradient)" },
+              borderRadius: "var(--default-border-radius)",
+              "&:hover": { background: "var(--background-color)" },
             }}
           >
             Submit

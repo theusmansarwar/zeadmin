@@ -99,6 +99,17 @@ export const updateService = async (id, data) => {
   };
   return invokeApi(reqObj);
 };
+export const updateSubService = async (id, data) => {
+  const reqObj = {
+    path: `/service/update/${id}`,
+    method: "PUT",
+    headers: {
+       "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${localStorage.getItem("Token")}` },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 export const updatePortfolio = async (id, data) => {
   const reqObj = {
     path: `/portfolio/update/${id}`,
@@ -155,18 +166,7 @@ export const updateCaseStudy= async (id, data) => {
   return invokeApi(reqObj);
 };
 
-export const updateSubService = async (data) => {
-  const reqObj = {
-    path: `/service/subdata/update`,
-    method: "PUT",
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
-    postData: data,
-  };
-  return invokeApi(reqObj);
-};
+
 export const updateProcess = async (data) => {
   const reqObj = {
     path: `/service/process/update`,

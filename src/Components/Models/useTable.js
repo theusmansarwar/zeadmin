@@ -102,6 +102,20 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
   const [modeltype, setModeltype] = useState("Add");
   const [modelData, setModelData] = useState({});
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  // New state to handle debounced search value
+  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
+
+  // Debounce effect
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 500); // delay in ms
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
+
   useEffect(() => {
     localStorage.setItem(
       `${tableType}-tableState`,
@@ -111,7 +125,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
 
   useEffect(() => {
     fetchData();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, debouncedSearch]);
 
   const handleSearch = () => {
     fetchData();
@@ -172,25 +186,21 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setData(response?.userType || []);
       setPage(response.currentPage);
       setTotalRecords(response.totalUserType);
-    } 
-    else if (tableType === "Industries") {
+    } else if (tableType === "Industries") {
       response = await fetchallIndustrieslist(page, rowsPerPage);
       console.log("Response:", response);
 
       setData(response?.industries || []);
       setPage(response.currentPage);
       setTotalRecords(response.totalIndustries);
-    }
-    
-    else if (tableType === "CaseStudies") {
+    } else if (tableType === "CaseStudies") {
       response = await fetchallCaseStudieslist(page, rowsPerPage);
       console.log("Response:", response);
 
       setData(response?.CaseStudies || []);
       setPage(response.currentPage);
       setTotalRecords(response.totalCaseStudies);
-    }
-    else if (tableType === "Tickets") {
+    } else if (tableType === "Tickets") {
       response = await fetchallTickets(page, rowsPerPage);
       console.log("Response:", response);
 
@@ -272,13 +282,9 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
     } else if (tableType === "Services") {
       ///////////////////////////
       navigate(`/edit-service/${category._id}`);
-    }
-    else if (tableType === "CaseStudies") {
+    } else if (tableType === "CaseStudies") {
       navigate(`/edit-casestudies/${category._id}`);
-    
-    }
-      
-      else if (tableType === "UserType") {
+    } else if (tableType === "UserType") {
       setModelData(category);
       setModeltype("Update");
       setOpenUserTypeModal(true);
@@ -311,8 +317,8 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setModelData(category);
       setModeltype("Update");
       setOpenTeamCategoryModal(true);
-    }  else if (tableType === "Industries") {
-    navigate(`/edit-industry/${category._id}`);
+    } else if (tableType === "Industries") {
+      navigate(`/edit-industry/${category._id}`);
     } else if (tableType === "Team") {
       navigate(`/edit-team/${category._id}`);
     }
@@ -356,11 +362,9 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         response = await deleteAllTeamCategories({ ids: selected });
       } else if (tableType === "Team") {
         response = await deleteAllTeam({ ids: selected });
-      }
-else if (tableType === "CaseStudies") {
+      } else if (tableType === "CaseStudies") {
         response = await deleteAllCaseStudy({ ids: selected });
-      }
-      else if (tableType === "Industries") {
+      } else if (tableType === "Industries") {
         response = await deleteAllIndustries({ ids: selected });
       }
       if (response.status === 200) {
@@ -409,12 +413,10 @@ else if (tableType === "CaseStudies") {
       setOpenTeamCategoryModal(true);
       setModeltype("Add");
       setModelData();
-    }
-    else if (tableType === "Industries") {
-     navigate("/add-industry");
-    }
-    else if (tableType === "CaseStudies") {
-     navigate("/add-casestudies");
+    } else if (tableType === "Industries") {
+      navigate("/add-industry");
+    } else if (tableType === "CaseStudies") {
+      navigate("/add-casestudies");
     }
   };
 
@@ -522,6 +524,11 @@ else if (tableType === "CaseStudies") {
                     variant="outlined"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setDebouncedSearch(searchQuery);
+                      }
+                    }}
                     sx={{
                       minWidth: 200,
                       backgroundColor: "white",
@@ -542,9 +549,7 @@ else if (tableType === "CaseStudies") {
                       endAdornment: (
                         <InputAdornment position="end">
                           <SearchIcon
-                            onClick={handleSearch}
                             sx={{
-                              cursor: "pointer",
                               color: "var(--background-color)",
                             }}
                           />
@@ -649,9 +654,9 @@ else if (tableType === "CaseStudies") {
                             ) : attr.id === "image" ||
                               attr.id === "thumbnail" ? (
                               tableType === "Testimonial" ||
-                              tableType === "Blogs"||
-                              tableType === "Featured Blogs"||
-                              tableType === "Industries"||
+                              tableType === "Blogs" ||
+                              tableType === "Featured Blogs" ||
+                              tableType === "Industries" ||
                               tableType === "CaseStudies" ? (
                                 row[attr.id] ? (
                                   <img
@@ -661,7 +666,7 @@ else if (tableType === "CaseStudies") {
                                       height: "50px",
                                       maxWidth: "200px",
                                       objectFit: "contain",
-                                      margin:"auto"
+                                      margin: "auto",
                                     }}
                                   />
                                 ) : (

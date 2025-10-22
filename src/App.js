@@ -60,6 +60,7 @@ import { BsMicrosoftTeams } from "react-icons/bs";
 import { IoIosArrowDown, IoIosArrowForward, IoIosPeople } from "react-icons/io";
 import { SiLibreofficewriter } from "react-icons/si";
 import { Tooltip } from "@mui/material";
+import AddSubService from "./Pages/Services/AddSubService";
 const App = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -146,15 +147,7 @@ const App = ({ onLogout }) => {
       id: 9,
       name: "Services",
       icon: <FaGears />,
-      children: [
-        { id: 91, name: "Services", route: "/services", icon: <GrServices /> },
-        {
-          id: 92,
-          name: "Sub Services",
-          route: "/subservices",
-          icon: <MdOutlineMiscellaneousServices />,
-        },
-      ],
+      route: "/services",
     },
     {
       id: 10,
@@ -324,6 +317,8 @@ const App = ({ onLogout }) => {
           <Route path="/services" element={<Services />} />
           <Route path="/add-service" element={<AddServices />} />
           <Route path="/edit-service/:id" element={<AddServices />} />
+          <Route path="/add-subservice" element={<AddSubService />} />
+          <Route path="/edit-subservice/:id" element={<AddSubService />} />
 
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>

@@ -307,3 +307,16 @@ export const deleteAllComments = async (data) => {
   
   return invokeApi(reqObj);
 };
+export const deleteAllSubServices = async (data) => {
+  const reqObj = {
+    path: `/subservices/delete`,
+    method: "DELETE", 
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};

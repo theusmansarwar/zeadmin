@@ -91,7 +91,7 @@ export default function AddUsertype({
           variant="outlined"
           name="name"
           value={name}
-             error={!!errors.name}
+          error={!!errors.name}
           helperText={errors.name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -130,7 +130,7 @@ export default function AddUsertype({
               background: "var(--background-color)",
               color: "var(--text-color)",
               borderRadius: "var(--default-border-radius)",
-              "&:hover": { background: "var(--vertical-gradient)" },
+              "&:hover": { background: "var(--background-color)" },
             }}
           >
             Submit

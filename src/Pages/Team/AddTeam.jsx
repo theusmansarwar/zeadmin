@@ -59,7 +59,7 @@ const AddTeam = () => {
           setSocialLinks(member.socialLinks || {});
           setSinglePath(member.image || "");
           setIsVisible(member.published);
-          setIsHomeshow(member.showonteamsection)
+          setIsHomeshow(member.showonteamsection);
         } catch (error) {
           console.error("Error fetching team member:", error);
         }
@@ -110,7 +110,7 @@ const AddTeam = () => {
       description,
       category: categoryId,
       published: isVisible,
-      showonteamsection:isHomeShow,
+      showonteamsection: isHomeShow,
       socialLinks,
       image: singlePath, // ✅ comes from UploadFile
     };
@@ -126,12 +126,12 @@ const AddTeam = () => {
       showAlert("success", response.message);
       navigate("/teams");
     } else if (response.missingFields) {
-        const newErrors = {};
-        response.missingFields.forEach((field) => {
-          newErrors[field.name] = field.message;
-        });
-        setErrors(newErrors);
-     
+      const newErrors = {};
+      response.missingFields.forEach((field) => {
+        newErrors[field.name] = field.message;
+      });
+      setErrors(newErrors);
+
       showAlert("error", response.message);
     }
 
@@ -139,7 +139,7 @@ const AddTeam = () => {
   };
 
   return (
-    <Box maxWidth="100%" mx="auto"  p={3}>
+    <Box maxWidth="100%" mx="auto" p={3}>
       <Typography variant="h5" mb={2}>
         {id ? "Edit Team Member" : "Add Team Member"}
       </Typography>
@@ -164,8 +164,8 @@ const AddTeam = () => {
               id="role"
               value={roleId}
               label="Role"
-                error={!!errors.role}
-          helperText={errors.role}
+              error={!!errors.role}
+              helperText={errors.role}
               onChange={(e) => setRoleId(e.target.value)}
             >
               <MenuItem value="">Select a role</MenuItem>
@@ -186,8 +186,8 @@ const AddTeam = () => {
               id="category"
               value={categoryId}
               label="Category"
-                error={!!errors.category}
-          helperText={errors.category}
+              error={!!errors.category}
+              helperText={errors.category}
               onChange={(e) => setCategoryId(e.target.value)}
             >
               <MenuItem value="">Select a category</MenuItem>
@@ -197,7 +197,9 @@ const AddTeam = () => {
                 </MenuItem>
               ))}
             </Select>
-            {errors.category && <FormHelperText>{errors.category}</FormHelperText>}
+            {errors.category && (
+              <FormHelperText>{errors.category}</FormHelperText>
+            )}
           </FormControl>
         </Box>
         {/* Description */}
@@ -208,7 +210,7 @@ const AddTeam = () => {
           multiline
           rows={3}
           value={description}
-              error={!!errors.description}
+          error={!!errors.description}
           helperText={errors.description}
           onChange={(e) => setDescription(e.target.value)}
         />
@@ -256,10 +258,10 @@ const AddTeam = () => {
         <UploadFile
           multiple={false}
           accept="image/*"
-          initialFiles={singlePath}
+          initialFile={singlePath}
           onUploadComplete={(path) => setSinglePath(path)}
         />
-<FormControlLabel
+        <FormControlLabel
           control={
             <Switch
               checked={isHomeShow}
@@ -284,7 +286,17 @@ const AddTeam = () => {
           <Button variant="outlined" onClick={() => navigate("/teams")}>
             Cancel
           </Button>
-          <Button type="submit" variant="contained" disabled={loading}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            sx={{
+              background: "var(--background-color)",
+              color: "var(--text-color)",
+              borderRadius: "var(--default-border-radius)",
+              "&:hover": { background: "var(--background-color)" },
+            }}
+          >
             {loading ? "Saving..." : id ? "Update" : "Save"}
           </Button>
         </Box>

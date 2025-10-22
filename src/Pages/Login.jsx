@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, TextField, Typography, Paper, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
 import { login } from "../DAL/auth";
 import logo from "../Assets/zemaltlogo.svg";
-import './login.css'
+import "./login.css";
 import { useAlert } from "../Components/Alert/AlertContext";
 
-
 const Login = ({ onLoginSuccess }) => {
-   const { showAlert } = useAlert(); 
+  const { showAlert } = useAlert();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
@@ -21,44 +28,55 @@ const Login = ({ onLoginSuccess }) => {
     }
   }, []);
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-
-  const formData = new FormData();
-  formData.append("email", email);
-  formData.append("password", password);
-
-  try {
-    const result = await login(formData);
-
-    if (result.status === 200) {
-      showAlert("success", result?.message || "Login successful!");
-      localStorage.setItem("Token", result?.token);
-      localStorage.setItem("user", JSON.stringify(result?.data));
-      onLoginSuccess();
-    } else {
-      showAlert("error", result?.message || "Login failed.");
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const newErrors = {};
+    // frontend validation
+    if (!email.trim()) newErrors.email = "Email is required";
+    if (!password.trim()) newErrors.password = "Password is required";
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return; 
     }
-  } catch (error) {
-    if (error.response) {
-      showAlert("error", error.response.data.message || "An error occurred.");
-    } else if (error.request) {
-      showAlert("error", "No response from the server.");
-    } else {
-      showAlert("error", error?.message || "Unexpected error occurred.");
-    }
-  } finally {
-    setLoading(false);
-  }
-};
+    setErrors({});
+    setLoading(true);
 
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+
+    try {
+      const result = await login(formData);
+
+      if (result.status === 200) {
+        showAlert("success", result?.message || "Login successful!");
+        localStorage.setItem("Token", result?.token);
+        localStorage.setItem("user", JSON.stringify(result?.data));
+        onLoginSuccess();
+      } else if (result.missingFields) {
+        const newErrors = {};
+        result.missingFields.forEach((field) => {
+          newErrors[field.name] = field.message;
+        });
+        setErrors(newErrors);
+      } else {
+        showAlert("error", result?.message || "Login failed.");
+      }
+    } catch (error) {
+      if (error.response) {
+        showAlert("error", error.response.data.message || "An error occurred.");
+      } else if (error.request) {
+        showAlert("error", "No response from the server.");
+      } else {
+        showAlert("error", error?.message || "Unexpected error occurred.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <Box
-    className="login"
-   
-    >
+    <Box className="login">
       {loading && (
         <CircularProgress
           size={60}
@@ -96,12 +114,13 @@ const handleLogin = async (e) => {
           <Typography variant="h5" gutterBottom>
             Admin Login
           </Typography>
-
           <TextField
             fullWidth
             type="email"
             label="Email Address"
             value={email}
+            error={!!errors.email}
+            helperText={errors.email}
             onChange={(e) => setEmail(e.target.value)}
             margin="normal"
           />
@@ -111,10 +130,11 @@ const handleLogin = async (e) => {
             type="password"
             label="Password"
             value={password}
+            error={!!errors.password}
+            helperText={errors.password}
             onChange={(e) => setPassword(e.target.value)}
             margin="normal"
           />
-
           <Button
             type="submit"
             fullWidth

@@ -222,3 +222,18 @@ export const createMessage = async (data) => {
   };
   return invokeApi(reqObj);
 };
+
+
+export const createSubServices = async (data) => {
+  const reqObj = {
+    path: "/service/create",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};

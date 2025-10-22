@@ -23,7 +23,6 @@ const AddIndustries = () => {
   // ✅ Separate states
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-
   const [image, setImage] = useState("");
   const [published, setPublished] = useState(false);
 

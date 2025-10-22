@@ -33,20 +33,17 @@ const AddCaseStudies = () => {
 
   // Load case study data in edit mode
   useEffect(() => {
- const fetchCaseStudy = async () =>{
-
- 
-
-     const response = await fetchcasestudy(id);
-     const data=response.CaseStudy;
-        setName(data?.name || "");
-        setDescription(data?.description || "");
-        setDetail(data?.detail || "");
-        setFile(data?.file || "");
-        setImage(data?.image || "");
-        setPublished(data?.published || false);
-     }
-  fetchCaseStudy();
+    const fetchCaseStudy = async () => {
+      const response = await fetchcasestudy(id);
+      const data = response.CaseStudy;
+      setName(data?.name || "");
+      setDescription(data?.description || "");
+      setDetail(data?.detail || "");
+      setFile(data?.file || "");
+      setImage(data?.image || "");
+      setPublished(data?.published || false);
+    };
+    fetchCaseStudy();
   }, [isEdit, id]);
 
   const handleSubmit = async () => {
@@ -103,7 +100,7 @@ const AddCaseStudies = () => {
 
       <TextField
         fullWidth
-        label="Detail"
+        label="Popup Detail"
         value={detail}
         onChange={(e) => setDetail(e.target.value)}
         margin="normal"
@@ -119,7 +116,7 @@ const AddCaseStudies = () => {
       <UploadFile
         multiple={false}
         accept="application/pdf"
-        initialFiles={file}
+        initialFile={file}
         onUploadComplete={(path) => setFile(path)}
       />
       {errors.file && (
@@ -134,12 +131,13 @@ const AddCaseStudies = () => {
       <UploadFile
         multiple={false}
         accept="image/*"
-        initialFiles={image}
+        initialFile={image}
         onUploadComplete={(path) => setImage(path)}
       />
       {errors.image && (
         <Typography color="error" variant="body2">
           {errors.image}
+         
         </Typography>
       )}
 
@@ -158,7 +156,16 @@ const AddCaseStudies = () => {
         <Button onClick={() => navigate("/casestudies")} variant="outlined">
           Cancel
         </Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          sx={{
+            background: "var(--background-color)",
+            color: "var(--text-color)",
+            borderRadius: "var(--default-border-radius)",
+            "&:hover": { background: "var(--background-color)" },
+          }}
+        >
           {isEdit ? "Update" : "Add"}
         </Button>
       </Box>
