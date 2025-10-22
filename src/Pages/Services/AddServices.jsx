@@ -76,10 +76,7 @@ const AddServices = () => {
     published: false,
   });
 
-  // Image preview + ref
-  const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
-  const [image, setImage] = useState("");
 
   // Upload states
   const [uploading, setUploading] = useState(false);
@@ -106,7 +103,7 @@ const AddServices = () => {
           setShortDescription(service.short_description || "");
           setDetail(service.detail || "");
           setIsVisible(service.published || false);
-          setImage(service?.image || "");
+          setIcon(service?.icon || "");
 
           setFaqs(
             service.faqs || { title: "", description: "", published: false }
@@ -121,7 +118,7 @@ const AddServices = () => {
 
           // ✅ Load existing image
           if (service.how_we_delivered?.image) {
-            setImagePreview(baseUrl + service.how_we_delivered.image);
+            setIconPreview(baseUrl + service.how_we_delivered.image);
             setHowWeDelivered(service.how_we_delivered);
             setUploadSuccess(true);
           } else {
@@ -137,7 +134,7 @@ const AddServices = () => {
           }
           // ✅ Load existing image
           if (service.lastsection?.image) {
-            setImagePreview(baseUrl + service.lastsection.image);
+            setIconPreview(baseUrl + service.lastsection.image);
             setLastSection(service.lastsection);
             setUploadSuccess(true);
           } else {
@@ -382,9 +379,9 @@ const AddServices = () => {
         <UploadFile
           multiple={false}
           accept="image/*"
-          initialFile={image}
-          error={errors.image}
-          onUploadComplete={(path) => setImage(path)}
+          initialFile={icon}
+          error={errors.icon}
+          onUploadComplete={(path) => setIcon(path)}
         />
 
         <TextField
@@ -499,9 +496,9 @@ const AddServices = () => {
               <UploadFile
                 multiple={false}
                 accept="image/*"
-                initialFile={image}
-                error={errors.image}
-                onUploadComplete={(path) => setImage(path)}
+                initialFile={icon}
+                error={errors.icon}
+                onUploadComplete={(path) => setIcon(path)}
               />
 
               <FormControlLabel
@@ -639,9 +636,9 @@ const AddServices = () => {
               <UploadFile
                 multiple={false}
                 accept="image/*"
-                initialFile={image}
-                error={errors.image}
-                onUploadComplete={(path) => setImage(path)}
+                initialFile={icon}
+                error={errors.icon}
+                onUploadComplete={(path) => setIcon(path)}
               />
 
               <FormControlLabel
@@ -660,45 +657,7 @@ const AddServices = () => {
               />
             </Box>
 
-            <Box
-              sx={{
-                borderRadius: "var(--default-border-radius)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-                boxShadow: "2px 0px 10px var(--shadow-low1)",
-                padding: "20px",
-                height: "fit-content",
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{ color: "var(--background-color)" }}
-              >
-                Portfolios Section{" "}
-                <BsInfoCircle
-                  style={{ fontSize: "16px" }}
-                  onClick={() => {
-                    openinfobox("Portfolio Section", portfoliosectionimg);
-                  }}
-                />
-              </Typography>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={portfolio.published}
-                    onChange={() =>
-                      setPortfolio({
-                        ...portfolio,
-                        published: !portfolio.published,
-                      })
-                    }
-                  />
-                }
-                label={portfolio.published ? "Published" : "Draft"}
-              />{" "}
-              {tableUI2}
-            </Box>
+          
           </>
         )}
         {/* <TextField

@@ -130,8 +130,8 @@ border: var(--default-border);
 
 .app-right {
   width: 81%;
-  height: calc(100vh - 60px);
-  padding: 30px;
+  height: 100vh;
+
   overflow-y: scroll;
   scrollbar-width: none;
   transition: width 0.3s ease; 
