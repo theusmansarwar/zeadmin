@@ -94,14 +94,16 @@ const AddServices = () => {
           setIsVisible(service.published || false);
           setIcon(service.icon || "");
 
-          // ✅ FAQs
-          if (service.faqs) {
-            setFaqs({
-              title: service.faqs.title || "",
-              description: service.faqs.description || "",
-              published: service.faqs.published || false,
-            });
-          }
+          setFaqs(
+            service.faqs || { title: "", description: "", published: false }
+          );
+          setPortfolio(
+            service.portfolio || {
+              title: "",
+              description: "",
+              published: false,
+            }
+          );
 
           // ✅ Sub Services (capital S)
           if (service.subServices) {
