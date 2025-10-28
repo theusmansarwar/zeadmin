@@ -121,6 +121,18 @@ export const fetchservicebyid = async (id) => {
   };
   return invokeApi(reqObj);
 };
+export const fetchSubServiceById = async (id) => {
+  const reqObj = {
+    path: `/sub-service/get/${id}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
 //////////////////////////////////////////////
 export const fetchallBloglist = async ( page, rowsPerPages, title) => {
   const reqObj = {

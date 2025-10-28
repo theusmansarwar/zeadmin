@@ -31,9 +31,7 @@ import Industries from "./Pages/Industries/Industries";
 import CaseStudies from "./Pages/CaseStudies/CaseStudies";
 import AddCaseStudies from "./Pages/CaseStudies/AddCaseStudies";
 import AddIndustries from "./Pages/Industries/AddIndustries";
-import { GrServices } from "react-icons/gr";
 import { FaGears } from "react-icons/fa6";
-import { MdOutlineMiscellaneousServices } from "react-icons/md";
 import {
   MdBusinessCenter,
   MdCategory,
@@ -52,7 +50,6 @@ import {
   FaUser,
   FaUserCog,
   FaUsers,
-  FaUsersCog,
 } from "react-icons/fa";
 import { PiUsersFourFill } from "react-icons/pi";
 import { IoLogOut } from "react-icons/io5";
@@ -317,9 +314,8 @@ const App = ({ onLogout }) => {
           <Route path="/services" element={<Services />} />
           <Route path="/add-service" element={<AddServices />} />
           <Route path="/edit-service/:id" element={<AddServices />} />
-          <Route path="/add-subservice" element={<AddSubService />} />
-          <Route path="/edit-subservice/:id" element={<AddSubService />} />
-
+          <Route path="/service/:serviceId/add-subservice" element={<AddSubService />} />
+          <Route path="/service/:serviceId/edit-subservice/:subServiceId" element={<AddSubService />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </div>

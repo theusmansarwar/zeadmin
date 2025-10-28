@@ -105,7 +105,7 @@ const AddServices = () => {
             }
           );
 
-          // ✅ Sub Services (capital S)
+          //  Sub Services (capital S)
           if (service.subServices) {
             setSubServices({
               title: service.subServices.title || "",
@@ -115,7 +115,7 @@ const AddServices = () => {
             });
           }
 
-          // ✅ Image Section
+          //  Image Section
           if (service.imageSection) {
             setImageSection({
               title: service.imageSection.title || "",
@@ -124,7 +124,7 @@ const AddServices = () => {
             });
           }
 
-          // ✅ Last Section (capital S)
+          // Last Section 
           if (service.lastSection) {
             setLastSection({
               title: service.lastSection.title || "",
@@ -134,7 +134,7 @@ const AddServices = () => {
             });
           }
 
-          // ✅ Icon Preview
+          // Icon Preview
           if (service.icon) {
             setIconPreview(baseUrl + service.icon);
           }

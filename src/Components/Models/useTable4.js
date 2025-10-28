@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Box,
   Paper,
@@ -17,36 +17,36 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { formatDate } from "../../Utils/Formatedate";
 import truncateText from "../../truncateText";
-import { deleteAllSubServices } from "../../DAL/delete";
+import {  deleteAllFaqs } from "../../DAL/delete";
 import { useAlert } from "../Alert/AlertContext";
 import DeleteModal from "./confirmDeleteModel";
-import { useParams, useNavigate } from "react-router-dom";
-import { baseUrl } from "../../Config/Config";
+import { useParams } from "react-router-dom";
+import FaqsModel from "./faqsModel";
 
-export function useTable3({ attributes3, tableType, data = [] }) {
-  const { showAlert } = useAlert();
+export function useTable4({ attributes1, tableType, data = []  }) {
+  const { showAlert } = useAlert(); // Since you created a custom hook
+
   const [selected, setSelected] = useState([]);
+  const [openFaqsModel, setOpenFaqsModel] = useState(false);
+  const [modeltype, setModeltype] = useState("Add");
+  const [modelData, setModelData] = useState({});
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const { id } = useParams();
-  const navigate = useNavigate();
 
-  //  Select all rows
+  const {id} = useParams()
+
+
+
+
   const handleSelectAllClick = (event) => {
     setSelected(event.target.checked ? data.map((row) => row._id) : []);
   };
 
   const isSelected = (id) => selected.includes(id);
 
-  const handleViewClick = (row) => {
-    navigate(`/service/${id}/edit-subservice/${row._id}`);
-  };
-
-  const handleAddButton = () => {
-    navigate(`/service/${id}/add-subservice`);
-  };
-
-  const handleDeleteClick = () => {
-    setOpenDeleteModal(true);
+  const handleViewClick = (category) => {
+    setModelData(category);
+    setModeltype("Update");
+    setOpenFaqsModel(true);
   };
 
   const handleDelete = async () => {
@@ -55,8 +55,10 @@ export function useTable3({ attributes3, tableType, data = [] }) {
       return;
     }
 
+    console.log("Attempting to delete IDs:", selected);
+
     try {
-      let response = await deleteAllSubServices({ ids: selected });
+      let response = await deleteAllFaqs({ ids: selected });
 
       if (response.status === 200) {
         showAlert("success", response.message || "Deleted successfully");
@@ -70,6 +72,12 @@ export function useTable3({ attributes3, tableType, data = [] }) {
     }
   };
 
+  const handleAddButton = () => {
+    setOpenFaqsModel(true);
+    setModeltype("Add");
+    setModelData();
+  };
+
   const getNestedValue = (obj, path) => {
     return path
       .split(".")
@@ -79,18 +87,35 @@ export function useTable3({ attributes3, tableType, data = [] }) {
       );
   };
 
+  const handleResponse = (response) => {
+    showAlert(response.messageType, response.message);
+  };
+  const handleDeleteClick = () => {
+    setOpenDeleteModal(true);
+  };
+  
+
   return {
-    tableUI3: (
+    tableUI1: (
       <>
+        <FaqsModel
+          open={openFaqsModel}
+          setOpen={setOpenFaqsModel}
+          Modeltype={modeltype}
+          Modeldata={modelData}
+          onResponse={handleResponse}
+          serviceid={id}
+        />
+
         <DeleteModal
           open={openDeleteModal}
           setOpen={setOpenDeleteModal}
           onConfirm={handleDelete}
         />
 
-        <Box sx={{ width: "100%", marginBottom: "50px" }}>
-          <Paper sx={{ width: "100%", maxHeight: "95vh", boxShadow: "none" }}>
-            <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box sx={{ width: "100%", marginBottom:"20px" }}>
+          <Paper sx={{ width: "100%", boxShadow: "none" }}>
+            <Toolbar sx={{ display: "flex", justifyContent: "space-between"  }}>
               <Typography
                 variant="h5"
                 sx={{ color: "var(--background-color)" }}
@@ -116,7 +141,6 @@ export function useTable3({ attributes3, tableType, data = [] }) {
                 </Button>
               )}
             </Toolbar>
-
             <TableContainer>
               <Table stickyHeader>
                 <TableHead>
@@ -139,7 +163,7 @@ export function useTable3({ attributes3, tableType, data = [] }) {
                         onChange={handleSelectAllClick}
                       />
                     </TableCell>
-                    {attributes3.map((attr) => (
+                    {attributes1.map((attr) => (
                       <TableCell
                         key={attr._id}
                         sx={{ color: "var(--background-color)" }}
@@ -152,7 +176,6 @@ export function useTable3({ attributes3, tableType, data = [] }) {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-
                 <TableBody>
                   {data?.map((row) => {
                     const isItemSelected = isSelected(row._id);
@@ -177,13 +200,13 @@ export function useTable3({ attributes3, tableType, data = [] }) {
                           />
                         </TableCell>
 
-                        {attributes3.map((attr) => (
+                        {attributes1.map((attr) => (
                           <TableCell
                             key={attr.id}
                             sx={{ color: "var(--black-color)" }}
                           >
                             {attr.id === "createdAt" ||
-                              attr.id === "publishedDate" ? (
+                            attr.id === "publishedDate" ? (
                               formatDate(row[attr.id])
                             ) : attr.id === "published" ? (
                               <span
@@ -215,17 +238,6 @@ export function useTable3({ attributes3, tableType, data = [] }) {
                               >
                                 {row[attr.id] ? "Answered" : "Pending"}
                               </span>
-                            ) : attr.id === "image" ? (
-                              <img
-                                alt=""
-                                src={baseUrl + row[attr.id]}
-                                style={{
-                                  height: "50px",
-                                  maxWidth: "200px",
-                                  objectFit: "contain",
-                                  margin: "auto",
-                                }}
-                              />
                             ) : row[attr.id] === 0 ? (
                               0
                             ) : typeof getNestedValue(row, attr.id) ===

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../Components/Alert/AlertContext";
-import { fetchservicebyid } from "../../DAL/fetch";
-import { createNewService, uploadimage } from "../../DAL/create";
-import { updateService } from "../../DAL/edit";
+import { fetchSubServiceById } from "../../DAL/fetch";
+import { createNewSubService } from "../../DAL/create";
+import { updateSubService } from "../../DAL/edit";
 import { FaCircleInfo } from "react-icons/fa6";
 import { BsInfoCircle } from "react-icons/bs";
 import howwedelivered from "../../Assets/howwedelivered.png";
@@ -18,54 +18,63 @@ import {
   Switch,
   FormControlLabel,
 } from "@mui/material";
-import { IoMdCloseCircle } from "react-icons/io";
-import { FaCloudUploadAlt } from "react-icons/fa";
 import { baseUrl } from "../../Config/Config";
 import { useTable1 } from "../../Components/Models/useTable1";
 import { useTable2 } from "../../Components/Models/useTable2";
-import { useTable3 } from "../../Components/Models/useTable3";
 import InfoModal from "../../Components/Models/InfoModal";
 import InfoImageModel from "../../Components/Models/InfoImageModal";
 import UploadFile from "../../Components/Models/UploadFile";
+import { useTable4 } from "../../Components/Models/useTable4";
 
 const AddSubService = () => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
-  const { id } = useParams();
+  const { serviceId, subServiceId } = useParams();
+
   const [open, setOpen] = useState(false);
   const [infoopen, setInfoOpen] = useState(false);
   const [infoboxheading, setInfoBoxHeading] = useState(false);
   const [infoboximage, setInfoBoxImage] = useState(false);
+
   // Service states
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [slug, setSlug] = useState("");
   const [short_description, setShortDescription] = useState("");
-  const [detail, setDetail] = useState("");
   const [isVisible, setIsVisible] = useState(true);
   const [icon, setIcon] = useState(null);
   const [iconPreview, setIconPreview] = useState(null);
 
-  const iconInputRef = useRef(null);
-  const [subServices, setSubServices] = useState({
+  // Separate state variables for each section
+  const [introSection, setIntroSection] = useState({
+    title: "",
+    description: "",
+    image: null,
+    published: false,
+  });
+
+  const [whySection, setWhySection] = useState({
     title: "",
     description: "",
     published: false,
-    items: [],
   });
-  // Nested states
+
+  const [provenStepsSection, setProvenStepsSection] = useState({
+    title: "",
+    items: [],
+    published: false,
+  });
+
+  const [imageSection, setImageSection] = useState({
+    title: "",
+    image: null,
+    published: false,
+  });
+
   const [faqs, setFaqs] = useState({
     title: "",
     description: "",
-    published: false,
-  });
-  const [portfolio, setPortfolio] = useState({
-    published: false,
-  });
-  const [howWeDelivered, setHowWeDelivered] = useState({
-    title: "",
-    image: null,
     published: false,
   });
 
@@ -76,15 +85,15 @@ const AddSubService = () => {
     published: false,
   });
 
-  // Image preview + ref
-  const [imagePreview, setImagePreview] = useState(null);
-  const fileInputRef = useRef(null);
-  const [image, setImage] = useState("");
+  const [portfolio, setPortfolio] = useState({
+    published: false,
+  });
 
-  // Upload states
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
+  // Image preview states for each section
+  const [introImagePreview, setIntroImagePreview] = useState(null);
+  const [imageSectionPreview, setImageSectionPreview] = useState(null);
+  const [lastSectionImagePreview, setLastSectionImagePreview] = useState(null);
+
 
   // Misc
   const [errors, setErrors] = useState({});
@@ -92,11 +101,11 @@ const AddSubService = () => {
 
   // --- Fetch existing service if editing ---
   useEffect(() => {
-    if (!id) return;
+    if (!subServiceId) return;
 
     const fetchService = async () => {
       try {
-        const response = await fetchservicebyid(id);
+        const response = await fetchSubServiceById(subServiceId);
         if (response.status === 200) {
           const service = response.service;
           setTitle(service.title || "");
@@ -104,49 +113,58 @@ const AddSubService = () => {
           setMetaDescription(service.metaDescription || "");
           setSlug(service.slug || "");
           setShortDescription(service.short_description || "");
-          setDetail(service.detail || "");
           setIsVisible(service.published || false);
-          setImage(service?.image || "");
+          setIcon(service.icon || "");
 
+          // Load Intro Section
+          if (service.introduction) {
+            setIntroSection(service.introduction);
+            if (service.introduction.image) {
+              setIntroImagePreview(baseUrl + service.introduction.image);
+            }
+          }
+
+          // Load Why Zemalt Section
+          if (service.whySection) {
+            setWhySection(service.whySection);
+          }
+
+          // Load Proven Steps Section
+          if (service.provenStepsSection) {
+            setProvenStepsSection(service.provenStepsSection);
+          }
+
+          // Load Image Section
+          if (service.imageSection) {
+            setImageSection(service.imageSection);
+            if (service.imageSection.image) {
+              setImageSectionPreview(baseUrl + service.imageSection.image);
+            }
+          }
+
+          // Load FAQs
           setFaqs(
             service.faqs || { title: "", description: "", published: false }
           );
+
+          // Load Last Section
+          if (service.lastsection) {
+            setLastSection(service.lastsection);
+            if (service.lastsection.image) {
+              setLastSectionImagePreview(baseUrl + service.lastsection.image);
+            }
+          }
+
+          // Load Portfolio
           setPortfolio(
             service.portfolio || {
-              title: "",
-              description: "",
               published: false,
             }
           );
 
-          // ✅ Load existing image
-          if (service.how_we_delivered?.image) {
-            setImagePreview(baseUrl + service.how_we_delivered.image);
-            setHowWeDelivered(service.how_we_delivered);
-            setUploadSuccess(true);
-          } else {
-            setHowWeDelivered({
-              title: "",
-              image: null,
-              published: false,
-            });
-          }
-
+          // Load icon preview
           if (service?.icon) {
             setIconPreview(baseUrl + service.icon);
-          }
-          // ✅ Load existing image
-          if (service.lastsection?.image) {
-            setImagePreview(baseUrl + service.lastsection.image);
-            setLastSection(service.lastsection);
-            setUploadSuccess(true);
-          } else {
-            setHowWeDelivered({
-              title: "",
-              description: "",
-              image: null,
-              published: false,
-            });
           }
         }
       } catch (error) {
@@ -155,8 +173,7 @@ const AddSubService = () => {
     };
 
     fetchService();
-  }, [id]);
-
+  }, [subServiceId]);
 
   // --- Submit handler ---
   const handleSubmit = async (event) => {
@@ -171,25 +188,54 @@ const AddSubService = () => {
       formData.append("short_description", short_description);
       formData.append("metaDescription", metaDescription);
       formData.append("slug", slug);
+      formData.append("mainServiceId", serviceId);
+
       // Icon
       if (icon) {
-        // new uploaded icon (backend returned path in uploadimage)
         formData.append("icon", icon);
-      } else if (id && iconPreview) {
-        // keep existing icon path
+      } else if (subServiceId && iconPreview) {
         formData.append("icon", iconPreview.replace(baseUrl, ""));
       }
-
-      formData.append("detail", detail);
       formData.append("published", isVisible);
-      // sub sevices
+
+      // Intro Section
       formData.append(
-        "subservices",
+        "introSection",
         JSON.stringify({
-          title: subServices.title,
-          description: subServices.description,
-          published: subServices.published,
-          items: subServices.items,
+          title: introSection.title,
+          description: introSection.description,
+          image: introSection.image,
+          published: introSection.published,
+        })
+      );
+
+      // Why Zemalt Section
+      formData.append(
+        "whySection",
+        JSON.stringify({
+          title: whySection.title,
+          description: whySection.description,
+          published: whySection.published,
+        })
+      );
+
+      // Proven Steps Section
+      formData.append(
+        "provenStepsSection",
+        JSON.stringify({
+          title: provenStepsSection.title,
+          items: provenStepsSection.items,
+          published: provenStepsSection.published,
+        })
+      );
+
+      // Image Section
+      formData.append(
+        "imageSection",
+        JSON.stringify({
+          title: imageSection.title,
+          image: imageSection.image,
+          published: imageSection.published,
         })
       );
 
@@ -203,41 +249,28 @@ const AddSubService = () => {
         })
       );
 
-      // How We Delivered
-      formData.append(
-        "how_we_delivered",
-        JSON.stringify({
-          title: howWeDelivered.title,
-          image: howWeDelivered.image,
-          published: howWeDelivered.published,
-        })
-      );
-
-      // portfolio
-      formData.append("portfolio_published", portfolio.published);
-      // If you are sending file upload
-      if (howWeDelivered.file) {
-        formData.append("file", howWeDelivered.file);
-      }
-
       // Last Section
       formData.append(
         "lastsection",
         JSON.stringify({
           title: lastSection.title,
+          description: lastSection.description,
           image: lastSection.image,
           published: lastSection.published,
         })
       );
 
+      // Portfolio
+      formData.append("portfolio_published", portfolio.published);
+
       // API call
-      let response = id
-        ? await updateService(id, formData)
-        : await createNewService(formData);
+      let response = subServiceId
+        ? await updateSubService(subServiceId, formData)
+        : await createNewSubService(formData);
 
       if (response.status == 200 || response.status == 201) {
         showAlert("success", response.message);
-        navigate("/services");
+        navigate(`/edit-service/${serviceId}`);
         setLoading(false);
       } else if (response.missingFields) {
         setLoading(false);
@@ -265,11 +298,12 @@ const AddSubService = () => {
     { id: "answer", label: "Answers" },
   ];
 
-  const { tableUI1 } = useTable1({
+  const { tableUI4 } = useTable4({
     attributes1,
     tableType: "FAQs",
     data: faqs?.items || [],
   });
+
   const attributes2 = [
     { id: "title", label: "Title" },
     { id: "description", label: "Description" },
@@ -281,23 +315,13 @@ const AddSubService = () => {
     tableType: "Portfolio",
     data: portfolio?.items || [],
   });
-  const attributes3 = [
-    { id: "title", label: "Sub Service Title" },
-    { id: "description", label: "Description" },
-    { id: "published", label: "Visibility" },
-  ];
-
-  const { tableUI3 } = useTable3({
-    attributes3,
-    tableType: "Sub Services",
-    data: subServices?.items || [],
-  });
 
   const openinfobox = (heading, image) => {
     setInfoBoxImage(image);
     setInfoBoxHeading(heading);
     setInfoOpen(true);
   };
+
   return (
     <Box sx={{ p: 3 }}>
       <Button
@@ -330,7 +354,7 @@ const AddSubService = () => {
         sx={{ color: "var(--background-color)" }}
         gutterBottom
       >
-        {id ? "Edit Sub Service" : "Add Sub Service"}
+        {subServiceId ? "Edit Sub Service" : "Add Sub Service"}
       </Typography>
 
       <Box
@@ -382,9 +406,9 @@ const AddSubService = () => {
         <UploadFile
           multiple={false}
           accept="image/*"
-          initialFile={image}
-          error={errors.image}
-          onUploadComplete={(path) => setImage(path)}
+          initialFile={icon}
+          error={errors.icon}
+          onUploadComplete={(path) => setIcon(path)}
         />
 
         <TextField
@@ -406,9 +430,9 @@ const AddSubService = () => {
           helperText={errors.slug}
         />
 
-        {id && (
+        {subServiceId && (
           <>
-            {/* Sub Services Section */}
+            {/* Intro Section */}
             <Box
               sx={{
                 borderRadius: "var(--default-border-radius)",
@@ -424,33 +448,215 @@ const AddSubService = () => {
                 variant="h5"
                 sx={{ color: "var(--background-color)" }}
               >
-                Sub Services Section{" "}
+                Intro Section{" "}
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("Sub Services Section", portfoliosectionimg);
+                    openinfobox("How We Delivered Section", howwedelivered);
                   }}
                 />
               </Typography>
+              <TextField
+                fullWidth
+                label="Intro Section Title"
+                multiline
+                rows={1}
+                value={introSection.title}
+                onChange={(e) =>
+                  setIntroSection({
+                    ...introSection,
+                    title: e.target.value,
+                  })
+                }
+                error={!!errors["introSection.title"]}
+                helperText={errors["introSection.title"]}
+              />
+              <TextField
+                fullWidth
+                label="Intro Section Description"
+                multiline
+                rows={1}
+                value={introSection.description}
+                onChange={(e) =>
+                  setIntroSection({
+                    ...introSection,
+                    description: e.target.value,
+                  })
+                }
+                error={!!errors["introSection.description"]}
+                helperText={errors["introSection.description"]}
+              />
+              <Typography
+                variant="h6"
+                mt={1}
+                sx={{ color: "var(--background-color)" }}
+              >
+                Upload Image
+              </Typography>
+              <UploadFile
+                multiple={false}
+                accept="image/*"
+                initialFile={introSection.image}
+                error={errors["introSection.image"]}
+                onUploadComplete={(path) =>
+                  setIntroSection({ ...introSection, image: path })
+                }
+              />
+
               <FormControlLabel
                 control={
                   <Switch
-                    checked={portfolio.published}
+                    checked={introSection.published}
                     onChange={() =>
-                      setPortfolio({
-                        ...portfolio,
-                        published: !portfolio.published,
+                      setIntroSection({
+                        ...introSection,
+                        published: !introSection.published,
                       })
                     }
                   />
                 }
-                label={portfolio.published ? "Published" : "Draft"}
+                label={introSection.published ? "Published" : "Draft"}
               />
-
-              {/* Sub Services Table */}
-              {tableUI3}
             </Box>
 
+            {/* Why Zemalt Section */}
+            <Box
+              sx={{
+                borderRadius: "var(--default-border-radius)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
+                boxShadow: "2px 0px 10px var(--shadow-low1)",
+                padding: "20px",
+                height: "fit-content",
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{ color: "var(--background-color)" }}
+              >
+                Why Zemalt Section{" "}
+                <BsInfoCircle
+                  style={{ fontSize: "16px" }}
+                  onClick={() => {
+                    openinfobox("How We Delivered Section", howwedelivered);
+                  }}
+                />
+              </Typography>
+              <TextField
+                fullWidth
+                label="Why Zemalt Section Title"
+                multiline
+                rows={1}
+                value={whySection.title}
+                onChange={(e) =>
+                  setWhySection({
+                    ...whySection,
+                    title: e.target.value,
+                  })
+                }
+                error={!!errors["whySection.title"]}
+                helperText={errors["whySection.title"]}
+              />
+              <TextField
+                fullWidth
+                label="Why Zemalt Section Description"
+                multiline
+                rows={1}
+                value={whySection.description}
+                onChange={(e) =>
+                  setWhySection({
+                    ...whySection,
+                    description: e.target.value,
+                  })
+                }
+                error={!!errors["whySection.description"]}
+                helperText={errors["whySection.description"]}
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={whySection.published}
+                    onChange={() =>
+                      setWhySection({
+                        ...whySection,
+                        published: !whySection.published,
+                      })
+                    }
+                  />
+                }
+                label={whySection.published ? "Published" : "Draft"}
+              />
+            </Box>
+
+            {/* Proven Steps Section */}
+            <Box
+              sx={{
+                borderRadius: "var(--default-border-radius)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
+                boxShadow: "2px 0px 10px var(--shadow-low1)",
+                padding: "20px",
+                height: "fit-content",
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{ color: "var(--background-color)" }}
+              >
+                Proven Steps Section{" "}
+                <BsInfoCircle
+                  style={{ fontSize: "16px" }}
+                  onClick={() => {
+                    openinfobox("How We Delivered Section", howwedelivered);
+                  }}
+                />
+              </Typography>
+              <TextField
+                fullWidth
+                label="Proven Steps Section Title"
+                multiline
+                rows={1}
+                value={provenStepsSection.title}
+                onChange={(e) =>
+                  setProvenStepsSection({
+                    ...provenStepsSection,
+                    title: e.target.value,
+                  })
+                }
+                error={!!errors["provenStepsSection.title"]}
+                helperText={errors["provenStepsSection.title"]}
+              />
+              <TextField
+                fullWidth
+                label="Items (comma separated)"
+                rows={6}
+                value={provenStepsSection.items.join(", ")}
+                onChange={(e) =>
+                  setProvenStepsSection({
+                    ...provenStepsSection,
+                    items: e.target.value.split(",").map((i) => i.trim()),
+                  })
+                }
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={provenStepsSection.published}
+                    onChange={() =>
+                      setProvenStepsSection({
+                        ...provenStepsSection,
+                        published: !provenStepsSection.published,
+                      })
+                    }
+                  />
+                }
+                label={provenStepsSection.published ? "Published" : "Draft"}
+              />
+            </Box>
+
+            {/* Image Section */}
             <Box
               sx={{
                 borderRadius: "var(--default-border-radius)",
@@ -479,15 +685,15 @@ const AddSubService = () => {
                 label="Image Section Title"
                 multiline
                 rows={1}
-                value={howWeDelivered.title}
+                value={imageSection.title}
                 onChange={(e) =>
-                  setHowWeDelivered({
-                    ...howWeDelivered,
+                  setImageSection({
+                    ...imageSection,
                     title: e.target.value,
                   })
                 }
-                error={!!errors["how_we_delivered.title"]}
-                helperText={errors["how_we_delivered.title"]}
+                error={!!errors["imageSection.title"]}
+                helperText={errors["imageSection.title"]}
               />
               <Typography
                 variant="h6"
@@ -499,26 +705,30 @@ const AddSubService = () => {
               <UploadFile
                 multiple={false}
                 accept="image/*"
-                initialFile={image}
-                error={errors.image}
-                onUploadComplete={(path) => setImage(path)}
+                initialFile={imageSection.image}
+                error={errors["imageSection.image"]}
+                onUploadComplete={(path) =>
+                  setImageSection({ ...imageSection, image: path })
+                }
               />
 
               <FormControlLabel
                 control={
                   <Switch
-                    checked={howWeDelivered.published}
+                    checked={imageSection.published}
                     onChange={() =>
-                      setHowWeDelivered({
-                        ...howWeDelivered,
-                        published: !howWeDelivered.published,
+                      setImageSection({
+                        ...imageSection,
+                        published: !imageSection.published,
                       })
                     }
                   />
                 }
-                label={howWeDelivered.published ? "Published" : "Draft"}
+                label={imageSection.published ? "Published" : "Draft"}
               />
             </Box>
+
+            {/* FAQs Section */}
             <Box
               sx={{
                 borderRadius: "var(--default-border-radius)",
@@ -530,7 +740,6 @@ const AddSubService = () => {
                 height: "fit-content",
               }}
             >
-              {/* FAQs */}
               <Typography
                 variant="h5"
                 sx={{ color: "var(--background-color)" }}
@@ -573,9 +782,11 @@ const AddSubService = () => {
                   />
                 }
                 label={faqs.published ? "Published" : "Draft"}
-              />{" "}
-              {tableUI1}
+              />
+              {tableUI4}
             </Box>
+
+            {/* Last Section */}
             <Box
               sx={{
                 borderRadius: "var(--default-border-radius)",
@@ -604,30 +815,30 @@ const AddSubService = () => {
                 label="Last Section Title"
                 multiline
                 rows={1}
-                value={howWeDelivered.title}
+                value={lastSection.title}
                 onChange={(e) =>
-                  setHowWeDelivered({
-                    ...howWeDelivered,
+                  setLastSection({
+                    ...lastSection,
                     title: e.target.value,
                   })
                 }
-                error={!!errors["how_we_delivered.title"]}
-                helperText={errors["how_we_delivered.title"]}
+                error={!!errors["lastSection.title"]}
+                helperText={errors["lastSection.title"]}
               />
               <TextField
                 fullWidth
-                label="Last Section description"
+                label="Last Section Description"
                 multiline
                 rows={6}
-                value={howWeDelivered.decription}
+                value={lastSection.description}
                 onChange={(e) =>
-                  setHowWeDelivered({
-                    ...howWeDelivered,
-                    title: e.target.value,
+                  setLastSection({
+                    ...lastSection,
+                    description: e.target.value,
                   })
                 }
-                error={!!errors["how_we_delivered.decription"]}
-                helperText={errors["how_we_delivered.decription"]}
+                error={!!errors["lastSection.description"]}
+                helperText={errors["lastSection.description"]}
               />
               <Typography
                 variant="h6"
@@ -639,27 +850,30 @@ const AddSubService = () => {
               <UploadFile
                 multiple={false}
                 accept="image/*"
-                initialFile={image}
-                error={errors.image}
-                onUploadComplete={(path) => setImage(path)}
+                initialFile={lastSection.image}
+                error={errors["lastSection.image"]}
+                onUploadComplete={(path) =>
+                  setLastSection({ ...lastSection, image: path })
+                }
               />
 
               <FormControlLabel
                 control={
                   <Switch
-                    checked={howWeDelivered.published}
+                    checked={lastSection.published}
                     onChange={() =>
-                      setHowWeDelivered({
-                        ...howWeDelivered,
-                        published: !howWeDelivered.published,
+                      setLastSection({
+                        ...lastSection,
+                        published: !lastSection.published,
                       })
                     }
                   />
                 }
-                label={howWeDelivered.published ? "Published" : "Draft"}
+                label={lastSection.published ? "Published" : "Draft"}
               />
             </Box>
 
+            {/* Portfolio Section */}
             <Box
               sx={{
                 borderRadius: "var(--default-border-radius)",
@@ -696,21 +910,11 @@ const AddSubService = () => {
                   />
                 }
                 label={portfolio.published ? "Published" : "Draft"}
-              />{" "}
+              />
               {tableUI2}
             </Box>
           </>
         )}
-        {/* <TextField
-          fullWidth
-          label="Detail"
-          multiline
-          rows={16}
-          value={detail}
-          onChange={(e) => setDetail(e.target.value)}
-          error={!!errors.detail}
-          helperText={errors.detail}
-        /> */}
 
         <FormControlLabel
           control={
@@ -729,7 +933,7 @@ const AddSubService = () => {
         >
           <Button
             variant="contained"
-            onClick={() => navigate("/services")}
+            onClick={() => navigate(`/edit-service/${serviceId}`)}
             sx={{
               background: "var(--secondary-color, #B1B1B1)",
               color: "#fff",

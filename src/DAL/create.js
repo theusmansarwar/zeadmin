@@ -130,6 +130,19 @@ export const createNewService = async (data) => {
   };
   return invokeApi(reqObj);
 };
+export const createNewSubService = async (data) => {
+  const reqObj = {
+    path: "/sub-service/create",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 export const createNewPortfolio = async (data) => {
   const reqObj = {
     path: "/portfolio/add",

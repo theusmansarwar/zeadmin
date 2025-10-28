@@ -38,8 +38,6 @@ import {
   fetchBloglistofwritter,
   fetchFeaturedBloglist,
   fetchTeamMember,
-  searchBlog,
-  searchService,
 } from "../../DAL/fetch";
 import { formatDate } from "../../Utils/Formatedate";
 import truncateText from "../../truncateText";
@@ -97,7 +95,6 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
   const [openUserTypeModal, setOpenUserTypeModal] = useState(false);
   const [openUserModal, setOpenUserModal] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
-  const [openIndustriesModal, setOpenIndustriesModal] = useState(false);
   const [openLeadsModal, setOpenLeadsModal] = useState(false);
   const [modeltype, setModeltype] = useState("Add");
   const [modelData, setModelData] = useState({});
