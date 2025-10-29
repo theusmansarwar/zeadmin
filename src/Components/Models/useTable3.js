@@ -23,7 +23,7 @@ import DeleteModal from "./confirmDeleteModel";
 import { useParams, useNavigate } from "react-router-dom";
 import { baseUrl } from "../../Config/Config";
 
-export function useTable3({ attributes3, tableType, data = [] }) {
+export function useTable3({ attributes3,reFetch, tableType, data = [] }) {
   const { showAlert } = useAlert();
   const [selected, setSelected] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -60,6 +60,7 @@ export function useTable3({ attributes3, tableType, data = [] }) {
 
       if (response.status === 200) {
         showAlert("success", response.message || "Deleted successfully");
+        reFetch && reFetch();
         setSelected([]);
       } else {
         showAlert("error", response.message || "Failed to delete items");

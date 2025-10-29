@@ -19,7 +19,6 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { baseUrl } from "../../Config/Config";
-import { useTable1 } from "../../Components/Models/useTable1";
 import { useTable2 } from "../../Components/Models/useTable2";
 import InfoModal from "../../Components/Models/InfoModal";
 import InfoImageModel from "../../Components/Models/InfoImageModal";
@@ -62,12 +61,13 @@ const AddSubService = () => {
 
   const [provenStepsSection, setProvenStepsSection] = useState({
     title: "",
-    items: [],
+    steps: [],
     published: false,
   });
 
   const [imageSection, setImageSection] = useState({
     title: "",
+    description: "",
     image: null,
     published: false,
   });
@@ -78,7 +78,7 @@ const AddSubService = () => {
     published: false,
   });
 
-  const [lastSection, setLastSection] = useState({
+  const [cta, setCta] = useState({
     title: "",
     description: "",
     image: null,
@@ -86,13 +86,14 @@ const AddSubService = () => {
   });
 
   const [portfolio, setPortfolio] = useState({
+    title: "",
     published: false,
   });
 
   // Image preview states for each section
   const [introImagePreview, setIntroImagePreview] = useState(null);
   const [imageSectionPreview, setImageSectionPreview] = useState(null);
-  const [lastSectionImagePreview, setLastSectionImagePreview] = useState(null);
+  const [ctaImagePreview, setCtaImagePreview] = useState(null);
 
 
   // Misc
@@ -130,9 +131,10 @@ const AddSubService = () => {
           }
 
           // Load Proven Steps Section
-          if (service.provenStepsSection) {
-            setProvenStepsSection(service.provenStepsSection);
+          if (service.provenSteps) {
+            setProvenStepsSection(service.provenSteps);
           }
+
 
           // Load Image Section
           if (service.imageSection) {
@@ -147,17 +149,19 @@ const AddSubService = () => {
             service.faqs || { title: "", description: "", published: false }
           );
 
-          // Load Last Section
-          if (service.lastsection) {
-            setLastSection(service.lastsection);
-            if (service.lastsection.image) {
-              setLastSectionImagePreview(baseUrl + service.lastsection.image);
+          // Load CTA Section
+          if (service.cta) {
+            setCta(service.cta);
+            if (service.cta.image) {
+              setCtaImagePreview(baseUrl + service.cta.image);
             }
           }
+
 
           // Load Portfolio
           setPortfolio(
             service.portfolio || {
+              title: "",
               published: false,
             }
           );
@@ -200,7 +204,7 @@ const AddSubService = () => {
 
       // Intro Section
       formData.append(
-        "introSection",
+        "introduction",
         JSON.stringify({
           title: introSection.title,
           description: introSection.description,
@@ -221,10 +225,10 @@ const AddSubService = () => {
 
       // Proven Steps Section
       formData.append(
-        "provenStepsSection",
+        "provenSteps",
         JSON.stringify({
           title: provenStepsSection.title,
-          items: provenStepsSection.items,
+          steps: provenStepsSection.steps,
           published: provenStepsSection.published,
         })
       );
@@ -234,6 +238,7 @@ const AddSubService = () => {
         "imageSection",
         JSON.stringify({
           title: imageSection.title,
+          description: imageSection.description,
           image: imageSection.image,
           published: imageSection.published,
         })
@@ -249,19 +254,24 @@ const AddSubService = () => {
         })
       );
 
-      // Last Section
+      // CTA Section
       formData.append(
-        "lastsection",
+        "cta",
         JSON.stringify({
-          title: lastSection.title,
-          description: lastSection.description,
-          image: lastSection.image,
-          published: lastSection.published,
+          title: cta.title,
+          description: cta.description,
+          image: cta.image,
+          published: cta.published,
         })
       );
 
       // Portfolio
-      formData.append("portfolio_published", portfolio.published);
+      formData.append("portfolio",
+        JSON.stringify({
+          title: portfolio.title,
+          published: portfolio.published,
+        })
+      );
 
       // API call
       let response = subServiceId
@@ -535,7 +545,7 @@ const AddSubService = () => {
                 variant="h5"
                 sx={{ color: "var(--background-color)" }}
               >
-                Why Zemalt Section{" "}
+                Why Section{" "}
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
@@ -545,7 +555,7 @@ const AddSubService = () => {
               </Typography>
               <TextField
                 fullWidth
-                label="Why Zemalt Section Title"
+                label="Why Section Title"
                 multiline
                 rows={1}
                 value={whySection.title}
@@ -560,7 +570,7 @@ const AddSubService = () => {
               />
               <TextField
                 fullWidth
-                label="Why Zemalt Section Description"
+                label="Why Section Description"
                 multiline
                 rows={1}
                 value={whySection.description}
@@ -631,12 +641,13 @@ const AddSubService = () => {
               <TextField
                 fullWidth
                 label="Items (comma separated)"
-                rows={6}
-                value={provenStepsSection.items.join(", ")}
+                multiline
+                rows={4}
+                value={provenStepsSection.steps?.join(", ") || ""}
                 onChange={(e) =>
                   setProvenStepsSection({
                     ...provenStepsSection,
-                    items: e.target.value.split(",").map((i) => i.trim()),
+                    steps: e.target.value.split(",").map((i) => i.trim()),
                   })
                 }
               />
@@ -694,6 +705,21 @@ const AddSubService = () => {
                 }
                 error={!!errors["imageSection.title"]}
                 helperText={errors["imageSection.title"]}
+              />
+              <TextField
+                fullWidth
+                label="Image Section Description"
+                multiline
+                rows={1}
+                value={imageSection.description}
+                onChange={(e) =>
+                  setImageSection({
+                    ...imageSection,
+                    description: e.target.value,
+                  })
+                }
+                error={!!errors["imageSection.description"]}
+                helperText={errors["imageSection.description"]}
               />
               <Typography
                 variant="h6"
@@ -786,7 +812,7 @@ const AddSubService = () => {
               {tableUI4}
             </Box>
 
-            {/* Last Section */}
+            {/* Cta Section */}
             <Box
               sx={{
                 borderRadius: "var(--default-border-radius)",
@@ -802,7 +828,7 @@ const AddSubService = () => {
                 variant="h5"
                 sx={{ color: "var(--background-color)" }}
               >
-                Service Last Section{" "}
+                CTA Section{" "}
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
@@ -812,64 +838,48 @@ const AddSubService = () => {
               </Typography>
               <TextField
                 fullWidth
-                label="Last Section Title"
+                label="CTA Section Title"
                 multiline
                 rows={1}
-                value={lastSection.title}
+                value={cta.title}
                 onChange={(e) =>
-                  setLastSection({
-                    ...lastSection,
+                  setCta({
+                    ...cta,
                     title: e.target.value,
                   })
                 }
-                error={!!errors["lastSection.title"]}
-                helperText={errors["lastSection.title"]}
+                error={!!errors["cta.title"]}
+                helperText={errors["cta.title"]}
               />
               <TextField
                 fullWidth
-                label="Last Section Description"
+                label="CTA Section Description"
                 multiline
                 rows={6}
-                value={lastSection.description}
+                value={cta.description}
                 onChange={(e) =>
-                  setLastSection({
-                    ...lastSection,
+                  setCta({
+                    ...cta,
                     description: e.target.value,
                   })
                 }
-                error={!!errors["lastSection.description"]}
-                helperText={errors["lastSection.description"]}
-              />
-              <Typography
-                variant="h6"
-                mt={1}
-                sx={{ color: "var(--background-color)" }}
-              >
-                Upload Image
-              </Typography>
-              <UploadFile
-                multiple={false}
-                accept="image/*"
-                initialFile={lastSection.image}
-                error={errors["lastSection.image"]}
-                onUploadComplete={(path) =>
-                  setLastSection({ ...lastSection, image: path })
-                }
+                error={!!errors["cta.description"]}
+                helperText={errors["cta.description"]}
               />
 
               <FormControlLabel
                 control={
                   <Switch
-                    checked={lastSection.published}
+                    checked={cta.published}
                     onChange={() =>
-                      setLastSection({
-                        ...lastSection,
-                        published: !lastSection.published,
+                      setCta({
+                        ...cta,
+                        published: !cta.published,
                       })
                     }
                   />
                 }
-                label={lastSection.published ? "Published" : "Draft"}
+                label={cta.published ? "Published" : "Draft"}
               />
             </Box>
 
@@ -885,6 +895,7 @@ const AddSubService = () => {
                 height: "fit-content",
               }}
             >
+
               <Typography
                 variant="h5"
                 sx={{ color: "var(--background-color)" }}
@@ -897,6 +908,21 @@ const AddSubService = () => {
                   }}
                 />
               </Typography>
+              <TextField
+                fullWidth
+                label="Portfolio Section Title"
+                multiline
+                rows={1}
+                value={portfolio.title || ""}
+                onChange={(e) =>
+                  setPortfolio({
+                    ...portfolio,
+                    title: e.target.value,
+                  })
+                }
+                error={!!errors["portfolio.title"]}
+                helperText={errors["portfolio.title"]}
+              />
               <FormControlLabel
                 control={
                   <Switch
@@ -911,6 +937,7 @@ const AddSubService = () => {
                 }
                 label={portfolio.published ? "Published" : "Draft"}
               />
+
               {tableUI2}
             </Box>
           </>

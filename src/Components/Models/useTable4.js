@@ -17,11 +17,11 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { formatDate } from "../../Utils/Formatedate";
 import truncateText from "../../truncateText";
-import {  deleteAllFaqs } from "../../DAL/delete";
+import {  deleteAllFaqs, deleteAllSubFaqs } from "../../DAL/delete";
 import { useAlert } from "../Alert/AlertContext";
 import DeleteModal from "./confirmDeleteModel";
 import { useParams } from "react-router-dom";
-import FaqsModel from "./faqsModel";
+import SubServiceFaqModal from "./SubServiceFaqModal";
 
 export function useTable4({ attributes1, tableType, data = []  }) {
   const { showAlert } = useAlert(); // Since you created a custom hook
@@ -32,7 +32,7 @@ export function useTable4({ attributes1, tableType, data = []  }) {
   const [modelData, setModelData] = useState({});
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  const {id} = useParams()
+  const {subServiceId} = useParams()
 
 
 
@@ -58,7 +58,7 @@ export function useTable4({ attributes1, tableType, data = []  }) {
     console.log("Attempting to delete IDs:", selected);
 
     try {
-      let response = await deleteAllFaqs({ ids: selected });
+      let response = await deleteAllSubFaqs({ ids: selected });
 
       if (response.status === 200) {
         showAlert("success", response.message || "Deleted successfully");
@@ -96,15 +96,15 @@ export function useTable4({ attributes1, tableType, data = []  }) {
   
 
   return {
-    tableUI1: (
+    tableUI4: (
       <>
-        <FaqsModel
+        <SubServiceFaqModal
           open={openFaqsModel}
           setOpen={setOpenFaqsModel}
           Modeltype={modeltype}
           Modeldata={modelData}
           onResponse={handleResponse}
-          serviceid={id}
+          serviceid={subServiceId}
         />
 
         <DeleteModal

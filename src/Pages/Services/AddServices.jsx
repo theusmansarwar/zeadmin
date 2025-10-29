@@ -76,76 +76,42 @@ const AddServices = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // --- Fetch existing service if editing ---
-  useEffect(() => {
+ 
+ const fetchService = async () => {
     if (!id) return;
+    try {
+      const response = await fetchservicebyid(id);
+      if (response.status === 200) {
+        const service = response.service;
 
-    const fetchService = async () => {
-      try {
-        const response = await fetchservicebyid(id);
-        if (response.status === 200) {
-          const service = response.service;
+        setTitle(service.title || "");
+        setDescription(service.description || "");
+        setMetaDescription(service.metaDescription || "");
+        setSlug(service.slug || "");
+        setShortDescription(service.short_description || "");
+        setIsVisible(service.published || false);
+        setIcon(service.icon || "");
 
-          setTitle(service.title || "");
-          setDescription(service.description || "");
-          setMetaDescription(service.metaDescription || "");
-          setSlug(service.slug || "");
-          setShortDescription(service.short_description || "");
-          setIsVisible(service.published || false);
-          setIcon(service.icon || "");
+        setFaqs(service.faqs || {});
+        setPortfolio(service.portfolio || {});
+        setSubServices(service.subServices || {});
+        setImageSection(service.imageSection || {});
+        setLastSection(service.lastSection || {});
 
-          setFaqs(
-            service.faqs || { title: "", description: "", published: false }
-          );
-          setPortfolio(
-            service.portfolio || {
-              title: "",
-              description: "",
-              published: false,
-            }
-          );
-
-          //  Sub Services (capital S)
-          if (service.subServices) {
-            setSubServices({
-              title: service.subServices.title || "",
-              description: service.subServices.description || "",
-              published: service.subServices.published || false,
-              items: service.subServices.items || [],
-            });
-          }
-
-          //  Image Section
-          if (service.imageSection) {
-            setImageSection({
-              title: service.imageSection.title || "",
-              image: service.imageSection.image || null,
-              published: service.imageSection.published || false,
-            });
-          }
-
-          // Last Section 
-          if (service.lastSection) {
-            setLastSection({
-              title: service.lastSection.title || "",
-              description: service.lastSection.description || "",
-              image: service.lastSection.image || null,
-              published: service.lastSection.published || false,
-            });
-          }
-
-          // Icon Preview
-          if (service.icon) {
-            setIconPreview(baseUrl + service.icon);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching service:", error);
+        if (service.icon) setIconPreview(baseUrl + service.icon);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching service:", error);
+    }
+  };
 
+
+  // Keep the useEffect to auto-load
+  useEffect(() => {
     fetchService();
   }, [id]);
+
+
 
   // --- Submit handler ---
   const handleSubmit = async (event) => {
@@ -257,6 +223,7 @@ const AddServices = () => {
 
   const { tableUI3 } = useTable3({
     attributes3,
+    reFetch:fetchService,
     tableType: "Sub Services",
     data: subServices?.items || [],
   });

@@ -134,6 +134,19 @@ export const deleteAllFaqs = async (data) => {
   
   return invokeApi(reqObj);
 };
+export const deleteAllSubFaqs = async (data) => {
+  const reqObj = {
+    path: `/faqs/delete-sub`,
+    method: "DELETE", // Ensure correct capitalization
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
 export const deleteAllWhyService = async (data) => {
   const reqObj = {
     path: `/WhyService/delete`,
@@ -309,7 +322,7 @@ export const deleteAllComments = async (data) => {
 };
 export const deleteAllSubServices = async (data) => {
   const reqObj = {
-    path: `/subservices/delete`,
+    path: `/sub-service/delete-many`,
     method: "DELETE", 
     headers: {
       "Content-Type": "application/json",

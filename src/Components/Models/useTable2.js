@@ -32,7 +32,7 @@ export function useTable2({ attributes2, tableType, data = []  }) {
   const [modelData, setModelData] = useState({});
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  const {id} = useParams()
+  const {subServiceId} = useParams()
 
 
 
@@ -103,7 +103,7 @@ export function useTable2({ attributes2, tableType, data = []  }) {
              Modeltype={modeltype}
              Modeldata={modelData}
              onResponse={handleResponse}
-             serviceid={id}
+             serviceid={subServiceId}
            />
    
            <DeleteModal

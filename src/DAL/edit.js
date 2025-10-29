@@ -68,6 +68,17 @@ export const updateFaq = async (id, data) => {
   };
   return invokeApi(reqObj);
 };
+export const updateSubFaq = async (id, data) => {
+  const reqObj = {
+    path: `/faqs/update-sub/${id}`,
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 export const updateWhyNewService = async (id, data) => {
   const reqObj = {
     path: `/WhyService/update/${id}`,

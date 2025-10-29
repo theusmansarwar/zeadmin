@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Box, Button, Typography, Modal, TextField } from "@mui/material";
-import { createNewFaq } from "../../DAL/create";
-import { updateFaq } from "../../DAL/edit";
+import { createNewFaq, createNewSubFaq } from "../../DAL/create";
+import { updateFaq, updateSubFaq } from "../../DAL/edit";
 
 const style = {
   position: "absolute",
@@ -46,9 +46,9 @@ export default function SubServiceFaqModal({
 
     let response;
     if (Modeltype === "Add") {
-      response = await createNewFaq(faqData);
+      response = await createNewSubFaq(faqData);
     } else {
-      response = await updateFaq(id, faqData);
+      response = await updateSubFaq(id, faqData);
     }
 
     if (response.status === 201 || response.status === 200) {

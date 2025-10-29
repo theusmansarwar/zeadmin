@@ -22,6 +22,17 @@ export const createNewFaq = async (data) => {
   };
   return invokeApi(reqObj);
 };
+export const createNewSubFaq = async (data) => {
+  const reqObj = {
+    path: "/faqs/add-sub",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 export const createnewuser = async (data) => {
   const reqObj = {
     path: "/admin/register",
