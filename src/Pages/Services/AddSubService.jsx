@@ -37,6 +37,7 @@ const AddSubService = () => {
 
   // Service states
   const [title, setTitle] = useState("");
+  const [metaTitle, setMetaTitle] = useState("");
   const [description, setDescription] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [slug, setSlug] = useState("");
@@ -110,6 +111,7 @@ const AddSubService = () => {
         if (response.status === 200) {
           const service = response.service;
           setTitle(service.title || "");
+          setMetaTitle(service.metatitle || "");
           setDescription(service.description || "");
           setMetaDescription(service.metaDescription || "");
           setSlug(service.slug || "");
@@ -188,6 +190,7 @@ const AddSubService = () => {
     try {
       const formData = new FormData();
       formData.append("title", title);
+       formData.append("metatitle", metaTitle);
       formData.append("description", description);
       formData.append("short_description", short_description);
       formData.append("metaDescription", metaDescription);
@@ -380,6 +383,14 @@ const AddSubService = () => {
           onChange={(e) => setTitle(e.target.value)}
           error={!!errors.title}
           helperText={errors.title}
+        />
+        <TextField
+          fullWidth
+          label="Meta Title"
+          value={metaTitle}
+          onChange={(e) => setMetaTitle(e.target.value)}
+          error={!!errors.metatitle}
+          helperText={errors.metatitle}
         />
         <TextField
           fullWidth
