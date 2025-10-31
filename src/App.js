@@ -77,54 +77,52 @@ const App = ({ onLogout }) => {
   const allItems = [
     { id: 1, name: "Dashboard", route: "/dashboard", icon: <MdDashboard /> },
     { id: 2, name: "Leads", route: "/leads", icon: <MdWork /> },
-    {
+     {
       id: 3,
+      name: "Services",
+      icon: <FaGears />,
+      route: "/services",
+    },
+    {
+      id: 4,
       name: "Industries",
       route: "/industries",
       icon: <MdBusinessCenter />,
     },
+    
+     {
+      id: 5,
+      name: "Case Studies",
+      route: "/casestudies",
+      icon: <FaBookOpen />,
+    },
     {
-      id: 4,
+      id: 6,
       name: "Blogs",
       icon: <FaBlog />,
       children: [
-        { id: 41, name: "All Blogs", route: "/blogs", icon: <MdArticle /> },
+        { id: 1, name: "All Blogs", route: "/blogs", icon: <MdArticle /> },
         {
-          id: 42,
+          id: 62,
           name: "Featured Blogs",
           route: "/blogs/featured",
           icon: <MdOutlineFeaturedPlayList />,
         },
         {
-          id: 43,
+          id: 63,
           name: "Categories",
           route: "/categories",
           icon: <MdCategory />,
         },
-        { id: 44, name: "Comments", route: "/comments", icon: <MdComment /> },
+        { id: 64, name: "Comments", route: "/comments", icon: <MdComment /> },
       ],
     },
 
     {
-      id: 5,
+      id: 7,
       name: "Testimonials",
       route: "/testimonials",
       icon: <FaQuoteRight />,
-    },
-    {
-      id: 6,
-      name: "Users",
-      icon: <FaUser />,
-      children: [
-        { id: 61, name: "All Users", route: "/users", icon: <FaUsers /> },
-        { id: 62, name: "User Types", route: "/usertype", icon: <FaUserCog /> },
-      ],
-    },
-    {
-      id: 7,
-      name: "Case Studies",
-      route: "/casestudies",
-      icon: <FaBookOpen />,
     },
     {
       id: 8,
@@ -140,31 +138,37 @@ const App = ({ onLogout }) => {
         },
       ],
     },
+   
     {
       id: 9,
-      name: "Services",
-      icon: <FaGears />,
-      route: "/services",
-    },
-    {
-      id: 10,
       name: "Jobs & Applicants",
       icon: <BsMicrosoftTeams />,
       children: [
         {
-          id: 101,
+          id: 91,
           name: "Jobs",
           route: "/jobs",
           icon: <SiLibreofficewriter />,
         },
         {
-          id: 102,
+          id: 92,
           name: "Applicants",
           route: "/applicants",
           icon: <PiUsersFourFill />,
         },
       ],
     },
+    {
+      id: 10,
+      name: "Users",
+      icon: <FaUser />,
+      children: [
+        { id: 101, name: "All Users", route: "/users", icon: <FaUsers /> },
+        { id: 102, name: "User Types", route: "/usertype", icon: <FaUserCog /> },
+      ],
+    },
+   
+    
   ];
 
   useEffect(() => {
