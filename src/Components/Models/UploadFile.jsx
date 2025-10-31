@@ -161,7 +161,8 @@ const UploadFile = ({
         <Box
           sx={{
             width: 180,
-            border: "1px solid #ddd",
+            border: "1px solid #bfbebeff",
+            
             borderRadius: "8px",
             overflow: "hidden",
             position: "relative",
@@ -199,6 +200,8 @@ const UploadFile = ({
                 height: "100px",
                 objectFit: "cover",
                 borderRadius: "4px",
+                border: "1px solid #bfbebeff",
+                backgroundColor:'#e2e2e2ff'
               }}
             />
           )}

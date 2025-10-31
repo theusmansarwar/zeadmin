@@ -377,7 +377,7 @@ const AddServices = () => {
                   <Switch
                     checked={subServices.published}
                     onChange={() =>
-                      setPortfolio({
+                      setSubServices({
                         ...subServices,
                         published: !subServices.published,
                       })
