@@ -190,7 +190,7 @@ const AddSubService = () => {
     try {
       const formData = new FormData();
       formData.append("title", title);
-       formData.append("metatitle", metaTitle);
+      formData.append("metatitle", metaTitle);
       formData.append("description", description);
       formData.append("short_description", short_description);
       formData.append("metaDescription", metaDescription);
@@ -404,7 +404,7 @@ const AddSubService = () => {
           fullWidth
           label="Short Description"
           multiline
-          rows={2}
+          rows={4}
           value={short_description}
           onChange={(e) => setShortDescription(e.target.value)}
           error={!!errors.short_description}
@@ -496,7 +496,7 @@ const AddSubService = () => {
                 fullWidth
                 label="Intro Section Description"
                 multiline
-                rows={1}
+                rows={4}
                 value={introSection.description}
                 onChange={(e) =>
                   setIntroSection({
@@ -583,7 +583,7 @@ const AddSubService = () => {
                 fullWidth
                 label="Why Section Description"
                 multiline
-                rows={1}
+                rows={4}
                 value={whySection.description}
                 onChange={(e) =>
                   setWhySection({
@@ -721,7 +721,7 @@ const AddSubService = () => {
                 fullWidth
                 label="Image Section Description"
                 multiline
-                rows={1}
+                rows={4}
                 value={imageSection.description}
                 onChange={(e) =>
                   setImageSection({
@@ -866,7 +866,7 @@ const AddSubService = () => {
                 fullWidth
                 label="CTA Section Description"
                 multiline
-                rows={6}
+                rows={2}
                 value={cta.description}
                 onChange={(e) =>
                   setCta({

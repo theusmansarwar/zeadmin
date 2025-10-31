@@ -375,16 +375,16 @@ const AddServices = () => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={portfolio.published}
+                    checked={subServices.published}
                     onChange={() =>
                       setPortfolio({
-                        ...portfolio,
-                        published: !portfolio.published,
+                        ...subServices,
+                        published: !subServices.published,
                       })
                     }
                   />
                 }
-                label={portfolio.published ? "Published" : "Draft"}
+                label={subServices.published ? "Published" : "Draft"}
               />
 
               {/* Sub Services Table */}
