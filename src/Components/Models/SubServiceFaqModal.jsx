@@ -56,6 +56,8 @@ export default function SubServiceFaqModal({
     } else {
       onResponse({ messageType: "error", message: response.message });
     }
+    setQuestion("");
+    setAnswer("");
     setOpen(false);
   };
 

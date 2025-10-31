@@ -56,6 +56,8 @@ export default function FaqsModel({
     } else {
       onResponse({ messageType: "error", message: response.message });
     }
+    setQuestion("");
+    setAnswer("");
     setOpen(false);
   };
 
