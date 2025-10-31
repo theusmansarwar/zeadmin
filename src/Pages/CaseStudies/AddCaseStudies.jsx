@@ -20,15 +20,16 @@ const AddCaseStudies = () => {
   const { showAlert } = useAlert();
   const isEdit = !!id;
 
-  // ✅ Separate states
+  // Separate states
   const [name, setName] = useState("");
+  const [shortdescription, setShortDescription] = useState("");
   const [description, setDescription] = useState("");
   const [detail, setDetail] = useState("");
   const [file, setFile] = useState("");
   const [image, setImage] = useState("");
   const [published, setPublished] = useState(false);
 
-  // ✅ Error messages state
+  //  Error messages state
   const [errors, setErrors] = useState({});
 
   // Load case study data in edit mode
@@ -37,6 +38,7 @@ const AddCaseStudies = () => {
       const response = await fetchcasestudy(id);
       const data = response.CaseStudy;
       setName(data?.name || "");
+      setShortDescription(data?.shortdescription || "");
       setDescription(data?.description || "");
       setDetail(data?.detail || "");
       setFile(data?.file || "");
@@ -47,7 +49,7 @@ const AddCaseStudies = () => {
   }, [isEdit, id]);
 
   const handleSubmit = async () => {
-    const payload = { name, description, detail, file, image, published };
+    const payload = { name,shortdescription, description, detail, file, image, published };
 
     try {
       let response;
@@ -88,6 +90,15 @@ const AddCaseStudies = () => {
         helperText={errors.name}
       />
 
+      <TextField
+        fullWidth
+        label="Short Description"
+        value={shortdescription}
+        onChange={(e) => setShortDescription(e.target.value)}
+        margin="normal"
+        error={!!errors.shortdescription}
+        helperText={errors.shortdescription}
+      />
       <TextField
         fullWidth
         label="Description"

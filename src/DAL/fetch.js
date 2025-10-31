@@ -302,18 +302,7 @@ export const fetchallLeads = async ( page, rowsPerPages) => {
   };
   return invokeApi(reqObj);
 };
-export const fetchSingleLeads = async (id) => {
-  const reqObj = {
-    path: `/Lead/${id}`,
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
 
-    body: {},
-  };
-  return invokeApi(reqObj);
-};
 export const fetchallTeamCategories = async (id) => {
   const reqObj = {
     path: `/teamcategory/view`,

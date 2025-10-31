@@ -1,7 +1,6 @@
 import { invokeApi } from "../Utils/InvokeApi";
 
 export const login = async (formData) => {
-  console.log("Coming data is ", ...formData);
   const reqObj = {
     path: "/admin/login",
     method: "POST",
