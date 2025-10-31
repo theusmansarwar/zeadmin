@@ -116,7 +116,7 @@ const AddCaseStudies = () => {
         onChange={(e) => setDetail(e.target.value)}
         margin="normal"
         multiline
-        rows={3}
+        rows={8}
         error={!!errors.detail}
         helperText={errors.detail}
       />
