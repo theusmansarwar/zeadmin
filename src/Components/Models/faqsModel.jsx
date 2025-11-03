@@ -26,12 +26,14 @@ export default function FaqsModel({
   const [question, setQuestion] = React.useState(Modeldata?.question || "");
   const [answer, setAnswer] = React.useState(Modeldata?.answer || "");
   const [id, setId] = React.useState(Modeldata?._id || "");
+  const [errors, setErrors] = React.useState({});
 
   React.useEffect(() => {
     setQuestion(Modeldata?.question || "");
     setAnswer(Modeldata?.answer || "");
     setId(Modeldata?._id || "");
-  }, [Modeldata]);
+    setErrors({});
+  }, [Modeldata, open, setOpen]);
 
   const handleClose = () => setOpen(false);
 
@@ -53,12 +55,23 @@ export default function FaqsModel({
 
     if (response.status === 201 || response.status === 200) {
       onResponse({ messageType: "success", message: response.message });
-    } else {
+      setQuestion("");
+      setAnswer("");
+      setOpen(false);
+
+    } else if (response.missingFields) {
+      const newErrors = {};
+      response.missingFields.forEach((field) => {
+        newErrors[field.name] = field.message;
+      });
+      setErrors(newErrors);
+    }
+
+
+    else {
       onResponse({ messageType: "error", message: response.message });
     }
-    setQuestion("");
-    setAnswer("");
-    setOpen(false);
+
   };
 
   return (
@@ -81,6 +94,8 @@ export default function FaqsModel({
           label="FAQ Question"
           variant="outlined"
           value={question}
+          error={!!errors.question}
+          helperText={errors.question}
           onChange={(e) => setQuestion(e.target.value)}
         />
 
@@ -93,6 +108,8 @@ export default function FaqsModel({
           label="FAQ Answer"
           variant="outlined"
           value={answer}
+          error={!!errors.answer}
+          helperText={errors.answer}
           onChange={(e) => setAnswer(e.target.value)}
         />
 

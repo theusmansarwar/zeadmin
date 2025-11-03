@@ -77,8 +77,8 @@ const AddServices = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
- 
- const fetchService = async () => {
+
+  const fetchService = async () => {
     if (!id) return;
     try {
       const response = await fetchservicebyid(id);
@@ -226,7 +226,7 @@ const AddServices = () => {
 
   const { tableUI3 } = useTable3({
     attributes3,
-    reFetch:fetchService,
+    reFetch: fetchService,
     tableType: "Sub Services",
     data: subServices?.items || [],
   });
@@ -285,7 +285,7 @@ const AddServices = () => {
           error={!!errors.title}
           helperText={errors.title}
         />
-         <TextField
+        <TextField
           fullWidth
           label="Meta Title"
           value={metaTitle}
@@ -389,6 +389,7 @@ const AddServices = () => {
 
               {/* Sub Services Table */}
               {tableUI3}
+              <p style={{ color: "red", fontSize: "12px" }}>{errors["subServices.items"]}</p>
             </Box>
 
             <Box
@@ -439,6 +440,7 @@ const AddServices = () => {
               <UploadFile
                 multiple={false}
                 accept="image/*"
+                error={errors["imageSection.image"]}
                 initialFile={
                   imageSection.image ? baseUrl + imageSection.image : null
                 }
@@ -517,7 +519,9 @@ const AddServices = () => {
                 }
                 label={faqs.published ? "Published" : "Draft"}
               />{" "}
+
               {tableUI1}
+              <p style={{ color: "red", fontSize: "12px" }}>{errors["faqs.items"]}</p>
             </Box>
             <Box
               sx={{
@@ -554,8 +558,8 @@ const AddServices = () => {
                     title: e.target.value,
                   })
                 }
-                error={!!errors["lastsection.title"]}
-                helperText={errors["lastsection.title"]}
+                error={!!errors["lastSection.title"]}
+                helperText={errors["lastSection.title"]}
               />
               <TextField
                 fullWidth
@@ -569,8 +573,8 @@ const AddServices = () => {
                     description: e.target.value,
                   })
                 }
-                error={!!errors["lastsection.description"]}
-                helperText={errors["lastsection.description"]}
+                error={!!errors["lastSection.description"]}
+                helperText={errors["lastSection.description"]}
               />
               <Typography
                 variant="h6"
@@ -582,6 +586,7 @@ const AddServices = () => {
               <UploadFile
                 multiple={false}
                 accept="image/*"
+                error={errors["lastSection.image"]}
                 initialFile={
                   lastSection.image ? baseUrl + lastSection.image : null
                 }

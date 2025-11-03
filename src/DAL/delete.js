@@ -147,6 +147,19 @@ export const deleteAllSubFaqs = async (data) => {
   
   return invokeApi(reqObj);
 };
+export const deleteAllProvenSteps = async (data) => {
+  const reqObj = {
+    path: `/provenSteps/delete`,
+    method: "DELETE", // Ensure correct capitalization
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
 export const deleteAllWhyService = async (data) => {
   const reqObj = {
     path: `/WhyService/delete`,

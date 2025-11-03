@@ -24,6 +24,7 @@ import InfoModal from "../../Components/Models/InfoModal";
 import InfoImageModel from "../../Components/Models/InfoImageModal";
 import UploadFile from "../../Components/Models/UploadFile";
 import { useTable4 } from "../../Components/Models/useTable4";
+import { useTable5 } from "../../Components/Models/useTable5";
 
 const AddSubService = () => {
   const navigate = useNavigate();
@@ -62,7 +63,6 @@ const AddSubService = () => {
 
   const [provenStepsSection, setProvenStepsSection] = useState({
     title: "",
-    steps: [],
     published: false,
   });
 
@@ -133,9 +133,10 @@ const AddSubService = () => {
           }
 
           // Load Proven Steps Section
-          if (service.provenSteps) {
-            setProvenStepsSection(service.provenSteps);
-          }
+
+          setProvenStepsSection(
+            service.provenSteps || { title: "", published: false }
+          );
 
 
           // Load Image Section
@@ -231,7 +232,6 @@ const AddSubService = () => {
         "provenSteps",
         JSON.stringify({
           title: provenStepsSection.title,
-          steps: provenStepsSection.steps,
           published: provenStepsSection.published,
         })
       );
@@ -327,6 +327,16 @@ const AddSubService = () => {
     attributes2,
     tableType: "Portfolio",
     data: portfolio?.items || [],
+  });
+  const attributes5 = [
+    { id: "question", label: "Step Title" },
+    { id: "answer", label: "Step Description" },
+  ];
+
+  const { tableUI5 } = useTable5({
+    attributes5,
+    tableType: "Proven Steps",
+    data: provenStepsSection?.items || [],
   });
 
   const openinfobox = (heading, image) => {
@@ -489,8 +499,8 @@ const AddSubService = () => {
                     title: e.target.value,
                   })
                 }
-                error={!!errors["introSection.title"]}
-                helperText={errors["introSection.title"]}
+                error={!!errors["introduction.title"]}
+                helperText={errors["introduction.title"]}
               />
               <TextField
                 fullWidth
@@ -504,8 +514,8 @@ const AddSubService = () => {
                     description: e.target.value,
                   })
                 }
-                error={!!errors["introSection.description"]}
-                helperText={errors["introSection.description"]}
+                error={!!errors["introduction.description"]}
+                helperText={errors["introduction.description"]}
               />
               <Typography
                 variant="h6"
@@ -518,7 +528,7 @@ const AddSubService = () => {
                 multiple={false}
                 accept="image/*"
                 initialFile={introSection.image}
-                error={errors["introSection.image"]}
+                error={errors["introduction.image"]}
                 onUploadComplete={(path) =>
                   setIntroSection({ ...introSection, image: path })
                 }
@@ -630,53 +640,34 @@ const AddSubService = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("How We Delivered Section", howwedelivered);
+                    openinfobox("FAQs Section", faqssectionimg);
                   }}
                 />
               </Typography>
               <TextField
                 fullWidth
-                label="Proven Steps Section Title"
-                multiline
-                rows={1}
+                label="Proven Steps Title"
                 value={provenStepsSection.title}
-                onChange={(e) =>
-                  setProvenStepsSection({
-                    ...provenStepsSection,
-                    title: e.target.value,
-                  })
-                }
-                error={!!errors["provenStepsSection.title"]}
-                helperText={errors["provenStepsSection.title"]}
+                onChange={(e) => setProvenStepsSection({ ...provenStepsSection, title: e.target.value })}
+                error={!!errors["provenSteps.title"]}
+                helperText={errors["provenSteps.title"]}
               />
-              <TextField
-                fullWidth
-                label="Items (comma separated)"
-                multiline
-                rows={4}
-                value={provenStepsSection.steps?.join(", ") || ""}
-                onChange={(e) =>
-                  setProvenStepsSection({
-                    ...provenStepsSection,
-                    steps: e.target.value.split(",").map((i) => i.trim()),
-                  })
-                }
-              />
+
               <FormControlLabel
                 control={
                   <Switch
                     checked={provenStepsSection.published}
                     onChange={() =>
-                      setProvenStepsSection({
-                        ...provenStepsSection,
-                        published: !provenStepsSection.published,
-                      })
+                      setProvenStepsSection({ ...provenStepsSection, published: !provenStepsSection.published })
                     }
                   />
                 }
                 label={provenStepsSection.published ? "Published" : "Draft"}
               />
+              {tableUI5}
+              <p style={{ color: "red", fontSize: "12px" }}>{errors["provenSteps.items"]}</p>
             </Box>
+
 
             {/* Image Section */}
             <Box
@@ -821,6 +812,7 @@ const AddSubService = () => {
                 label={faqs.published ? "Published" : "Draft"}
               />
               {tableUI4}
+              <p style={{ color: "red", fontSize: "12px" }}>{errors["faqs.items"]}</p>
             </Box>
 
             {/* Cta Section */}
@@ -950,6 +942,7 @@ const AddSubService = () => {
               />
 
               {tableUI2}
+              <p style={{ color: "red", fontSize: "12px" }}>{errors["portfolio.items"]}</p>
             </Box>
           </>
         )}

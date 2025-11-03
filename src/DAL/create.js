@@ -11,6 +11,17 @@ export const createBlog = async (data) => {
   };
   return invokeApi(reqObj);
 };
+export const createNewProvenStep = async (data) => {
+  const reqObj = {
+    path: "/provenSteps/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 export const createNewFaq = async (data) => {
   const reqObj = {
     path: "/faqs/add",
