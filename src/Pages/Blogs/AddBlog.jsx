@@ -11,7 +11,6 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import { IoMdCloseCircle } from "react-icons/io";
 import JoditEditor from "jodit-react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../Components/Alert/AlertContext";
@@ -19,7 +18,6 @@ import { fetchBlogById, fetchcategorylist } from "../../DAL/fetch";
 import { updateBlog } from "../../DAL/edit";
 import { createBlog } from "../../DAL/create";
 import { baseUrl } from "../../Config/Config";
-import { FaCloudUploadAlt } from "react-icons/fa";
 import UploadFile from "../../Components/Models/UploadFile";
 
 const style = {
@@ -50,7 +48,6 @@ const AddBlog = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const fileInputRef = useRef(null);
   const editor = useRef(null);
 
   const config = useMemo(

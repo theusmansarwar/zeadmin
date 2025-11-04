@@ -200,7 +200,12 @@ const AddTestimonial = () => {
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3, gap: 2 }}>
         <Button
           variant="outlined"
-          color="secondary"
+          sx={{
+            background: "var(--secondary-color, #B1B1B1)",
+            color: "#fff",
+            borderRadius: "6px",
+            "&:hover": { background: "#999" },
+          }}
           onClick={() => navigate("/testimonials")}
         >
           Cancel

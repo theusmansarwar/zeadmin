@@ -131,7 +131,7 @@ export default function AddCategories({
               background: "var(--background-color)",
               color: "var(--text-color)",
               borderRadius: "var(--default-border-radius)",
-              "&:hover": { background: "var(--vertical-gradient)" },
+              "&:hover": { opacity:"0.9" },
             }}
           >
             Submit

@@ -58,6 +58,7 @@ import { IoIosArrowDown, IoIosArrowForward, IoIosPeople } from "react-icons/io";
 import { SiLibreofficewriter } from "react-icons/si";
 import { Tooltip } from "@mui/material";
 import AddSubService from "./Pages/Services/AddSubService";
+import Roles from "./Pages/Roles/Roles";
 const App = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -134,6 +135,12 @@ const App = ({ onLogout }) => {
           id: 82,
           name: "Team Categories",
           route: "/team-categories",
+          icon: <RiTeamLine />,
+        },
+        {
+          id: 83,
+          name: "Team Roles",
+          route: "/roles",
           icon: <RiTeamLine />,
         },
       ],
@@ -311,6 +318,7 @@ const App = ({ onLogout }) => {
           <Route path="/add-team" element={<AddTeam />} />
           <Route path="/edit-team/:id" element={<AddTeam />} />
           <Route path="/team-categories" element={<TeamCategory />} />
+           <Route path="/roles" element={<Roles />} />
 
           <Route path="/applications" element={<Applications />} />
           <Route path="/view-application/:id" element={<ViewApplication />} />

@@ -89,7 +89,7 @@ export default function AddTeamCategories({
           variant="outlined"
           name="name"
           value={name}
-          error={!!errors.name}
+          error={!!errors.name} 
           helperText={errors.name}
           onChange={(e) => setName(e.target.value)}
         />

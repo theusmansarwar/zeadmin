@@ -3,7 +3,7 @@ import { invokeApi } from "../Utils/InvokeApi";
 export const deleteAllBlogs = async (data) => {
   const reqObj = {
     path: `/blog/deleteMultiple`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -13,11 +13,10 @@ export const deleteAllBlogs = async (data) => {
   
   return invokeApi(reqObj);
 };
-//////////////////////
 export const deleteAllFeaturedBlogs = async (data) => {
   const reqObj = {
     path: `/blog/deletefeatured`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -27,11 +26,10 @@ export const deleteAllFeaturedBlogs = async (data) => {
   
   return invokeApi(reqObj);
 };
-//////////
 export const deleteAllCategories = async (data) => {
   const reqObj = {
     path: `/category/delete`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -44,7 +42,7 @@ export const deleteAllCategories = async (data) => {
 export const deleteAllTeam = async (data) => {
   const reqObj = {
     path: `/team/delete`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -57,7 +55,7 @@ export const deleteAllTeam = async (data) => {
 export const deleteAllCaseStudy = async (data) => {
   const reqObj = {
     path: `/casestudy/delete`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -70,7 +68,7 @@ export const deleteAllCaseStudy = async (data) => {
 export const deleteAllIndustries = async (data) => {
   const reqObj = {
     path: `/industry/delete`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -84,7 +82,7 @@ export const deleteAllIndustries = async (data) => {
 export const deleteAllTeamCategories = async (data) => {
   const reqObj = {
     path: `/teamcategory/delete`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -94,10 +92,10 @@ export const deleteAllTeamCategories = async (data) => {
   
   return invokeApi(reqObj);
 };
-export const deleteAllTickets = async (data) => {
+export const deleteAllRole = async (data) => {
   const reqObj = {
-    path: `/ticket/deletemultiple`,
-    method: "DELETE", // Ensure correct capitalization
+    path: `/role/delete`,
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -107,11 +105,11 @@ export const deleteAllTickets = async (data) => {
   
   return invokeApi(reqObj);
 };
-////////////////////////
+
 export const deleteAllServicesCategories = async (data) => {
   const reqObj = {
     path: `/servicecategory/delete`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -124,7 +122,7 @@ export const deleteAllServicesCategories = async (data) => {
 export const deleteAllFaqs = async (data) => {
   const reqObj = {
     path: `/faqs/delete`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -137,7 +135,7 @@ export const deleteAllFaqs = async (data) => {
 export const deleteAllSubFaqs = async (data) => {
   const reqObj = {
     path: `/faqs/delete-sub`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -150,7 +148,7 @@ export const deleteAllSubFaqs = async (data) => {
 export const deleteAllProvenSteps = async (data) => {
   const reqObj = {
     path: `/provenSteps/delete`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -163,7 +161,7 @@ export const deleteAllProvenSteps = async (data) => {
 export const deleteAllWhyService = async (data) => {
   const reqObj = {
     path: `/WhyService/delete`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -176,7 +174,7 @@ export const deleteAllWhyService = async (data) => {
 export const deleteAllHowwedo = async (data) => {
   const reqObj = {
     path: `/howwedo/deletemultiple`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -189,21 +187,7 @@ export const deleteAllHowwedo = async (data) => {
 export const deleteAllServices = async (data) => {
   const reqObj = {
     path: `/service/delete-many`,
-    method: "DELETE", // Ensure correct capitalization
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
-    postData: data,
-  };
-  
-  return invokeApi(reqObj);
-};
-////////////////////////
-export const deleteOfferingById = async (id,data) => {
-  const reqObj = {
-    path: `/offering/delete${id}`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -216,33 +200,7 @@ export const deleteOfferingById = async (id,data) => {
 export const deleteAllPortfolio = async (data) => {
   const reqObj = {
     path: `/portfolio/delete-many`,
-    method: "DELETE", // Ensure correct capitalization
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
-    postData: data,
-  };
-  
-  return invokeApi(reqObj);
-};
-export const deleteAllSuccessStories = async (data) => {
-  const reqObj = {
-    path: `/successstories/delete-many`,
-    method: "DELETE", // Ensure correct capitalization
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
-    postData: data,
-  };
-  
-  return invokeApi(reqObj);
-};
-export const deleteSuccessStoryById = async (id,data) => {
-  const reqObj = {
-    path: `/successstories/delete${id}`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -253,10 +211,12 @@ export const deleteSuccessStoryById = async (id,data) => {
   return invokeApi(reqObj);
 };
 
+
+
 export const deleteAllApplications = async (data) => {
   const reqObj = {
     path: `/applications/ApplicationDelete`,
-    method: "DELETE", // Ensure correct capitalization
+    method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("Token")}`,

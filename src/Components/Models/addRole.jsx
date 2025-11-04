@@ -8,8 +8,8 @@ import {
   Switch,
   FormControlLabel,
 } from "@mui/material";
-import { createNewSuccessStory } from "../../DAL/create";
-import { updateSuccessStories } from "../../DAL/edit";
+import { createnewRole } from "../../DAL/create";
+import { updateRole } from "../../DAL/edit";
 
 const style = {
   position: "absolute",
@@ -23,27 +23,13 @@ const style = {
   borderRadius: "12px",
 };
 
-export default function SuccessStories({
-  open,
-  setOpen,
-  Modeltype,
-  Modeldata,
-  onResponse,
-  serviceid,
-}) {
+export default function Roles({ open, setOpen, Modeltype, Modeldata, onResponse }) {
   const [name, setName] = React.useState(Modeldata?.name || "");
-  const [itemsText, setItemsText] = React.useState(
-    Modeldata?.items ? Modeldata.items.join("\n") : ""
-  );
-
-  const [published, setPublished] = React.useState(
-    Modeldata?.published || false
-  );
+  const [published, setPublished] = React.useState(Modeldata?.published || false);
   const [id, setId] = React.useState(Modeldata?._id || "");
 
   React.useEffect(() => {
     setName(Modeldata?.name || "");
-    setItemsText(Modeldata?.items ? Modeldata.items.join("\n") : "");
     setPublished(Modeldata?.published || false);
     setId(Modeldata?._id || "");
   }, [Modeldata]);
@@ -52,31 +38,25 @@ export default function SuccessStories({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const itemsArray = itemsText
-      .split("\n")
-      .map((item) => item.trim())
-      .filter((item) => item !== "");
 
-    const categoryData = {
+    const roleData = {
       name: name,
       published: published,
-      items: itemsArray,
-      serviceid: serviceid,
     };
 
     let response;
     if (Modeltype === "Add") {
-      response = await createNewSuccessStory(categoryData); // Send FormData
+      response = await createnewRole(roleData);
     } else {
-      response = await updateSuccessStories(id, categoryData);
+      response = await updateRole(id, roleData);
     }
-    if (response.status == 201) {
-      onResponse({ messageType: "success", message: response.message });
-    } else if (response.status == 200) {
+
+    if (response.status == 201 || response.status == 200) {
       onResponse({ messageType: "success", message: response.message });
     } else {
       onResponse({ messageType: "error", message: response.message });
     }
+
     setOpen(false);
   };
 
@@ -89,27 +69,17 @@ export default function SuccessStories({
     >
       <Box sx={style}>
         <Typography id="modal-title" variant="h6" component="h2">
-          {Modeltype} Success Stories
+          {Modeltype} Role
         </Typography>
         <TextField
           sx={{ marginTop: "10px", borderRadius: "6px" }}
           fullWidth
           required
-          label="Success Story Title"
+          label="Role Name"
           variant="outlined"
           name="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-        />
-        <TextField
-          sx={{ marginTop: "10px", borderRadius: "6px" }}
-          fullWidth
-          multiline
-          minRows={4}
-          label="Success Stories Items (one per line)"
-          variant="outlined"
-          value={itemsText}
-          onChange={(e) => setItemsText(e.target.value)}
         />
         <FormControlLabel
           control={
@@ -143,9 +113,9 @@ export default function SuccessStories({
             type="submit"
             variant="contained"
             sx={{
-              background: "var(--background-color)",
-              color: "var(--text-color)",
-              borderRadius: "var(--default-border-radius)",
+              background: "var(--horizontal-gradient)",
+              color: "var(--white-color)",
+              borderRadius: "var(--border-radius-secondary)",
               "&:hover": { background: "var(--vertical-gradient)" },
             }}
           >

@@ -1,18 +1,4 @@
 import { invokeApi } from "../Utils/InvokeApi";
-
-export const fetchcategorylist = async () => {
-  const reqObj = {
-    path: "/category/live",
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
-
-    postData: {},
-  };
-  return invokeApi(reqObj);
-};
-
 export const fetchDashboard = async () => {
   const reqObj = {
     path: "/admin/stats",
@@ -38,9 +24,9 @@ export const fetchDashboardChart = async () => {
   };
   return invokeApi(reqObj);
 };
-export const fetchallcategorylist = async (page, rowsPerPages) => {
+export const fetchallLeads = async ( page, rowsPerPages,query) => {
   const reqObj = {
-    path: `/category/view?limit=${rowsPerPages}&page=${page}`,
+    path: `/LeadsList?limit=${rowsPerPages}&page=${page}&search=${query}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -50,29 +36,33 @@ export const fetchallcategorylist = async (page, rowsPerPages) => {
   };
   return invokeApi(reqObj);
 };
-export const searchBlog= async (title) => {
+
+export const fetchcategorylist = async () => {
   const reqObj = {
-    path: `/blog/search?title=${title}`,
+    path: "/category/live",
     method: "GET",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    postData: {},
+  };
+  return invokeApi(reqObj);
+};
+
+export const fetchallcategorylist = async (page, rowsPerPages, query) => {
+  const reqObj = {
+    path: `/category/view?limit=${rowsPerPages}&page=${page}&search=${query}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
     },
 
     body: {},
   };
   return invokeApi(reqObj);
 };
-export const searchService= async (title) => {
-  const reqObj = {
-    path: `/service/search?title=${title}`,
-    method: "GET",
-    headers: {
-    },
 
-    body: {},
-  };
-  return invokeApi(reqObj);
-};
-//////////////////////////////////////////////
 export const fetchallservicescategorylist = async (page, rowsPerPages) => {
   const reqObj = {
     path: `/servicecategory/view?limit=${rowsPerPages}&page=${page}`,
@@ -85,21 +75,9 @@ export const fetchallservicescategorylist = async (page, rowsPerPages) => {
   };
   return invokeApi(reqObj);
 };
-export const fetchallserviceslist = async (page, rowsPerPages,title) => {
+export const fetchallserviceslist = async (page, rowsPerPages,query) => {
   const reqObj = {
-    path: `/service/listbyadmin?title=${title}&limit=${rowsPerPages}&page=${page}`,
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
-
-    body: {},
-  };
-  return invokeApi(reqObj);
-};
-export const fetchallpublishedserviceslist = async () => {
-  const reqObj = {
-    path: `/service/list`,
+    path: `/service/listbyadmin?limit=${rowsPerPages}&page=${page}&search=${query}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -134,9 +112,9 @@ export const fetchSubServiceById = async (id) => {
   return invokeApi(reqObj);
 };
 //////////////////////////////////////////////
-export const fetchallBloglist = async ( page, rowsPerPages, title) => {
+export const fetchallBloglist = async ( page, rowsPerPages, query) => {
   const reqObj = {
-    path: `/blog/adminlist?title=${title}&limit=${rowsPerPages}&page=${page}`,
+    path: `/blog/adminlist?limit=${rowsPerPages}&page=${page}&search=${query}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -146,9 +124,9 @@ export const fetchallBloglist = async ( page, rowsPerPages, title) => {
   };
   return invokeApi(reqObj);
 };
-export const fetchFeaturedBloglist = async ( page, rowsPerPages, title) => {
+export const fetchFeaturedBloglist = async ( page, rowsPerPages, query) => {
   const reqObj = {
-    path: `/blog/featuredadmin?title=${title}&limit=${rowsPerPages}&page=${page}`,
+    path: `/blog/featuredadmin?limit=${rowsPerPages}&page=${page}&search=${query}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -158,9 +136,10 @@ export const fetchFeaturedBloglist = async ( page, rowsPerPages, title) => {
   };
   return invokeApi(reqObj);
 };
-export const fetchallTickets = async ( page, rowsPerPages) => {
+
+export const fetchallIndustrieslist = async ( page, rowsPerPages, query) => {
   const reqObj = {
-    path: `/ticket/list?limit=${rowsPerPages}&page=${page}`,
+    path: `/industry/view?limit=${rowsPerPages}&page=${page}&search=${query}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -170,21 +149,9 @@ export const fetchallTickets = async ( page, rowsPerPages) => {
   };
   return invokeApi(reqObj);
 };
-export const fetchallIndustrieslist = async ( page, rowsPerPages) => {
+export const fetchallCaseStudieslist = async ( page, rowsPerPages, query) => {
   const reqObj = {
-    path: `/industry/view?limit=${rowsPerPages}&page=${page}`,
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
-
-    body: {},
-  };
-  return invokeApi(reqObj);
-};
-export const fetchallCaseStudieslist = async ( page, rowsPerPages) => {
-  const reqObj = {
-    path: `/casestudy/view?limit=${rowsPerPages}&page=${page}`,
+    path: `/casestudy/view?limit=${rowsPerPages}&page=${page}&search=${query}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -218,18 +185,7 @@ export const fetchindustry = async ( id) => {
   };
   return invokeApi(reqObj);
 };
-export const fetchTicket = async ( id) => {
-  const reqObj = {
-    path: `/ticket/view/${id}`,
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
 
-    body: {},
-  };
-  return invokeApi(reqObj);
-};
 export const fetchBloglistofwritter = async ( page, rowsPerPages,name,title) => {
   const reqObj = {
     path: `/blog/writerlist?title=${title}&search=${name}&limit=${rowsPerPages}&page=${page}`,
@@ -290,22 +246,11 @@ export const fetchTestimonialbyid = async (id) => {
   };
   return invokeApi(reqObj);
 };
-export const fetchallLeads = async ( page, rowsPerPages) => {
-  const reqObj = {
-    path: `/LeadsList?limit=${rowsPerPages}&page=${page}`,
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    },
 
-    body: {},
-  };
-  return invokeApi(reqObj);
-};
 
-export const fetchallTeamCategories = async (id) => {
+export const fetchallTeamCategories = async (page, rowsPerPages, query) => {
   const reqObj = {
-    path: `/teamcategory/view`,
+    path: `/teamcategory/view?limit=${rowsPerPages}&page=${page}&search=${query}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -340,10 +285,22 @@ export const fetchRoleList = async (id) => {
   };
   return invokeApi(reqObj);
 };
-
-export const fetchTeamMember = async (page, rowsPerPages) => {
+export const fetchallRoles = async (page, rowsPerPages,query) => {
   const reqObj = {
-    path: `/team/view?limit=${rowsPerPages}&page=${page}`,
+    path: `/role/view?limit=${rowsPerPages}&page=${page}&search=${query}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
+
+export const fetchTeamMember = async (page, rowsPerPages,query) => {
+  const reqObj = {
+    path: `/team/view?limit=${rowsPerPages}&page=${page}&search=${query}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -402,9 +359,9 @@ export const fetchallUserTypelist = async (id) => {
   };
   return invokeApi(reqObj);
 };
-export const fetchallUserlist = async (page, rowsPerPages) => {
+export const fetchallUserlist = async (page, rowsPerPages, query) => {
   const reqObj = {
-    path: `/admin/users?limit=${rowsPerPages}&page=${page}`,
+    path: `/admin/users?limit=${rowsPerPages}&page=${page}&search=${query}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,

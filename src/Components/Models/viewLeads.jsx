@@ -2,7 +2,6 @@ import * as React from "react";
 import "./Viewleads.css";
 import { Box, Button,  Modal } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { createnewticket } from "../../DAL/create";
 import { formatDate } from "../../Utils/Formatedate";
 import { useAlert } from "../Alert/AlertContext";
 import DeleteModal from "./confirmDeleteModel";
@@ -64,18 +63,7 @@ export default function ViewLead({ open, setOpen, Modeldata ,refreshdata}) {
 
   const handleClose = () => setOpen(false);
 
-  const genarateticket = async () => {
-    try {
-      const res = await createnewticket({ id });
-      if (res.status === 200 || res.status === 201) {
-        showAlert("success", res.message);
-      } else {
-        showAlert("error", "Something went wrong");
-      }
-    } catch (err) {
-      showAlert("error", "Something went wrong");
-    }
-  };
+
 
   return (
     <Modal

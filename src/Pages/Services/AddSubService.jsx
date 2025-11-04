@@ -982,7 +982,7 @@ const AddSubService = () => {
               background: "var(--background-color)",
               color: "#fff",
               borderRadius: "6px",
-              "&:hover": { background: "var(--primary-hover)" },
+              "&:hover": {opacity:"0.9"},
             }}
           >
             {loading ? "Saving..." : "Save"}
