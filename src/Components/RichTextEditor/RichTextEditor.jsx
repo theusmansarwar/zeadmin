@@ -9,28 +9,89 @@ import {
   DialogActions,
   TextField,
   Button,
-  Box,
 } from "@mui/material";
 
-export default function RichTextEditor({ onChange }) {
+export default function RichTextEditor({ onChange, data }) {
   const editorRef = useRef(null);
-  const [htmlPreview, setHtmlPreview] = useState("");
+  const savedSelection = useRef(null);
+
+  const [htmlPreview, setHtmlPreview] = useState(data || "");
+
+  // 🔗 Link modal
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [linkText, setLinkText] = useState("");
 
-  // ✅ Image modal state
+  // 🖼️ Image modal
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [uploadedPath, setUploadedPath] = useState("");
   const [altText, setAltText] = useState("");
+
+  const [activeFormats, setActiveFormats] = useState({
+    bold: false,
+    italic: false,
+    heading: "p",
+    unorderedList: false,
+    orderedList: false,
+  });
+
+ useEffect(() => {
+  if (editorRef.current && data && editorRef.current.innerHTML !== data) {
+    editorRef.current.innerHTML = data;
+    setHtmlPreview(data);
+  }
+}, [data]);
+
+
+  // 🧠 Selection save/restore
+  const saveSelection = () => {
+    const sel = window.getSelection();
+    if (sel.rangeCount > 0) savedSelection.current = sel.getRangeAt(0);
+  };
+
+  const restoreSelection = () => {
+    const sel = window.getSelection();
+    if (savedSelection.current) {
+      sel.removeAllRanges();
+      sel.addRange(savedSelection.current);
+    }
+  };
 
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor) return;
 
+    const handleSelectionChange = () => {
+      if (!editor.contains(window.getSelection().anchorNode)) return;
+      const newState = {
+        bold: document.queryCommandState("bold"),
+        italic: document.queryCommandState("italic"),
+        unorderedList: document.queryCommandState("insertUnorderedList"),
+        orderedList: document.queryCommandState("insertOrderedList"),
+        heading: getCurrentBlockTag(),
+      };
+      setActiveFormats(newState);
+    };
+
+    document.addEventListener("selectionchange", handleSelectionChange);
     editor.addEventListener("click", handleImageClick);
-    return () => editor.removeEventListener("click", handleImageClick);
+
+    return () => {
+      document.removeEventListener("selectionchange", handleSelectionChange);
+      editor.removeEventListener("click", handleImageClick);
+    };
   }, []);
+
+  const getCurrentBlockTag = () => {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return "p";
+    let node = sel.anchorNode;
+    while (node && node !== editorRef.current) {
+      if (/^(P|H1|H2|H3)$/i.test(node.nodeName)) return node.nodeName.toLowerCase();
+      node = node.parentNode;
+    }
+    return "p";
+  };
 
   const handleImageClick = (e) => {
     if (e.target.tagName === "IMG") {
@@ -46,35 +107,47 @@ export default function RichTextEditor({ onChange }) {
   const triggerChange = () => {
     const html = editorRef.current?.innerHTML || "";
     setHtmlPreview(html);
-    onChange?.(html);
+    onChange?.(html); 
   };
 
   const doExec = (command, value = null) => {
+    editorRef.current?.focus();
     document.execCommand(command, false, value);
     triggerChange();
   };
 
-  const setHeading = (level) => {
-    document.execCommand("formatBlock", false, level === 0 ? "p" : `h${level}`);
+  const formatAsParagraph = () => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    editor.focus();
+    document.execCommand("formatBlock", false, "p");
+
+    const childNodes = Array.from(editor.childNodes);
+    childNodes.forEach((node) => {
+      if (node.nodeType === 1 && ["DIV", "SPAN"].includes(node.nodeName)) {
+        const p = document.createElement("p");
+        p.innerHTML = node.innerHTML;
+        editor.replaceChild(p, node);
+      }
+    });
     triggerChange();
   };
-
-  // 🔗 Open link modal
   const openLinkDialog = () => {
+    saveSelection();
     const selection = window.getSelection().toString();
     setLinkText(selection || "");
     setLinkUrl("");
     setLinkModalOpen(true);
   };
 
-  // 🔗 Insert link
   const insertLink = () => {
     if (!linkUrl.trim()) return alert("Please enter a valid URL.");
-
     const url = linkUrl.trim();
     const text = linkText.trim() || linkUrl.trim();
     const html = `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
 
+    restoreSelection();
+    editorRef.current?.focus();
     document.execCommand("insertHTML", false, html);
     triggerChange();
     setLinkModalOpen(false);
@@ -82,24 +155,25 @@ export default function RichTextEditor({ onChange }) {
     setLinkText("");
   };
 
-  // 🖼️ Open image modal
+  // 🖼️ Open/Insert image
   const openImageDialog = () => {
+    saveSelection();
     setUploadedPath("");
     setAltText("");
     setImageModalOpen(true);
   };
 
-  // 🖼️ Insert image into editor
   const insertImage = () => {
     if (!uploadedPath) return alert("Please upload an image first.");
     const fullUrl = uploadedPath.startsWith("http")
       ? uploadedPath
       : `${baseUrl}${uploadedPath}`;
-
     const html = `<img src="${fullUrl}" alt="${altText || ""}" />`;
+
+    restoreSelection();
+    editorRef.current?.focus();
     document.execCommand("insertHTML", false, html);
     triggerChange();
-
     setImageModalOpen(false);
     setUploadedPath("");
     setAltText("");
@@ -128,28 +202,37 @@ export default function RichTextEditor({ onChange }) {
 
   return (
     <div className="rte-container">
+      {/* 🧰 Toolbar */}
       <div className="rte-toolbar">
-        <button onClick={() => doExec("bold")}>
+        <button className={activeFormats.bold ? "active" : ""} onClick={() => doExec("bold")}>
           <strong>B</strong>
         </button>
-        <button onClick={() => doExec("italic")}>
+        <button className={activeFormats.italic ? "active" : ""} onClick={() => doExec("italic")}>
           <em>I</em>
         </button>
-
-        <select onChange={(e) => setHeading(Number(e.target.value))} defaultValue="">
-          <option value="0">Paragraph</option>
-          <option value="1">H1</option>
-          <option value="2">H2</option>
-          <option value="3">H3</option>
-        </select>
-
-        <button onClick={() => doExec("insertUnorderedList")}>• List</button>
-        <button onClick={() => doExec("insertOrderedList")}>1. List</button>
+        <button className={activeFormats.heading === "p" ? "active" : ""} onClick={formatAsParagraph}>
+          P
+        </button>
+        <button className={activeFormats.heading === "h1" ? "active" : ""} onClick={() => doExec("formatBlock", "<h1>")}>
+          H1
+        </button>
+        <button className={activeFormats.heading === "h2" ? "active" : ""} onClick={() => doExec("formatBlock", "<h2>")}>
+          H2
+        </button>
+        <button className={activeFormats.heading === "h3" ? "active" : ""} onClick={() => doExec("formatBlock", "<h3>")}>
+          H3
+        </button>
+        <button className={activeFormats.unorderedList ? "active" : ""} onClick={() => doExec("insertUnorderedList")}>
+          • List
+        </button>
+        <button className={activeFormats.orderedList ? "active" : ""} onClick={() => doExec("insertOrderedList")}>
+          1. List
+        </button>
         <button onClick={openLinkDialog}>🔗 Link</button>
-
         <button onClick={openImageDialog}>🖼️ Image</button>
       </div>
 
+      {/* 📝 Editable area */}
       <div
         ref={editorRef}
         contentEditable
@@ -157,10 +240,11 @@ export default function RichTextEditor({ onChange }) {
         onInput={triggerChange}
         onPaste={handlePaste}
         className="rte-editor"
-      >
-        <p>Start writing here...</p>
-      </div>
+>
+  <p>Start writing here...</p>
+</div>
 
+      {/* 🔍 HTML output */}
       <div className="rte-output">
         <label>HTML Output</label>
         <textarea readOnly value={htmlPreview} rows={6} />
@@ -170,20 +254,8 @@ export default function RichTextEditor({ onChange }) {
       <Dialog open={linkModalOpen} onClose={() => setLinkModalOpen(false)}>
         <DialogTitle>Insert Link</DialogTitle>
         <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <TextField
-            label="URL"
-            variant="outlined"
-            value={linkUrl}
-            onChange={(e) => setLinkUrl(e.target.value)}
-            placeholder="https://example.com"
-          />
-          <TextField
-            label="Display Text"
-            variant="outlined"
-            value={linkText}
-            onChange={(e) => setLinkText(e.target.value)}
-            placeholder="Example text"
-          />
+          <TextField label="URL" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="https://example.com" />
+          <TextField label="Display Text" value={linkText} onChange={(e) => setLinkText(e.target.value)} placeholder="Example text" />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setLinkModalOpen(false)}>Cancel</Button>
@@ -193,39 +265,12 @@ export default function RichTextEditor({ onChange }) {
         </DialogActions>
       </Dialog>
 
-      {/* 🖼️ Image Upload Dialog */}
+      {/* 🖼️ Image Dialog */}
       <Dialog open={imageModalOpen} onClose={() => setImageModalOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Insert Image</DialogTitle>
         <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <UploadFile
-            endpoint="/upload-image"
-            fieldName="image"
-            accept="image/*"
-            onUploadComplete={(path) => setUploadedPath(path)}
-          />
-
-          {uploadedPath && (
-            <Box sx={{ textAlign: "center", mt: 2 }}>
-              <img
-                src={uploadedPath.startsWith("http") ? uploadedPath : `${baseUrl}${uploadedPath}`}
-                alt="Preview"
-                style={{
-                  maxWidth: "100%",
-                  height: "auto",
-                  borderRadius: 8,
-                  border: "1px solid #ccc",
-                }}
-              />
-            </Box>
-          )}
-
-          <TextField
-            label="Alt Text"
-            variant="outlined"
-            value={altText}
-            onChange={(e) => setAltText(e.target.value)}
-            placeholder="Describe this image"
-          />
+          <UploadFile endpoint="/upload-image" fieldName="image" accept="image/*" onUploadComplete={(path) => setUploadedPath(path)} />
+          <TextField label="Alt Text" value={altText} onChange={(e) => setAltText(e.target.value)} placeholder="Describe this image" />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setImageModalOpen(false)}>Cancel</Button>

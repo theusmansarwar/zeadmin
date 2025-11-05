@@ -262,7 +262,11 @@ const AddBlog = () => {
             )}
           </FormControl>
         </Box>
-<RichTextEditor/>
+        
+        <RichTextEditor
+  data={detail}                    // content from API
+  onChange={(val) => setDetail(val)}  // save new edits
+/>
         {errors.detail && (
           <Typography color="error">{errors.detail}</Typography>
         )}
