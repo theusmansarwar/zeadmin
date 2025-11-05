@@ -246,6 +246,18 @@ export const fetchTestimonialbyid = async (id) => {
   };
   return invokeApi(reqObj);
 };
+export const fetchJobById = async (id) => {
+  const reqObj = {
+    path: `/job/view/${id}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
 
 
 export const fetchallTeamCategories = async (page, rowsPerPages, query) => {

@@ -251,3 +251,16 @@ export const createSubServices = async (data) => {
   };
   return invokeApi(reqObj);
 };
+export const createNewJob = async (data) => {
+  const reqObj = {
+    path: "/job/create",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};

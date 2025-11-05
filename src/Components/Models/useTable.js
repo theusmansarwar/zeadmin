@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Paper,
@@ -51,6 +51,7 @@ import {
   deleteAllComments,
   deleteAllFeaturedBlogs,
   deleteAllIndustries,
+  deleteAllJobs,
   deleteAllLeads,
   deleteAllRole,
   deleteAllServices,
@@ -178,7 +179,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         setData(response?.CaseStudies || []);
         setPage(response.currentPage);
         setTotalRecords(response.totalCaseStudies);
-      }  else if (tableType === "Team Category") {
+      } else if (tableType === "Team Category") {
         response = await fetchallTeamCategories(page, rowsPerPage, searchQuery);
         setData(response.categories);
         setTotalRecords(response.totalCategories);
@@ -187,7 +188,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
           navigate("/login");
         }
       } else if (tableType === "Team") {
-        response = await fetchTeamMember(page, rowsPerPage,searchQuery);
+        response = await fetchTeamMember(page, rowsPerPage, searchQuery);
         setData(response.members);
         setTotalRecords(response?.total);
         if (response.status == 400) {
@@ -286,7 +287,10 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
     } else if (tableType === "Lead") {
       setModelData(category);
       setOpenLeadsModal(true);
-    } else if (tableType === "Applications") {
+    } else if (tableType === "Job") {
+      navigate(`/edit-job/${category._id}`);
+    }
+    else if (tableType === "Applications") {
       navigate(`/view-application/${category._id}`);
     } else if (tableType === "Comments") {
       setModelData(category);
@@ -329,7 +333,10 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         response = await deleteAllLeads({ ids: selected });
       } else if (tableType === "Testimonial") {
         response = await deleteAllTestimonials({ ids: selected });
-      } else if (tableType === "Applications") {
+      } else if (tableType === "Job") {
+        response = await deleteAllJobs({ ids: selected });
+      }
+      else if (tableType === "Applications") {
         response = await deleteAllApplications({ ids: selected });
       } else if (tableType === "Role") {
         response = await deleteAllRole({ ids: selected });
@@ -394,7 +401,10 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setOpenRoleModal(true);
       setModeltype("Add");
       setModelData();
-    } else if (tableType === "Industries") {
+    } else if (tableType === "Job") {
+      navigate("/add-job");
+    }
+    else if (tableType === "Industries") {
       navigate("/add-industry");
     } else if (tableType === "CaseStudies") {
       navigate("/add-casestudies");

@@ -59,6 +59,8 @@ import { SiLibreofficewriter } from "react-icons/si";
 import { Tooltip } from "@mui/material";
 import AddSubService from "./Pages/Services/AddSubService";
 import Roles from "./Pages/Roles/Roles";
+import AddJobs from "./Pages/Jobs/AddJobs";
+import Job from "./Pages/Jobs/Jobs";
 const App = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -160,7 +162,7 @@ const App = ({ onLogout }) => {
         {
           id: 92,
           name: "Applicants",
-          route: "/applicants",
+          route: "/applications",
           icon: <PiUsersFourFill />,
         },
       ],
@@ -320,6 +322,9 @@ const App = ({ onLogout }) => {
           <Route path="/team-categories" element={<TeamCategory />} />
            <Route path="/roles" element={<Roles />} />
 
+          <Route path="/jobs" element={<Job />} />
+          <Route path="/add-job" element={<AddJobs />} />
+          <Route path="/edit-job/:id" element={<AddJobs />} />
           <Route path="/applications" element={<Applications />} />
           <Route path="/view-application/:id" element={<ViewApplication />} />
 

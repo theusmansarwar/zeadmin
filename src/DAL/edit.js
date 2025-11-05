@@ -215,3 +215,14 @@ export const updateTestimonial = async (id, data) => {
   };
   return invokeApi(reqObj);
 };
+export const updateJob = async (id, data) => {
+  const reqObj = {
+    path: `/job/update/${id}`,
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
