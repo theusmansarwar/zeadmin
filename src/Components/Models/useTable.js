@@ -629,27 +629,35 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                 </TableHead>
                 <TableBody >
                   {isLoading ? (
-                     <TableRow >
-              <Box
-               
-              >
-                <CircularProgress
-                  size={45}
-                  thickness={4}
-                  sx={{ color: "var(--primary-color)" , }}
-                />
-                <Typography
-                  sx={{
-                    color: "var(--secondary-color)",
-                    fontSize: "15px",
-                    fontWeight: 500,
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  Loading {tableType}...
-                </Typography>
-              </Box>
-              </TableRow>
+                     <TableRow>
+                      <TableCell colSpan={attributes.length + 2} align="center" sx={{ py: 8 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 2,
+                          }}
+                        >
+                          <CircularProgress
+                            size={45}
+                            thickness={4}
+                            sx={{ color: "var(--primary-color)" }}
+                          />
+                          <Typography
+                            sx={{
+                              color: "var(--secondary-color)",
+                              fontSize: "15px",
+                              fontWeight: 500,
+                              letterSpacing: "0.5px",
+                            }}
+                          >
+                            Loading {tableType}...
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
                   ) : data.length === 0 ? (
                     // No Data Found State
                     <TableRow>
@@ -660,7 +668,8 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                         <Typography variant="body2" sx={{ color: "var(--secondary-color)" }}>
                           {searchQuery
                             ? `No ${tableType.toLowerCase()} found matching "${searchQuery}"`
-                            : `No ${tableType.toLowerCase()} available yet`}
+                            : `No ${tableType.toLowerCase()} available yet`
+                          }
                         </Typography>
                       </TableCell>
                     </TableRow>
