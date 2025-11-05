@@ -19,6 +19,7 @@ import { updateBlog } from "../../DAL/edit";
 import { createBlog } from "../../DAL/create";
 import { baseUrl } from "../../Config/Config";
 import UploadFile from "../../Components/Models/UploadFile";
+import RichTextEditor from "../../Components/RichTextEditor/RichTextEditor";
 
 const style = {
   Width: "100%",
@@ -261,14 +262,7 @@ const AddBlog = () => {
             )}
           </FormControl>
         </Box>
-
-        <JoditEditor
-          ref={editor}
-          value={detail}
-          config={config}
-          tabIndex={1}
-          onChange={(newContent) => setDetail(newContent)}
-        />
+<RichTextEditor/>
         {errors.detail && (
           <Typography color="error">{errors.detail}</Typography>
         )}

@@ -17,6 +17,7 @@ import {
   TextField,
   InputAdornment,
   Avatar,
+  CircularProgress,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
@@ -626,16 +627,29 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody >
                   {isLoading ? (
-                    // Loading state
-                    <TableRow>
-                      <TableCell colSpan={attributes.length + 2} align="center" sx={{ py: 8 }}>
-                        <Typography variant="h6" sx={{ color: "var(--secondary-color)" }}>
-                          Loading...
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
+                     <TableRow >
+              <Box
+               
+              >
+                <CircularProgress
+                  size={45}
+                  thickness={4}
+                  sx={{ color: "var(--primary-color)" , }}
+                />
+                <Typography
+                  sx={{
+                    color: "var(--secondary-color)",
+                    fontSize: "15px",
+                    fontWeight: 500,
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Loading {tableType}...
+                </Typography>
+              </Box>
+              </TableRow>
                   ) : data.length === 0 ? (
                     // No Data Found State
                     <TableRow>

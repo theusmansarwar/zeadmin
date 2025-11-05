@@ -1,0 +1,81 @@
+.rte-container {
+  width: calc(100% - 50px);
+  margin: auto;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fafafa;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.rte-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.rte-toolbar button,
+.rte-heading-select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.rte-toolbar button:hover,
+.rte-heading-select:hover {
+  background: #f0f0f0;
+}
+
+.rte-heading-select {
+  min-width: 90px;
+}
+
+.rte-editor {
+  min-height: 500px;
+  max-height: 70vh;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  border-radius: 4px;
+  background: white;
+  outline: none;
+}
+.rte-editor img{
+  height: 200px;
+  width: 350px;
+}
+.rte-image {
+  width: 100%;            /* Make image full width of its container */
+  aspect-ratio: 16 / 9;   /* Enforce 16:9 ratio */
+  object-fit: contain;    /* Preserve image proportions inside box */
+  display: block;         /* Remove inline spacing */
+  max-width: 100%;        /* Ensure image does not overflow container */
+  height: auto;           /* Let height adjust based on aspect ratio */
+}
+
+.rte-output {
+  margin-top: 1rem;
+}
+
+.rte-output label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.rte-output textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+}
+.hidden{
+    display: none;
+}
