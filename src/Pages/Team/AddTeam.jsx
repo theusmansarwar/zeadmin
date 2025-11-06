@@ -35,11 +35,13 @@ const AddTeam = () => {
   const [roles, setRoles] = useState([]);
   const [categories, setCategories] = useState([]);
   const [socialLinks, setSocialLinks] = useState({
-    linkedin: "",
-    instagram: "",
-    facebook: "",
+    linkedin: null,
+    instagram: null,
+    facebook: null,
+    github: null,
+    porfolio: null,
   });
-  const [singlePath, setSinglePath] = useState(""); // ✅ uploaded file path
+  const [singlePath, setSinglePath] = useState(""); //  uploaded file path
   const [isVisible, setIsVisible] = useState(true);
   const [isHomeShow, setIsHomeshow] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -241,6 +243,24 @@ const AddTeam = () => {
           value={socialLinks.facebook}
           onChange={(e) =>
             setSocialLinks({ ...socialLinks, facebook: e.target.value })
+          }
+        />
+        <TextField
+          fullWidth
+          label="Github"
+          margin="normal"
+          value={socialLinks.github}
+          onChange={(e) =>
+            setSocialLinks({ ...socialLinks, github: e.target.value })
+          }
+        />
+        <TextField
+          fullWidth
+          label="Portfolio"
+          margin="normal"
+          value={socialLinks.portfolio}
+          onChange={(e) =>
+            setSocialLinks({ ...socialLinks, portfolio: e.target.value })
           }
         />
 
