@@ -373,7 +373,7 @@ export const fetchTeamMemberById = async (id) => {
 
 export const fetchallApplication = async ( page, rowsPerPages) => {
   const reqObj = {
-    path: `/applications/ApplicationList?limit=${rowsPerPages}&page=${page}`,
+    path: `/applications/List?limit=${rowsPerPages}&page=${page}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
