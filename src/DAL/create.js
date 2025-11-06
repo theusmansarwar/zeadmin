@@ -67,6 +67,17 @@ export const createIndustries = async (data) => {
   };
   return invokeApi(reqObj);
 };
+export const createProducts = async (data) => {
+  const reqObj = {
+    path: "/product/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 export const createCaseStudy = async (data) => {
   const reqObj = {
     path: "/casestudy/add",
@@ -253,7 +264,7 @@ export const createSubServices = async (data) => {
 };
 export const createNewJob = async (data) => {
   const reqObj = {
-    path: "/job/create",
+    path: "/jobs/add",
     method: "POST",
     headers: {
       "Content-Type": "application/json",

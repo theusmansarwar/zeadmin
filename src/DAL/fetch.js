@@ -149,9 +149,45 @@ export const fetchallIndustrieslist = async ( page, rowsPerPages, query) => {
   };
   return invokeApi(reqObj);
 };
+export const fetchallJobslist = async ( page, rowsPerPages, query) => {
+  const reqObj = {
+    path: `/jobs/view?limit=${rowsPerPages}&page=${page}&search=${query}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
 export const fetchallCaseStudieslist = async ( page, rowsPerPages, query) => {
   const reqObj = {
     path: `/casestudy/view?limit=${rowsPerPages}&page=${page}&search=${query}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
+export const fetchProductslist = async ( page, rowsPerPages, query) => {
+  const reqObj = {
+    path: `/product/view?limit=${rowsPerPages}&page=${page}&search=${query}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
+export const fetchProducts = async ( id) => {
+  const reqObj = {
+    path: `/product/get/${id}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -248,7 +284,7 @@ export const fetchTestimonialbyid = async (id) => {
 };
 export const fetchJobById = async (id) => {
   const reqObj = {
-    path: `/job/view/${id}`,
+    path: `/jobs/get/${id}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,

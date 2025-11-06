@@ -4,7 +4,8 @@ import { useTable } from "../../Components/Models/useTable";
 const Job = () => {
   const attributes = [
    
-    { id: "title", label: "Job Title" },
+    { id: "jobtitle", label: "Job Title" },
+    { id: "jobCategory", label: "Job Category" },
     { id: "published", label: "Visibility" },
     { id: "createdAt", label: "Created At" },
   ];

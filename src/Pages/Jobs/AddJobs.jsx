@@ -12,8 +12,6 @@ import {
   Checkbox,
   FormGroup,
   FormLabel,
-  Card,
-  CardContent,
   Grid,
 } from "@mui/material";
 import { fetchJobById } from "../../DAL/fetch";
@@ -27,14 +25,25 @@ const AddJobs = () => {
 
   // Form fields
   const [jobCategory, setJobCategory] = useState("");
-  const [title, setTitle] = useState("");
+  const [jobtitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
-  const [jobType, setJobType] = useState("Full Time");
-  const [experience, setExperience] = useState("");
-  const [officeTiming, setOfficeTiming] = useState("");
-  const [workingDays, setWorkingDays] = useState([]);
-  const [vacancies, setVacancies] = useState("");
+  const [jobtype, setJobType] = useState("Full Time");
+  const [noofyearsexperience, setNoOfYearsExperience] = useState("");
+  const [officeStartTime, setOfficeStartTime] = useState("");
+  const [officeEndTime, setOfficeEndTime] = useState("");
+  const [noofvacancies, setNoOfVacancies] = useState("");
   const [description, setDescription] = useState("");
+  const [lastdatetoapply, setLastDateToApply] = useState("");
+  const [workingDays, setWorkingDays] = useState({
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
+    sunday: false,
+  });
+
   const [isVisible, setIsVisible] = useState(true);
 
   const [loading, setLoading] = useState(false);
@@ -52,10 +61,12 @@ const AddJobs = () => {
 
   // Handle working days selection
   const handleWorkingDaysChange = (day) => {
-    setWorkingDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-    );
+    setWorkingDays((prev) => ({
+      ...prev,
+      [day.toLowerCase()]: !prev[day.toLowerCase()],
+    }));
   };
+
 
   // Fetch existing job (for edit)
   const fetchJob = async () => {
@@ -65,15 +76,35 @@ const AddJobs = () => {
       if (response.status === 200) {
         const job = response.job;
         setJobCategory(job.jobCategory || "");
-        setTitle(job.title || "");
+        setJobTitle(job.jobtitle || "");
         setLocation(job.location || "");
-        setJobType(job.jobType || "Full Time");
-        setExperience(job.experience || "");
-        setOfficeTiming(job.officeTiming || "");
-        setWorkingDays(job.workingDays || []);
-        setVacancies(job.vacancies || "");
+        setJobType(job.jobtype || "Full Time");
+        setNoOfYearsExperience(job.noofyearsexperience || "");
+
+        // Split stored office timing into start & end if exists
+        if (job.officetiming?.includes("-")) {
+          const [start, end] = job.officetiming.split(" - ");
+          setOfficeStartTime(start.trim());
+          setOfficeEndTime(end.trim());
+        } else {
+          setOfficeStartTime(job.officetiming || "");
+          setOfficeEndTime("");
+        }
+
+        setNoOfVacancies(job.noofvacancies || "");
         setDescription(job.description || "");
+        setLastDateToApply(job.lastdatetoapply || "");
         setIsVisible(job.published || false);
+        setWorkingDays({
+          monday: job.workingDays?.monday || false,
+          tuesday: job.workingDays?.tuesday || false,
+          wednesday: job.workingDays?.wednesday || false,
+          thursday: job.workingDays?.thursday || false,
+          friday: job.workingDays?.friday || false,
+          saturday: job.workingDays?.saturday || false,
+          sunday: job.workingDays?.sunday || false,
+        });
+
       }
     } catch (error) {
       console.error("Error fetching job:", error);
@@ -90,17 +121,30 @@ const AddJobs = () => {
     setLoading(true);
     setErrors({});
 
+    // const newErrors = {};
+    // if (!officeStartTime) newErrors.officeStartTime = "Please select start time";
+    // if (!officeEndTime) newErrors.officeEndTime = "Please select end time";
+    // else if (officeStartTime && officeEndTime && officeStartTime >= officeEndTime)
+    //   newErrors.officeEndTime = "End time must be later than start time";
+
+    // if (Object.keys(newErrors).length > 0) {
+    //   setErrors(newErrors);
+    //   setLoading(false);
+    //   return;
+    // }
+
     try {
       const jobData = {
         jobCategory,
-        title,
+        jobtitle,
         location,
-        jobType,
-        experience,
-        officeTiming,
+        jobtype,
+        noofyearsexperience,
+        officetiming: `${officeStartTime} - ${officeEndTime}`,
         workingDays,
-        vacancies,
+        noofvacancies,
         description,
+        lastdatetoapply,
         published: isVisible,
       };
 
@@ -112,9 +156,9 @@ const AddJobs = () => {
         showAlert("success", response.message || "Job saved successfully!");
         navigate("/jobs");
       } else if (response.missingFields) {
-        const newErrors = {};
-        response.missingFields.forEach((f) => (newErrors[f.name] = f.message));
-        setErrors(newErrors);
+        const missing = {};
+        response.missingFields.forEach((f) => (missing[f.name] = f.message));
+        setErrors(missing);
       } else {
         showAlert("error", response.message || "Something went wrong!");
       }
@@ -135,177 +179,216 @@ const AddJobs = () => {
       >
         {id ? "Edit Job" : "Add Job"}
       </Typography>
-        <Box>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ display: "flex", flexDirection: "column", gap: 3 }}
-          >
-            {/* Basic Info */}
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Job Category"
-                  fullWidth
-                  value={jobCategory}
-                  onChange={(e) => setJobCategory(e.target.value)}
-                  error={!!errors.jobCategory}
-                  helperText={errors.jobCategory}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Job Title"
-                  fullWidth
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  error={!!errors.title}
-                  helperText={errors.title}
-                />
-              </Grid>
-            </Grid>
 
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Location"
-                  fullWidth
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  error={!!errors.location}
-                  helperText={errors.location}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  select
-                  label="Job Type"
-                  fullWidth
-                  value={jobType}
-                  onChange={(e) => setJobType(e.target.value)}
-                >
-                  <MenuItem value="Full Time">Full Time</MenuItem>
-                  <MenuItem value="Part Time">Part Time</MenuItem>
-                </TextField>
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Experience (e.g. 2+ years)"
-                  fullWidth
-                  value={experience}
-                  onChange={(e) => setExperience(e.target.value)}
-                  error={!!errors.experience}
-                  helperText={errors.experience}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Office Timing (e.g. 9:00 AM - 6:00 PM)"
-                  fullWidth
-                  value={officeTiming}
-                  onChange={(e) => setOfficeTiming(e.target.value)}
-                  error={!!errors.officeTiming}
-                  helperText={errors.officeTiming}
-                />
-              </Grid>
-            </Grid>
-
-            {/* Working Days */}
-            <Box>
-              <FormLabel component="legend" sx={{ mb: 1 }}>
-                Working Days
-              </FormLabel>
-              <FormGroup row>
-                {daysOfWeek.map((day) => (
-                  <FormControlLabel
-                    key={day}
-                    control={
-                      <Checkbox
-                        checked={workingDays.includes(day)}
-                        onChange={() => handleWorkingDaysChange(day)}
-                      />
-                    }
-                    label={day}
-                  />
-                ))}
-              </FormGroup>
-              {errors.workingDays && (
-                <Typography color="error" fontSize="0.8rem">
-                  {errors.workingDays}
-                </Typography>
-              )}
-            </Box>
-
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="No. of Vacancies"
-                  type="number"
-                  fullWidth
-                  value={vacancies}
-                  onChange={(e) => setVacancies(e.target.value)}
-                  error={!!errors.vacancies}
-                  helperText={errors.vacancies}
-                />
-              </Grid>
-            </Grid>
-
+      <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        {/* Basic Info */}
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
             <TextField
-              label="Job Description"
+              label="Job Category"
               fullWidth
-              multiline
-              rows={5}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              error={!!errors.description}
-              helperText={errors.description}
+              value={jobCategory}
+              onChange={(e) => setJobCategory(e.target.value)}
+              error={!!errors.jobCategory}
+              helperText={errors.jobCategory}
             />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Job Title"
+              fullWidth
+              value={jobtitle}
+              onChange={(e) => setJobTitle(e.target.value)}
+              error={!!errors.jobtitle}
+              helperText={errors.jobtitle}
+            />
+          </Grid>
+        </Grid>
 
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={isVisible}
-                  onChange={() => setIsVisible(!isVisible)}
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Location"
+              fullWidth
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              error={!!errors.location}
+              helperText={errors.location}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              select
+              label="Job Type"
+              fullWidth
+              value={jobtype}
+              onChange={(e) => setJobType(e.target.value)}
+            >
+              <MenuItem value="Full Time">Full Time</MenuItem>
+              <MenuItem value="Part Time">Part Time</MenuItem>
+            </TextField>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2}>
+          {/* Experience Dropdown */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              select
+              label="Experience"
+              fullWidth
+              value={noofyearsexperience}
+              onChange={(e) => setNoOfYearsExperience(e.target.value)}
+              error={!!errors.noofyearsexperience}
+              helperText={errors.noofyearsexperience}
+            >
+              <MenuItem value="Fresher">Fresher</MenuItem>
+              <MenuItem value="1-2 years">1-2 Years</MenuItem>
+              <MenuItem value="3-5 years">3-5 Years</MenuItem>
+              <MenuItem value="5+ years">5+ Years</MenuItem>
+            </TextField>
+          </Grid>
+
+          {/* Office Timing (Start–End) */}
+          <Grid item xs={12}>
+            <FormLabel component="legend" sx={{ mb: 1 }}>
+              Office Timing
+            </FormLabel>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Start Time"
+                  type="time"
+                  fullWidth
+                  value={officeStartTime}
+                  onChange={(e) => setOfficeStartTime(e.target.value)}
+                  error={!!errors.officeStartTime}
+                  helperText={errors.officeStartTime}
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ step: 300 }}
                 />
-              }
-              label={isVisible ? "Public" : "Draft"}
-            />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="End Time"
+                  type="time"
+                  fullWidth
+                  value={officeEndTime}
+                  onChange={(e) => setOfficeEndTime(e.target.value)}
+                  error={!!errors.officeEndTime}
+                  helperText={errors.officeEndTime}
+                  InputLabelProps={{ shrink: true }}
+                  inputProps={{ step: 300 }}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
 
-            {/* Buttons */}
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button
-                variant="contained"
-                onClick={() => navigate("/jobs")}
-                sx={{
-                  background: "var(--secondary-color, #B1B1B1)",
-                  color: "#fff",
-                  borderRadius: "6px",
-                  "&:hover": { background: "#999" },
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={loading}
-                sx={{
-                  background: "var(--background-color)",
-                  color: "#fff",
-                  borderRadius: "6px",
-                  "&:hover": { opacity: 0.9 },
-                }}
-              >
-                {loading ? "Saving..." : "Save"}
-              </Button>
-            </Box>
-          </Box>
+        {/* Working Days */}
+        <Box>
+          <FormLabel component="legend" sx={{ mb: 1 }}>
+            Working Days
+          </FormLabel>
+          <FormGroup row>
+            {daysOfWeek.map((day) => (
+              <FormControlLabel
+                key={day}
+                control={
+                  <Checkbox
+                    checked={workingDays[day.toLowerCase()]}
+                    onChange={() => handleWorkingDaysChange(day)}
+                  />
+
+                }
+                label={day}
+              />
+            ))}
+          </FormGroup>
+          {errors.workingDays && (
+            <Typography color="error" fontSize="0.8rem">
+              {errors.workingDays}
+            </Typography>
+          )}
         </Box>
 
+        {/* Vacancies and Last Date */}
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="No. of Vacancies"
+              fullWidth
+              value={noofvacancies}
+              onChange={(e) => setNoOfVacancies(e.target.value)}
+              error={!!errors.noofvacancies}
+              helperText={errors.noofvacancies}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Last Date to Apply"
+              type="date"
+              fullWidth
+              value={lastdatetoapply}
+              onChange={(e) => setLastDateToApply(e.target.value)}
+              error={!!errors.lastdatetoapply}
+              helperText={errors.lastdatetoapply}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+        </Grid>
+
+        <TextField
+          label="Job Description"
+          fullWidth
+          multiline
+          rows={5}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          error={!!errors.description}
+          helperText={errors.description}
+        />
+
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isVisible}
+              onChange={() => setIsVisible(!isVisible)}
+            />
+          }
+          label={isVisible ? "Public" : "Draft"}
+        />
+
+        {/* Buttons */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+          <Button
+            variant="contained"
+            onClick={() => navigate("/jobs")}
+            sx={{
+              background: "var(--secondary-color, #B1B1B1)",
+              color: "#fff",
+              borderRadius: "6px",
+              "&:hover": { background: "#999" },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            sx={{
+              background: "var(--background-color)",
+              color: "#fff",
+              borderRadius: "6px",
+              "&:hover": { opacity: 0.9 },
+            }}
+          >
+            {loading ? "Saving..." : "Save"}
+          </Button>
+        </Box>
+      </Box>
     </Box>
   );
 };

@@ -302,7 +302,7 @@ const AddTeam = () => {
         />
 
         {/* Buttons */}
-        <Box mt={3} display="flex" justifyContent="space-between">
+        <Box mt={3} display="flex" gap="10px" justifySelf="flex-end">
           <Button variant="outlined" onClick={() => navigate("/teams")}>
             Cancel
           </Button>

@@ -51,6 +51,8 @@ import {
   FaUserCog,
   FaUsers,
 } from "react-icons/fa";
+import { AiFillProduct } from "react-icons/ai";
+
 import { PiUsersFourFill } from "react-icons/pi";
 import { IoLogOut } from "react-icons/io5";
 import { BsMicrosoftTeams } from "react-icons/bs";
@@ -61,6 +63,8 @@ import AddSubService from "./Pages/Services/AddSubService";
 import Roles from "./Pages/Roles/Roles";
 import AddJobs from "./Pages/Jobs/AddJobs";
 import Job from "./Pages/Jobs/Jobs";
+import Products from "./Pages/Products/Products";
+import AddProducts from "./Pages/Products/AddProducts";
 const App = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,17 +77,17 @@ const App = ({ onLogout }) => {
     setIsOpen((prev) => !prev);
   };
 
- 
 
 
-const handleDropdownToggle = (id) => {
-  setOpenDropdown((prev) => (prev === id ? null : id));
-};
+
+  const handleDropdownToggle = (id) => {
+    setOpenDropdown((prev) => (prev === id ? null : id));
+  };
 
   const allItems = [
     { id: 1, name: "Dashboard", route: "/dashboard", icon: <MdDashboard /> },
     { id: 2, name: "Leads", route: "/leads", icon: <MdWork /> },
-     {
+    {
       id: 3,
       name: "Services",
       icon: <FaGears />,
@@ -91,79 +95,85 @@ const handleDropdownToggle = (id) => {
     },
     {
       id: 4,
+      name: "Products",
+      icon: <AiFillProduct />,
+      route: "/products",
+    },
+    {
+      id: 5,
       name: "Industries",
       route: "/industries",
       icon: <MdBusinessCenter />,
     },
-    
-     {
-      id: 5,
+
+    {
+      id: 6,
       name: "Case Studies",
       route: "/casestudies",
       icon: <FaBookOpen />,
     },
     {
-      id: 6,
+      id: 7,
       name: "Blogs",
       icon: <FaBlog />,
       children: [
-        { id: 61, name: "All Blogs", route: "/blogs", icon: <MdArticle /> },
+        { id: 71, name: "All Blogs", route: "/blogs", icon: <MdArticle /> },
         {
-          id: 62,
+          id: 72,
           name: "Featured Blogs",
           route: "/blogs/featured",
           icon: <MdOutlineFeaturedPlayList />,
         },
         {
-          id: 63,
+          id: 73,
           name: "Categories",
           route: "/categories",
           icon: <MdCategory />,
         },
-        { id: 64, name: "Comments", route: "/comments", icon: <MdComment /> },
+        { id: 74, name: "Comments", route: "/comments", icon: <MdComment /> },
       ],
     },
 
     {
-      id: 7,
+      id: 8,
       name: "Testimonials",
       route: "/testimonials",
       icon: <FaQuoteRight />,
     },
     {
-      id: 8,
+      id: 9,
       name: "Teams",
       icon: <RiTeamFill />,
       children: [
-        { id: 81, name: "All Teams", route: "/teams", icon: <IoIosPeople /> },
+        { id: 91, name: "All Teams", route: "/teams", icon: <IoIosPeople /> },
         {
-          id: 82,
+          id: 92,
           name: "Team Categories",
           route: "/team-categories",
           icon: <RiTeamLine />,
         },
         {
-          id: 83,
+          id: 93,
           name: "Team Roles",
           route: "/roles",
           icon: <RiTeamLine />,
         },
       ],
     },
-   
+
     {
-      id: 9,
+      id: 10,
       name: "Jobs & Applicants",
       icon: <BsMicrosoftTeams />,
       children: [
         {
-          id: 91,
+          id: 101,
           name: "Jobs",
           route: "/jobs",
           icon: <SiLibreofficewriter />,
         },
         {
-          id: 92,
+          id: 102,
           name: "Applicants",
           route: "/applications",
           icon: <PiUsersFourFill />,
@@ -171,16 +181,16 @@ const handleDropdownToggle = (id) => {
       ],
     },
     {
-      id: 10,
+      id: 11,
       name: "Users",
       icon: <FaUser />,
       children: [
-        { id: 101, name: "All Users", route: "/users", icon: <FaUsers /> },
-        { id: 102, name: "User Types", route: "/usertype", icon: <FaUserCog /> },
+        { id: 111, name: "All Users", route: "/users", icon: <FaUsers /> },
+        { id: 112, name: "User Types", route: "/usertype", icon: <FaUserCog /> },
       ],
     },
-   
-    
+
+
   ];
 
   useEffect(() => {
@@ -193,69 +203,69 @@ const handleDropdownToggle = (id) => {
   }, [location.pathname]);
 
   useEffect(() => {
-  const currentPath = location.pathname;
+    const currentPath = location.pathname;
 
-  // Find which parent has this route
-  const findParentForRoute = (items) => {
-    for (let item of items) {
-      if (item.children) {
-        for (let child of item.children) {
-          if (child.route === currentPath) {
-            return item.id;
+    // Find which parent has this route
+    const findParentForRoute = (items) => {
+      for (let item of items) {
+        if (item.children) {
+          for (let child of item.children) {
+            if (child.route === currentPath) {
+              return item.id;
+            }
           }
         }
       }
+      return null;
+    };
+
+    const parentId = findParentForRoute(allItems); // menuItems = your full list
+    if (parentId) {
+      setOpenDropdown(parentId);
+      setActiveitems(parentId);
     }
-    return null;
-  };
-
-  const parentId = findParentForRoute(allItems); // menuItems = your full list
-  if (parentId) {
-    setOpenDropdown(parentId);
-    setActiveitems(parentId);
-  }
-}, [location.pathname]);
+  }, [location.pathname]);
 
 
-const handleitemsClick = (item) => {
-  if (item.children && item.children.length > 0) {
-    // If the dropdown is already open
-    if (openDropdown === item.id) {
-      // Close it if it's already open (toggle behavior)
+  const handleitemsClick = (item) => {
+    if (item.children && item.children.length > 0) {
+      // If the dropdown is already open
+      if (openDropdown === item.id) {
+        // Close it if it's already open (toggle behavior)
+        setOpenDropdown(null);
+        return;
+      }
+
+      // Open dropdown
+      setActiveitems(item.id);
+      setOpenDropdown(item.id);
+
+      // Check if one of its children is already active
+      const hasActiveChild = item.children.some(
+        (child) => child.route === location.pathname
+      );
+
+      // Only navigate to first child if no child is active
+      if (!hasActiveChild) {
+        const firstChild = item.children[0];
+        if (firstChild?.route) navigate(firstChild.route);
+      }
+    } else {
+      // Item has no children, navigate directly
+      setActiveitems(item.id);
       setOpenDropdown(null);
-      return;
+      if (item.route) navigate(item.route);
     }
-
-    // Open dropdown
-    setActiveitems(item.id);
-    setOpenDropdown(item.id);
-
-    // Check if one of its children is already active
-    const hasActiveChild = item.children.some(
-      (child) => child.route === location.pathname
-    );
-
-    // Only navigate to first child if no child is active
-    if (!hasActiveChild) {
-      const firstChild = item.children[0];
-      if (firstChild?.route) navigate(firstChild.route);
-    }
-  } else {
-    // Item has no children, navigate directly
-    setActiveitems(item.id);
-    setOpenDropdown(null);
-    if (item.route) navigate(item.route);
-  }
-};
+  };
 
 
 
   const handleChildClick = (child) => {
-  setActiveitems(child.id);
-  if (child.route) {
-    navigate(child.route);
-  }
-};
+    setActiveitems(child.id);
+    if (child.route) {
+      navigate(child.route);
+    }
+  };
 
   return (
     <div className="App">
@@ -350,6 +360,10 @@ const handleitemsClick = (item) => {
           <Route path="/add-industry" element={<AddIndustries />} />
           <Route path="/edit-industry/:id" element={<AddIndustries />} />
 
+          <Route path="/products" element={<Products />} />
+          <Route path="/add-product" element={<AddProducts />} />
+          <Route path="/edit-product/:id" element={<AddProducts />} />
+
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/add-blog" element={<AddBlog />} />
           <Route path="/edit-blog/:id" element={<AddBlog />} />
@@ -373,7 +387,7 @@ const handleitemsClick = (item) => {
           <Route path="/add-team" element={<AddTeam />} />
           <Route path="/edit-team/:id" element={<AddTeam />} />
           <Route path="/team-categories" element={<TeamCategory />} />
-           <Route path="/roles" element={<Roles />} />
+          <Route path="/roles" element={<Roles />} />
 
           <Route path="/jobs" element={<Job />} />
           <Route path="/add-job" element={<AddJobs />} />

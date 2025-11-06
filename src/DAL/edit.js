@@ -171,6 +171,15 @@ export const updateIndustries = async (id, data) => {
   };
   return invokeApi(reqObj);
 };
+export const updateProducts = async (id, data) => {
+  const reqObj = {
+    path: `/product/update/${id}`,
+    method: "PUT",
+    headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 export const updateCaseStudy = async (id, data) => {
   const reqObj = {
     path: `/casestudy/update/${id}`,
@@ -217,7 +226,7 @@ export const updateTestimonial = async (id, data) => {
 };
 export const updateJob = async (id, data) => {
   const reqObj = {
-    path: `/job/update/${id}`,
+    path: `/jobs/update/${id}`,
     method: "PUT",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,

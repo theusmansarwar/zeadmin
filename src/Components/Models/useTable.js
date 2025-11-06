@@ -28,6 +28,7 @@ import {
   fetchallcategorylist,
   fetchallCommentlist,
   fetchallIndustrieslist,
+  fetchallJobslist,
   fetchallLeads,
   fetchallRoles,
   fetchallservicescategorylist,
@@ -38,6 +39,7 @@ import {
   fetchallUserTypelist,
   fetchBloglistofwritter,
   fetchFeaturedBloglist,
+  fetchProductslist,
   fetchTeamMember,
 } from "../../DAL/fetch";
 import { formatDate } from "../../Utils/Formatedate";
@@ -54,6 +56,7 @@ import {
   deleteAllIndustries,
   deleteAllJobs,
   deleteAllLeads,
+  deleteAllProducts,
   deleteAllRole,
   deleteAllServices,
   deleteAllServicesCategories,
@@ -180,7 +183,20 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         setData(response?.CaseStudies || []);
         setPage(response.currentPage);
         setTotalRecords(response.totalCaseStudies);
-      } else if (tableType === "Team Category") {
+      } else if (tableType === "Job") {
+        response = await fetchallJobslist(page, rowsPerPage, searchQuery);
+        setData(response?.jobs || []);
+        setPage(response.currentPage);
+        setTotalRecords(response.totalJobs);
+      }
+      else if (tableType === "Products") {
+        response = await fetchProductslist(page, rowsPerPage, searchQuery);
+        setData(response?.Products || []);
+        setPage(response.currentPage);
+        setTotalRecords(response.totalProducts);
+      } 
+      
+      else if (tableType === "Team Category") {
         response = await fetchallTeamCategories(page, rowsPerPage, searchQuery);
         setData(response.categories);
         setTotalRecords(response.totalCategories);
@@ -215,7 +231,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         setTotalRecords(response.totalComments || 0);
       } else if (tableType === "Applications") {
         response = await fetchallApplication(page, rowsPerPage);
-        setData(response.applications);
+        setData(response?.applications);
         setTotalRecords(response.totalApplication || 0);
       } else if (tableType === "Testimonial") {
         response = await fetchallTestimonialslist(page, rowsPerPage);
@@ -267,7 +283,10 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       navigate(`/edit-service/${category._id}`);
     } else if (tableType === "CaseStudies") {
       navigate(`/edit-casestudies/${category._id}`);
-    } else if (tableType === "UserType") {
+    }else if (tableType === "Products") {
+      navigate(`/edit-product/${category._id}`);
+    }
+     else if (tableType === "UserType") {
       setModelData(category);
       setModeltype("Update");
       setOpenUserTypeModal(true);
@@ -351,7 +370,9 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         response = await deleteAllTeam({ ids: selected });
       } else if (tableType === "CaseStudies") {
         response = await deleteAllCaseStudy({ ids: selected });
-      } else if (tableType === "Industries") {
+      } else if (tableType === "CaseStudies") {
+        response = await deleteAllProducts({ ids: selected });}
+      else if (tableType === "Industries") {
         response = await deleteAllIndustries({ ids: selected });
       } if (response.status === 200) {
         showAlert("success", response.message || "Deleted successfully");
@@ -409,6 +430,8 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       navigate("/add-industry");
     } else if (tableType === "CaseStudies") {
       navigate("/add-casestudies");
+    }else if (tableType === "Products") {
+      navigate("/add-product");
     }
   };
 
@@ -517,6 +540,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                   tableType === "Services" ||
                   tableType === "Industries" ||
                   tableType === "CaseStudies" ||
+                  tableType === "Products" ||
                   tableType === "Blogs" ||
                   tableType === "Featured Blogs" ||
                   tableType === "Categories" ||
