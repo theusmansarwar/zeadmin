@@ -23,8 +23,7 @@
   border-radius: 6px;
 }
 
-.rte-toolbar button,
-.rte-heading-select {
+.rte-toolbar div {
   padding: 6px 10px;
   border: 1px solid #ccc;
   background: white;
@@ -34,12 +33,11 @@
   transition: all 0.2s ease-in-out;
 }
 
-.rte-toolbar button:hover,
-.rte-heading-select:hover {
+.rte-toolbar div:hover{
   background: #f0f0f0;
 }
 
-.rte-toolbar button.active {
+.rte-toolbar div.active {
   background: #007bff;
   color: white;
   border-color: #007bff;

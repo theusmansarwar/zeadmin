@@ -264,7 +264,7 @@ const AddBlog = () => {
         </Box>
         
         <RichTextEditor
-  data={detail}                    // content from API
+  data={detail} 
   onChange={(val) => setDetail(val)}  // save new edits
 />
         {errors.detail && (

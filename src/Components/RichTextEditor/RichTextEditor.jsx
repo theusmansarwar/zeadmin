@@ -36,11 +36,19 @@ export default function RichTextEditor({ onChange, data }) {
   });
 
  useEffect(() => {
-  if (editorRef.current && data && editorRef.current.innerHTML !== data) {
-    editorRef.current.innerHTML = data;
+  const editor = editorRef.current;
+  if (!editor) return;
+
+  // Skip update if the user is focusing or just inserted content
+  const isFocused = document.activeElement === editor;
+  if (isFocused) return;
+
+  if (data && editor.innerHTML !== data) {
+    editor.innerHTML = data;
     setHtmlPreview(data);
   }
 }, [data]);
+
 
 
   // 🧠 Selection save/restore
@@ -204,32 +212,32 @@ export default function RichTextEditor({ onChange, data }) {
     <div className="rte-container">
       {/* 🧰 Toolbar */}
       <div className="rte-toolbar">
-        <button className={activeFormats.bold ? "active" : ""} onClick={() => doExec("bold")}>
+        <div className={activeFormats.bold ? "active" : ""} onClick={() => doExec("bold")}>
           <strong>B</strong>
-        </button>
-        <button className={activeFormats.italic ? "active" : ""} onClick={() => doExec("italic")}>
+        </div>
+        <div className={activeFormats.italic ? "active" : ""} onClick={() => doExec("italic")}>
           <em>I</em>
-        </button>
-        <button className={activeFormats.heading === "p" ? "active" : ""} onClick={formatAsParagraph}>
+        </div>
+        <div className={activeFormats.heading === "p" ? "active" : ""} onClick={formatAsParagraph}>
           P
-        </button>
-        <button className={activeFormats.heading === "h1" ? "active" : ""} onClick={() => doExec("formatBlock", "<h1>")}>
+        </div>
+        <div className={activeFormats.heading === "h1" ? "active" : ""} onClick={() => doExec("formatBlock", "<h1>")}>
           H1
-        </button>
-        <button className={activeFormats.heading === "h2" ? "active" : ""} onClick={() => doExec("formatBlock", "<h2>")}>
+        </div>
+        <div className={activeFormats.heading === "h2" ? "active" : ""} onClick={() => doExec("formatBlock", "<h2>")}>
           H2
-        </button>
-        <button className={activeFormats.heading === "h3" ? "active" : ""} onClick={() => doExec("formatBlock", "<h3>")}>
+        </div>
+        <div className={activeFormats.heading === "h3" ? "active" : ""} onClick={() => doExec("formatBlock", "<h3>")}>
           H3
-        </button>
-        <button className={activeFormats.unorderedList ? "active" : ""} onClick={() => doExec("insertUnorderedList")}>
+        </div>
+        <div className={activeFormats.unorderedList ? "active" : ""} onClick={() => doExec("insertUnorderedList")}>
           • List
-        </button>
-        <button className={activeFormats.orderedList ? "active" : ""} onClick={() => doExec("insertOrderedList")}>
+        </div>
+        <div className={activeFormats.orderedList ? "active" : ""} onClick={() => doExec("insertOrderedList")}>
           1. List
-        </button>
-        <button onClick={openLinkDialog}>🔗 Link</button>
-        <button onClick={openImageDialog}>🖼️ Image</button>
+        </div>
+        <div onClick={openLinkDialog}>🔗 Link</div>
+        <div onClick={openImageDialog}>🖼️ Image</div>
       </div>
 
       {/* 📝 Editable area */}
