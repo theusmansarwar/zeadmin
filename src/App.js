@@ -73,9 +73,12 @@ const App = ({ onLogout }) => {
     setIsOpen((prev) => !prev);
   };
 
-  const handleDropdownToggle = (menu) => {
-    setOpenDropdown(openDropdown === menu ? null : menu);
-  };
+ 
+
+
+const handleDropdownToggle = (id) => {
+  setOpenDropdown((prev) => (prev === id ? null : id));
+};
 
   const allItems = [
     { id: 1, name: "Dashboard", route: "/dashboard", icon: <MdDashboard /> },
@@ -104,7 +107,7 @@ const App = ({ onLogout }) => {
       name: "Blogs",
       icon: <FaBlog />,
       children: [
-        { id: 1, name: "All Blogs", route: "/blogs", icon: <MdArticle /> },
+        { id: 61, name: "All Blogs", route: "/blogs", icon: <MdArticle /> },
         {
           id: 62,
           name: "Featured Blogs",
@@ -189,20 +192,70 @@ const App = ({ onLogout }) => {
     setActiveitems(currentItem?.id || null);
   }, [location.pathname]);
 
-  const handleitemsClick = (item) => {
-    if (item.children) {
-      setActiveitems(item.id);
-      handleDropdownToggle(item.id);
-    } else {
-      setActiveitems(item.id);
-      handleDropdownToggle(item.id);
-      navigate(item.route);
+  useEffect(() => {
+  const currentPath = location.pathname;
+
+  // Find which parent has this route
+  const findParentForRoute = (items) => {
+    for (let item of items) {
+      if (item.children) {
+        for (let child of item.children) {
+          if (child.route === currentPath) {
+            return item.id;
+          }
+        }
+      }
     }
+    return null;
   };
 
+  const parentId = findParentForRoute(allItems); // menuItems = your full list
+  if (parentId) {
+    setOpenDropdown(parentId);
+    setActiveitems(parentId);
+  }
+}, [location.pathname]);
+
+
+const handleitemsClick = (item) => {
+  if (item.children && item.children.length > 0) {
+    // If the dropdown is already open
+    if (openDropdown === item.id) {
+      // Close it if it's already open (toggle behavior)
+      setOpenDropdown(null);
+      return;
+    }
+
+    // Open dropdown
+    setActiveitems(item.id);
+    setOpenDropdown(item.id);
+
+    // Check if one of its children is already active
+    const hasActiveChild = item.children.some(
+      (child) => child.route === location.pathname
+    );
+
+    // Only navigate to first child if no child is active
+    if (!hasActiveChild) {
+      const firstChild = item.children[0];
+      if (firstChild?.route) navigate(firstChild.route);
+    }
+  } else {
+    // Item has no children, navigate directly
+    setActiveitems(item.id);
+    setOpenDropdown(null);
+    if (item.route) navigate(item.route);
+  }
+};
+
+
+
   const handleChildClick = (child) => {
+  setActiveitems(child.id);
+  if (child.route) {
     navigate(child.route);
-  };
+  }
+};
 
   return (
     <div className="App">
