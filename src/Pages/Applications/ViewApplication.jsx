@@ -67,7 +67,7 @@ const ViewApplication = () => {
         <p><strong>Name:</strong> {data.name}</p>
         <p><strong>Email:</strong> <a href={`mailto:${data.email}`}>{data.email}</a></p>
         <p><strong>Phone:</strong> <a href={`tel:${data.phone}`}>{data.phone}</a></p>
-        <p><strong>Job Title:</strong> {data.jobTitle}</p>
+        <p><strong>Job Title:</strong> {data.jobId.jobtitle}</p>
 
         <div className="file-preview">
           <h3>Resume Preview</h3>

@@ -371,9 +371,9 @@ export const fetchTeamMemberById = async (id) => {
   return invokeApi(reqObj);
 };
 
-export const fetchallApplication = async ( page, rowsPerPages) => {
+export const fetchallApplication = async ( page, rowsPerPages, query) => {
   const reqObj = {
-    path: `/applications/List?limit=${rowsPerPages}&page=${page}`,
+    path: `/applications/view?limit=${rowsPerPages}&page=${page}&search=${query}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,
@@ -385,7 +385,7 @@ export const fetchallApplication = async ( page, rowsPerPages) => {
 };
 export const fetchSingleApplication = async (id) => {
   const reqObj = {
-    path: `/applications/Application/${id}`,
+    path: `/applications/get/${id}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("Token")}`,

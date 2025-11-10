@@ -230,9 +230,10 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         setData(response.comments);
         setTotalRecords(response.totalComments || 0);
       } else if (tableType === "Applications") {
-        response = await fetchallApplication(page, rowsPerPage);
+        response = await fetchallApplication(page, rowsPerPage, searchQuery);
         setData(response?.applications);
-        setTotalRecords(response.totalApplication || 0);
+        setPage(response.page);
+        setTotalRecords(response.totalApplications || 0);
       } else if (tableType === "Testimonial") {
         response = await fetchallTestimonialslist(page, rowsPerPage);
         setData(response.testimonials);
@@ -547,6 +548,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                   tableType === "Team" ||
                   tableType === "Team Category" ||
                   tableType === "Role" ||
+                  tableType === "Applications" ||
                   tableType === "Users"
 
                 ) && (

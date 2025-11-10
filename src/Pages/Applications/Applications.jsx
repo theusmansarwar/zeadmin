@@ -5,7 +5,7 @@ const Applications = () => {
   const attributes = [
    
     { id: "name", label: "Name" },
-    { id: "jobTitle", label: "Job Title" },
+    { id: "jobId.jobtitle", label: "Job Title" },
     { id: "email", label: "Email" },
     { id: "phone", label: "Phone" },
     { id: "createdAt", label: "Created At" },

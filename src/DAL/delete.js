@@ -241,7 +241,7 @@ export const deleteAllJobs = async (data) => {
 };
 export const deleteAllApplications = async (data) => {
   const reqObj = {
-    path: `/applications/ApplicationDelete`,
+    path: `/applications/deleteAll`,
     method: "DELETE", 
     headers: {
       "Content-Type": "application/json",
