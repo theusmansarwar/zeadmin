@@ -152,7 +152,12 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         setTotalRecords(response.totalServices);
       } else if (tableType === "Blogs") {
         if (userType === "Writer") {
-          response = await fetchBloglistofwritter(page, rowsPerPage, userName, searchQuery);
+          response = await fetchBloglistofwritter(
+            page,
+            rowsPerPage,
+            userName,
+            searchQuery
+          );
           setData(response?.blogs);
           setPage(response?.currentPage);
           setTotalRecords(response?.totalBlogs);
@@ -179,7 +184,11 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         setPage(response.currentPage);
         setTotalRecords(response.totalIndustries);
       } else if (tableType === "CaseStudies") {
-        response = await fetchallCaseStudieslist(page, rowsPerPage, searchQuery);
+        response = await fetchallCaseStudieslist(
+          page,
+          rowsPerPage,
+          searchQuery
+        );
         setData(response?.CaseStudies || []);
         setPage(response.currentPage);
         setTotalRecords(response.totalCaseStudies);
@@ -188,15 +197,12 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         setData(response?.jobs || []);
         setPage(response.currentPage);
         setTotalRecords(response.totalJobs);
-      }
-      else if (tableType === "Products") {
+      } else if (tableType === "Products") {
         response = await fetchProductslist(page, rowsPerPage, searchQuery);
         setData(response?.Products || []);
         setPage(response.currentPage);
         setTotalRecords(response.totalProducts);
-      } 
-      
-      else if (tableType === "Team Category") {
+      } else if (tableType === "Team Category") {
         response = await fetchallTeamCategories(page, rowsPerPage, searchQuery);
         setData(response.categories);
         setTotalRecords(response.totalCategories);
@@ -249,12 +255,10 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-
     } finally {
       setIsLoading(false);
     }
   };
-
 
   const handleSelectAllClick = (event) => {
     setSelected(event.target.checked ? data.map((row) => row._id) : []);
@@ -284,10 +288,9 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       navigate(`/edit-service/${category._id}`);
     } else if (tableType === "CaseStudies") {
       navigate(`/edit-casestudies/${category._id}`);
-    }else if (tableType === "Products") {
+    } else if (tableType === "Products") {
       navigate(`/edit-product/${category._id}`);
-    }
-     else if (tableType === "UserType") {
+    } else if (tableType === "UserType") {
       setModelData(category);
       setModeltype("Update");
       setOpenUserTypeModal(true);
@@ -310,8 +313,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setOpenLeadsModal(true);
     } else if (tableType === "Job") {
       navigate(`/edit-job/${category._id}`);
-    }
-    else if (tableType === "Applications") {
+    } else if (tableType === "Applications") {
       navigate(`/view-application/${category._id}`);
     } else if (tableType === "Comments") {
       setModelData(category);
@@ -356,8 +358,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         response = await deleteAllTestimonials({ ids: selected });
       } else if (tableType === "Job") {
         response = await deleteAllJobs({ ids: selected });
-      }
-      else if (tableType === "Applications") {
+      } else if (tableType === "Applications") {
         response = await deleteAllApplications({ ids: selected });
       } else if (tableType === "Role") {
         response = await deleteAllRole({ ids: selected });
@@ -372,10 +373,11 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       } else if (tableType === "CaseStudies") {
         response = await deleteAllCaseStudy({ ids: selected });
       } else if (tableType === "CaseStudies") {
-        response = await deleteAllProducts({ ids: selected });}
-      else if (tableType === "Industries") {
+        response = await deleteAllProducts({ ids: selected });
+      } else if (tableType === "Industries") {
         response = await deleteAllIndustries({ ids: selected });
-      } if (response.status === 200) {
+      }
+      if (response.status === 200) {
         showAlert("success", response.message || "Deleted successfully");
         fetchData();
         setSelected([]);
@@ -426,12 +428,11 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setModelData();
     } else if (tableType === "Job") {
       navigate("/add-job");
-    }
-    else if (tableType === "Industries") {
+    } else if (tableType === "Industries") {
       navigate("/add-industry");
     } else if (tableType === "CaseStudies") {
       navigate("/add-casestudies");
-    }else if (tableType === "Products") {
+    } else if (tableType === "Products") {
       navigate("/add-product");
     }
   };
@@ -499,13 +500,17 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
           Modeldata={modelData}
           onResponse={handleResponse}
         />
-        <AddUser
-          open={openUserModal}
-          setOpen={setOpenUserModal}
-          Modeltype={modeltype}
-          Modeldata={modelData}
-          onResponse={handleResponse}
-        />
+
+        {openUserModal && (
+          <AddUser
+            open={openUserModal}
+            setOpen={setOpenUserModal}
+            Modeltype={modeltype}
+            Modeldata={modelData}
+            onResponse={handleResponse}
+          />
+        )}
+
         <ApproveComment
           open={openCommentModal}
           setOpen={setOpenCommentModal}
@@ -549,49 +554,47 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                   tableType === "Team Category" ||
                   tableType === "Role" ||
                   tableType === "Applications" ||
-                  tableType === "Users"
-
-                ) && (
-                    <TextField
-                      size="small"
-                      placeholder="Search..."
-                      variant="outlined"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          setDebouncedSearch(searchQuery);
-                        }
-                      }}
-                      sx={{
-                        minWidth: 200,
-                        backgroundColor: "white",
-                        borderRadius: 1,
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": {
-                            borderColor: "var(--background-color)",
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "var(--background-color)",
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--background-color)",
-                          },
+                  tableType === "Users") && (
+                  <TextField
+                    size="small"
+                    placeholder="Search..."
+                    variant="outlined"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setDebouncedSearch(searchQuery);
+                      }
+                    }}
+                    sx={{
+                      minWidth: 200,
+                      backgroundColor: "white",
+                      borderRadius: 1,
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "var(--background-color)",
                         },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <SearchIcon
-                              sx={{
-                                color: "var(--background-color)",
-                              }}
-                            />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
+                        "&:hover fieldset": {
+                          borderColor: "var(--background-color)",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "var(--background-color)",
+                        },
+                      },
+                    }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <SearchIcon
+                            sx={{
+                              color: "var(--background-color)",
+                            }}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
 
                 {selected.length > 0 && tableType !== "Featured Blogs" ? (
                   <IconButton onClick={handleDeleteClick} sx={{ color: "red" }}>
@@ -653,10 +656,14 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody >
+                <TableBody>
                   {isLoading ? (
-                     <TableRow>
-                      <TableCell colSpan={attributes.length + 2} align="center" sx={{ py: 8 }}>
+                    <TableRow>
+                      <TableCell
+                        colSpan={attributes.length + 2}
+                        align="center"
+                        sx={{ py: 8 }}
+                      >
                         <Box
                           sx={{
                             display: "flex",
@@ -687,15 +694,26 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                   ) : data.length === 0 ? (
                     // No Data Found State
                     <TableRow>
-                      <TableCell colSpan={attributes.length + 2} align="center" sx={{ py: 8 }}>
-                        <Typography variant="h6" sx={{ color: "var(--secondary-color)", mb: 1 }}>
-                          {searchQuery ? "No results found" : "No data available"}
+                      <TableCell
+                        colSpan={attributes.length + 2}
+                        align="center"
+                        sx={{ py: 8 }}
+                      >
+                        <Typography
+                          variant="h6"
+                          sx={{ color: "var(--secondary-color)", mb: 1 }}
+                        >
+                          {searchQuery
+                            ? "No results found"
+                            : "No data available"}
                         </Typography>
-                        <Typography variant="body2" sx={{ color: "var(--secondary-color)" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "var(--secondary-color)" }}
+                        >
                           {searchQuery
                             ? `No ${tableType.toLowerCase()} found matching "${searchQuery}"`
-                            : `No ${tableType.toLowerCase()} available yet`
-                          }
+                            : `No ${tableType.toLowerCase()} available yet`}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -709,7 +727,9 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                             <Checkbox
                               sx={{
                                 color: "var(--background-color)",
-                                "&.Mui-checked": { color: "var(--background-color)" },
+                                "&.Mui-checked": {
+                                  color: "var(--background-color)",
+                                },
                               }}
                               checked={isItemSelected}
                               onChange={() => {
@@ -722,15 +742,20 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                             />
                           </TableCell>
                           {attributes?.map((attr) => (
-                            <TableCell key={attr.id} sx={{ color: "var(--black-color)" }}>
-                              {attr.id === "createdAt" || attr.id === "publishedDate" ? (
+                            <TableCell
+                              key={attr.id}
+                              sx={{ color: "var(--black-color)" }}
+                            >
+                              {attr.id === "createdAt" ||
+                              attr.id === "publishedDate" ? (
                                 formatDate(row[attr.id])
-                              ) : attr.id === "image" || attr.id === "thumbnail" ? (
+                              ) : attr.id === "image" ||
+                                attr.id === "thumbnail" ? (
                                 tableType === "Testimonial" ||
-                                  tableType === "Blogs" ||
-                                  tableType === "Featured Blogs" ||
-                                  tableType === "Industries" ||
-                                  tableType === "CaseStudies" ? (
+                                tableType === "Blogs" ||
+                                tableType === "Featured Blogs" ||
+                                tableType === "Industries" ||
+                                tableType === "CaseStudies" ? (
                                   row[attr.id] ? (
                                     <img
                                       alt=""
@@ -767,7 +792,8 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                                       : "var(--warning-bgcolor)",
                                     padding: "5px",
                                     minWidth: "200px",
-                                    borderRadius: "var(--default-border-radius)",
+                                    borderRadius:
+                                      "var(--default-border-radius)",
                                   }}
                                 >
                                   {row[attr.id] ? "Public" : "Private"}
@@ -778,27 +804,29 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                                     color: row.isclosed
                                       ? "red"
                                       : row.status
-                                        ? "green"
-                                        : "orange",
+                                      ? "green"
+                                      : "orange",
                                     background: row.isclosed
                                       ? "#f8d7da"
                                       : row.status
-                                        ? "#d4edda"
-                                        : "#fff3cd",
+                                      ? "#d4edda"
+                                      : "#fff3cd",
                                     padding: "5px",
                                     minWidth: "100px",
-                                    borderRadius: "var(--default-border-radius)",
+                                    borderRadius:
+                                      "var(--default-border-radius)",
                                   }}
                                 >
                                   {row.isclosed
                                     ? "Closed"
                                     : row.status
-                                      ? "Answered"
-                                      : "Pending"}
+                                    ? "Answered"
+                                    : "Pending"}
                                 </span>
                               ) : row[attr.id] === 0 ? (
                                 0
-                              ) : typeof getNestedValue(row, attr.id) === "string" ? (
+                              ) : typeof getNestedValue(row, attr.id) ===
+                                "string" ? (
                                 truncateText(getNestedValue(row, attr.id), 30)
                               ) : (
                                 getNestedValue(row, attr.id)
@@ -823,7 +851,6 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
                     })
                   )}
                 </TableBody>
-
               </Table>
             </TableContainer>
             <TablePagination
