@@ -8,10 +8,10 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
-import { createCaseStudy, createIndustries } from "../../DAL/create";
+import { createIndustries } from "../../DAL/create";
 import UploadFile from "../../Components/Models/UploadFile";
-import { updateCaseStudy, updateIndustries } from "../../DAL/edit";
-import { fetchcasestudy, fetchindustry } from "../../DAL/fetch";
+import { updateIndustries } from "../../DAL/edit";
+import { fetchindustry } from "../../DAL/fetch";
 import { useAlert } from "../../Components/Alert/AlertContext";
 
 const AddIndustries = () => {
@@ -129,11 +129,11 @@ const AddIndustries = () => {
           onClick={handleSubmit}
           variant="contained"
           sx={{
-              background: "var(--background-color)",
-              color: "var(--text-color)",
-              borderRadius: "var(--default-border-radius)",
-              "&:hover": { background: "var(--background-color)" },
-            }}
+            background: "var(--background-color)",
+            color: "var(--text-color)",
+            borderRadius: "var(--default-border-radius)",
+            "&:hover": { background: "var(--background-color)" },
+          }}
         >
           {isEdit ? "Update" : "Add"}
         </Button>

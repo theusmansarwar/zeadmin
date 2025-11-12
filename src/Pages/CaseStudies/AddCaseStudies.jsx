@@ -34,22 +34,24 @@ const AddCaseStudies = () => {
 
   // Load case study data in edit mode
   useEffect(() => {
-    const fetchCaseStudy = async () => {
-      const response = await fetchcasestudy(id);
-      const data = response.CaseStudy;
-      setName(data?.name || "");
-      setShortDescription(data?.shortdescription || "");
-      setDescription(data?.description || "");
-      setDetail(data?.detail || "");
-      setFile(data?.file || "");
-      setImage(data?.image || "");
-      setPublished(data?.published || false);
-    };
-    fetchCaseStudy();
+    if (id) {
+      const fetchCaseStudy = async () => {
+        const response = await fetchcasestudy(id);
+        const data = response.CaseStudy;
+        setName(data?.name || "");
+        setShortDescription(data?.shortdescription || "");
+        setDescription(data?.description || "");
+        setDetail(data?.detail || "");
+        setFile(data?.file || "");
+        setImage(data?.image || "");
+        setPublished(data?.published || false);
+      };
+      fetchCaseStudy();
+    }
   }, [isEdit, id]);
 
   const handleSubmit = async () => {
-    const payload = { name,shortdescription, description, detail, file, image, published };
+    const payload = { name, shortdescription, description, detail, file, image, published };
 
     try {
       let response;
@@ -148,7 +150,7 @@ const AddCaseStudies = () => {
       {errors.image && (
         <Typography color="error" variant="body2">
           {errors.image}
-         
+
         </Typography>
       )}
 

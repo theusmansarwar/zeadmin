@@ -372,7 +372,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         response = await deleteAllTeam({ ids: selected });
       } else if (tableType === "CaseStudies") {
         response = await deleteAllCaseStudy({ ids: selected });
-      } else if (tableType === "CaseStudies") {
+      } else if (tableType === "Products") {
         response = await deleteAllProducts({ ids: selected });
       } else if (tableType === "Industries") {
         response = await deleteAllIndustries({ ids: selected });

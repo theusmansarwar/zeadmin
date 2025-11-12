@@ -24,7 +24,6 @@ const AddProducts = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [detail, setDetail] = useState("");
-  const [file, setFile] = useState("");
   const [image, setImage] = useState("");
   const [published, setPublished] = useState(false);
 
@@ -33,21 +32,22 @@ const AddProducts = () => {
 
   // Load case study data in edit mode
   useEffect(() => {
-    const getProducts = async () => {
-      const response = await fetchProducts(id);
-      const data = response.product;
-      setName(data?.name || "");
-      setDescription(data?.description || "");
-      setDetail(data?.detail || "");
-      setFile(data?.file || "");
-      setImage(data?.image || "");
-      setPublished(data?.published || false);
-    };
-    getProducts();
+    if (id) {
+      const getProducts = async () => {
+        const response = await fetchProducts(id);
+        const data = response.product;
+        setName(data?.name || "");
+        setDescription(data?.description || "");
+        setDetail(data?.detail || "");
+        setImage(data?.image || "");
+        setPublished(data?.published || false);
+      };
+      getProducts();
+    }
   }, [isEdit, id]);
 
   const handleSubmit = async () => {
-    const payload = { name, description, detail, file, image, published };
+    const payload = { name, description, detail, image, published };
 
     try {
       let response;
@@ -110,21 +110,6 @@ const AddProducts = () => {
         error={!!errors.detail}
         helperText={errors.detail}
       />
-
-      <Typography variant="h6" mt={3} mb={1}>
-        Upload File
-      </Typography>
-      <UploadFile
-        multiple={false}
-        accept="application/pdf"
-        initialFile={file}
-        onUploadComplete={(path) => setFile(path)}
-      />
-      {errors.file && (
-        <Typography color="error" variant="body2">
-          {errors.file}
-        </Typography>
-      )}
 
       <Typography variant="h6" mt={3} mb={1}>
         Upload Image
