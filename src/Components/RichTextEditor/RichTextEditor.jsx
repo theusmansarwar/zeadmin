@@ -35,24 +35,25 @@ export default function RichTextEditor({ onChange, data }) {
     orderedList: false,
   });
 
- useEffect(() => {
-  const editor = editorRef.current;
-  if (!editor) return;
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
 
-  // Skip update if the user is focusing or just inserted content
-  const isFocused = document.activeElement === editor;
-  if (isFocused) return;
+    const isFocused = document.activeElement === editor;
+    if (isFocused) return;
 
-  if (data && editor.innerHTML !== data) {
-    editor.innerHTML = data;
-    setHtmlPreview(data);
-  }
-}, [data]);
+    if (data && editor.innerHTML !== data) {
+      editor.innerHTML = data;
+      setHtmlPreview(data);
+    }
+  }, [data]);
 
-
-
-  // 🧠 Selection save/restore
+  // 🧠 Save/restore selection
   const saveSelection = () => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    editor.focus(); // ensure selection is inside editor
     const sel = window.getSelection();
     if (sel.rangeCount > 0) savedSelection.current = sel.getRangeAt(0);
   };
@@ -115,7 +116,7 @@ export default function RichTextEditor({ onChange, data }) {
   const triggerChange = () => {
     const html = editorRef.current?.innerHTML || "";
     setHtmlPreview(html);
-    onChange?.(html); 
+    onChange?.(html);
   };
 
   const doExec = (command, value = null) => {
@@ -140,6 +141,7 @@ export default function RichTextEditor({ onChange, data }) {
     });
     triggerChange();
   };
+
   const openLinkDialog = () => {
     saveSelection();
     const selection = window.getSelection().toString();
@@ -163,7 +165,6 @@ export default function RichTextEditor({ onChange, data }) {
     setLinkText("");
   };
 
-  // 🖼️ Open/Insert image
   const openImageDialog = () => {
     saveSelection();
     setUploadedPath("");
@@ -212,32 +213,56 @@ export default function RichTextEditor({ onChange, data }) {
     <div className="rte-container">
       {/* 🧰 Toolbar */}
       <div className="rte-toolbar">
-        <div className={activeFormats.bold ? "active" : ""} onClick={() => doExec("bold")}>
+        <div
+          className={activeFormats.bold ? "active" : ""}
+          onMouseDown={(e) => { e.preventDefault(); doExec("bold"); }}
+        >
           <strong>B</strong>
         </div>
-        <div className={activeFormats.italic ? "active" : ""} onClick={() => doExec("italic")}>
+        <div
+          className={activeFormats.italic ? "active" : ""}
+          onMouseDown={(e) => { e.preventDefault(); doExec("italic"); }}
+        >
           <em>I</em>
         </div>
-        <div className={activeFormats.heading === "p" ? "active" : ""} onClick={formatAsParagraph}>
+        <div
+          className={activeFormats.heading === "p" ? "active" : ""}
+          onMouseDown={(e) => { e.preventDefault(); formatAsParagraph(); }}
+        >
           P
         </div>
-        <div className={activeFormats.heading === "h1" ? "active" : ""} onClick={() => doExec("formatBlock", "<h1>")}>
+        <div
+          className={activeFormats.heading === "h1" ? "active" : ""}
+          onMouseDown={(e) => { e.preventDefault(); doExec("formatBlock", "<h1>"); }}
+        >
           H1
         </div>
-        <div className={activeFormats.heading === "h2" ? "active" : ""} onClick={() => doExec("formatBlock", "<h2>")}>
+        <div
+          className={activeFormats.heading === "h2" ? "active" : ""}
+          onMouseDown={(e) => { e.preventDefault(); doExec("formatBlock", "<h2>"); }}
+        >
           H2
         </div>
-        <div className={activeFormats.heading === "h3" ? "active" : ""} onClick={() => doExec("formatBlock", "<h3>")}>
+        <div
+          className={activeFormats.heading === "h3" ? "active" : ""}
+          onMouseDown={(e) => { e.preventDefault(); doExec("formatBlock", "<h3>"); }}
+        >
           H3
         </div>
-        <div className={activeFormats.unorderedList ? "active" : ""} onClick={() => doExec("insertUnorderedList")}>
+        <div
+          className={activeFormats.unorderedList ? "active" : ""}
+          onMouseDown={(e) => { e.preventDefault(); doExec("insertUnorderedList"); }}
+        >
           • List
         </div>
-        <div className={activeFormats.orderedList ? "active" : ""} onClick={() => doExec("insertOrderedList")}>
+        <div
+          className={activeFormats.orderedList ? "active" : ""}
+          onMouseDown={(e) => { e.preventDefault(); doExec("insertOrderedList"); }}
+        >
           1. List
         </div>
-        <div onClick={openLinkDialog}>🔗 Link</div>
-        <div onClick={openImageDialog}>🖼️ Image</div>
+        <div onMouseDown={(e) => { e.preventDefault(); openLinkDialog(); }}>🔗 Link</div>
+        <div onMouseDown={(e) => { e.preventDefault(); openImageDialog(); }}>🖼️ Image</div>
       </div>
 
       {/* 📝 Editable area */}
@@ -248,9 +273,9 @@ export default function RichTextEditor({ onChange, data }) {
         onInput={triggerChange}
         onPaste={handlePaste}
         className="rte-editor"
->
-  <p>Start writing here...</p>
-</div>
+      >
+        <p>Start writing here...</p>
+      </div>
 
       {/* 🔍 HTML output */}
       <div className="rte-output">
@@ -259,32 +284,60 @@ export default function RichTextEditor({ onChange, data }) {
       </div>
 
       {/* 🔗 Link Dialog */}
-      <Dialog open={linkModalOpen} onClose={() => setLinkModalOpen(false)}>
+      <Dialog
+        open={linkModalOpen}
+        onClose={() => setLinkModalOpen(false)}
+        disableEnforceFocus
+        disableRestoreFocus
+      >
         <DialogTitle>Insert Link</DialogTitle>
         <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <TextField label="URL" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="https://example.com" />
-          <TextField label="Display Text" value={linkText} onChange={(e) => setLinkText(e.target.value)} placeholder="Example text" />
+          <TextField
+            label="URL"
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            placeholder="https://example.com"
+          />
+          <TextField
+            label="Display Text"
+            value={linkText}
+            onChange={(e) => setLinkText(e.target.value)}
+            placeholder="Example text"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setLinkModalOpen(false)}>Cancel</Button>
-          <Button onClick={insertLink} variant="contained">
-            Insert
-          </Button>
+          <Button onClick={insertLink} variant="contained">Insert</Button>
         </DialogActions>
       </Dialog>
 
       {/* 🖼️ Image Dialog */}
-      <Dialog open={imageModalOpen} onClose={() => setImageModalOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={imageModalOpen}
+        onClose={() => setImageModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        disableEnforceFocus
+        disableRestoreFocus
+      >
         <DialogTitle>Insert Image</DialogTitle>
         <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <UploadFile endpoint="/upload-image" fieldName="image" accept="image/*" onUploadComplete={(path) => setUploadedPath(path)} />
-          <TextField label="Alt Text" value={altText} onChange={(e) => setAltText(e.target.value)} placeholder="Describe this image" />
+          <UploadFile
+            endpoint="/upload-image"
+            fieldName="image"
+            accept="image/*"
+            onUploadComplete={(path) => setUploadedPath(path)}
+          />
+          <TextField
+            label="Alt Text"
+            value={altText}
+            onChange={(e) => setAltText(e.target.value)}
+            placeholder="Describe this image"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setImageModalOpen(false)}>Cancel</Button>
-          <Button onClick={insertImage} variant="contained">
-            Insert
-          </Button>
+          <Button onClick={insertImage} variant="contained">Insert</Button>
         </DialogActions>
       </Dialog>
     </div>
