@@ -65,6 +65,7 @@ import AddJobs from "./Pages/Jobs/AddJobs";
 import Job from "./Pages/Jobs/Jobs";
 import Products from "./Pages/Products/Products";
 import AddProducts from "./Pages/Products/AddProducts";
+import Portfolio from "./Pages/Portfolio/Portfolio";
 const App = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -188,6 +189,12 @@ const App = ({ onLogout }) => {
         { id: 111, name: "All Users", route: "/users", icon: <FaUsers /> },
         { id: 112, name: "User Types", route: "/usertype", icon: <FaUserCog /> },
       ],
+    },
+    {
+      id: 12,
+      name: "Portfolio",
+      route: "/portfolio",
+      icon: <FaUser />,
     },
 
 
@@ -360,6 +367,9 @@ const App = ({ onLogout }) => {
           <Route path="/add-industry" element={<AddIndustries />} />
           <Route path="/edit-industry/:id" element={<AddIndustries />} />
 
+          <Route path="/portfolio" element={<Portfolio />} />
+
+          
           <Route path="/products" element={<Products />} />
           <Route path="/add-product" element={<AddProducts />} />
           <Route path="/edit-product/:id" element={<AddProducts />} />

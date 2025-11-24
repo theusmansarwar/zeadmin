@@ -443,4 +443,16 @@ export const fetchallUsertypeslist = async () => {
   };
   return invokeApi(reqObj);
 };
+export const fetchallportfoliolist = async () => {
+  const reqObj = {
+    path: `/portfolio/list`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+
+    body: {},
+  };
+  return invokeApi(reqObj);
+};
 

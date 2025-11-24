@@ -332,3 +332,16 @@ export const deleteAllSubServices = async (data) => {
   
   return invokeApi(reqObj);
 };
+export const deleteAllPortfolios = async (data) => {
+  const reqObj = {
+    path: `/portfolio/delete-many`,
+    method: "DELETE", 
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};

@@ -30,6 +30,7 @@ import {
   fetchallIndustrieslist,
   fetchallJobslist,
   fetchallLeads,
+  fetchallportfoliolist,
   fetchallRoles,
   fetchallservicescategorylist,
   fetchallserviceslist,
@@ -56,6 +57,7 @@ import {
   deleteAllIndustries,
   deleteAllJobs,
   deleteAllLeads,
+  deleteAllPortfolios,
   deleteAllProducts,
   deleteAllRole,
   deleteAllServices,
@@ -76,6 +78,7 @@ import ViewLeads from "./viewLeads";
 import AddTeamCategories from "./addTeamCategory";
 import { baseUrl } from "../../Config/Config";
 import Roles from "./addRole";
+import PortfolioModel from "./portfolioModel";
 
 export function useTable({ attributes, tableType, limitPerPage = 25 }) {
   const { showAlert } = useAlert(); // Since you created a custom hook
@@ -97,6 +100,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
   const [openServicesCategoryModal, setOpenServicesCategoryModal] =
     useState(false);
   const [openUserTypeModal, setOpenUserTypeModal] = useState(false);
+  const [openPortfolioModal, setOpenPortfolioModal] = useState(false);
   const [openUserModal, setOpenUserModal] = useState(false);
   const [openRoleModal, setOpenRoleModal] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
@@ -202,7 +206,14 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         setData(response?.Products || []);
         setPage(response.currentPage);
         setTotalRecords(response.totalProducts);
-      } else if (tableType === "Team Category") {
+      }  else if (tableType === "Portfolio") {
+        response = await fetchallportfoliolist(page, rowsPerPage, searchQuery);
+        setData(response?.portfolios || []);
+        setPage(response.page);
+        setTotalRecords(response.totalItems);
+      } 
+      
+      else if (tableType === "Team Category") {
         response = await fetchallTeamCategories(page, rowsPerPage, searchQuery);
         setData(response.categories);
         setTotalRecords(response.totalCategories);
@@ -210,7 +221,8 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
           localStorage.removeItem("Token");
           navigate("/login");
         }
-      } else if (tableType === "Team") {
+      }
+       else if (tableType === "Team") {
         response = await fetchTeamMember(page, rowsPerPage, searchQuery);
         setData(response.members);
         setTotalRecords(response?.total);
@@ -298,11 +310,13 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setModelData(category);
       setModeltype("Update");
       setOpenRoleModal(true);
-    } else if (tableType === "Users") {
+    }
+     else if (tableType === "Portfolio") {
       setModelData(category);
       setModeltype("Update");
-      setOpenUserModal(true);
-    } else if (tableType === "Blogs") {
+      setOpenPortfolioModal(true);
+    }
+     else if (tableType === "Blogs") {
       navigate(`/edit-blog/${category._id}`);
     } else if (tableType === "Featured Blogs") {
       navigate(`/edit-featuredblog/${category._id}`);
@@ -377,6 +391,9 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       } else if (tableType === "Industries") {
         response = await deleteAllIndustries({ ids: selected });
       }
+       else if (tableType === "Portfolio") {
+        response = await deleteAllPortfolios({ ids: selected });
+      }
       if (response.status === 200) {
         showAlert("success", response.message || "Deleted successfully");
         fetchData();
@@ -410,7 +427,13 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setOpenUserModal(true);
       setModeltype("Add");
       setModelData();
-    } else if (tableType === "Blogs") {
+    } else if (tableType === "Portfolio") {
+      setOpenPortfolioModal(true);
+      setModeltype("Add");
+      setModelData();
+    }
+    
+    else if (tableType === "Blogs") {
       navigate("/add-blog");
     } else if (tableType === "Featured Blogs") {
       navigate("/add-blog");
@@ -505,6 +528,15 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
           <AddUser
             open={openUserModal}
             setOpen={setOpenUserModal}
+            Modeltype={modeltype}
+            Modeldata={modelData}
+            onResponse={handleResponse}
+          />
+        )}
+        {openPortfolioModal && (
+          <PortfolioModel
+            open={openPortfolioModal}
+            setOpen={setOpenPortfolioModal}
             Modeltype={modeltype}
             Modeldata={modelData}
             onResponse={handleResponse}

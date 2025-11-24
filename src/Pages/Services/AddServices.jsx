@@ -41,6 +41,8 @@ const AddServices = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [icon, setIcon] = useState(null);
   const [iconPreview, setIconPreview] = useState(null);
+  const [menuImage, setMenuImage] = useState(null);
+  const [menuImagePreview, setMenuImagePreview] = useState(null);
 
   const [subServices, setSubServices] = useState({
     title: "",
@@ -84,7 +86,6 @@ const AddServices = () => {
       const response = await fetchservicebyid(id);
       if (response.status === 200) {
         const service = response.service;
-
         setTitle(service.title || "");
         setMetaTitle(service.metatitle || "");
         setDescription(service.description || "");
@@ -93,7 +94,7 @@ const AddServices = () => {
         setShortDescription(service.short_description || "");
         setIsVisible(service.published || false);
         setIcon(service.icon || "");
-
+        setMenuImage(service.menuImg || "");
         setFaqs(service.faqs || {});
         setPortfolio(service.portfolio || {});
         setSubServices(service.subServices || {});
@@ -101,6 +102,7 @@ const AddServices = () => {
         setLastSection(service.lastSection || {});
 
         if (service.icon) setIconPreview(baseUrl + service.icon);
+        if (service.menuImg) setMenuImagePreview(baseUrl + service.menuImg);
       }
     } catch (error) {
       console.error("Error fetching service:", error);
@@ -136,6 +138,12 @@ const AddServices = () => {
       } else if (id && iconPreview) {
         // keep existing icon path
         formData.append("icon", iconPreview.replace(baseUrl, ""));
+      }
+      // Menu Image
+      if (menuImage) {
+        formData.append("menuImg", menuImage);
+      } else if (id && menuImagePreview) {
+        formData.append("menuImg", menuImagePreview.replace(baseUrl, ""));
       }
 
       formData.append("published", isVisible);
@@ -332,6 +340,28 @@ const AddServices = () => {
           error={errors.icon}
           onUploadComplete={(path) => setIcon(path)}
         />
+        <Typography
+          variant="h6"
+          mt={1}
+          sx={{ color: "var(--background-color)" }}
+        >
+          Service Menu Image{" "}
+          <BsInfoCircle
+            style={{ fontSize: "16px" }}
+            onClick={() => {
+              openinfobox("Upload Service Menu Image", serviceiconimg);
+            }}
+          />
+        </Typography>
+
+        <UploadFile
+          multiple={false}
+          accept="image/*"
+          initialFile={menuImagePreview || menuImage}
+          error={errors.menuImg}
+          onUploadComplete={(path) => setMenuImage(path)}
+        />
+
 
         <TextField
           fullWidth
