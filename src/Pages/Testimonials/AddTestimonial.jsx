@@ -18,6 +18,9 @@ import { fetchTestimonialbyid } from "../../DAL/fetch";
 import { updateTestimonial } from "../../DAL/edit";
 import { createTestimonial } from "../../DAL/create";
 import UploadFile from "../../Components/Models/UploadFile";
+import { BsInfoCircle } from "react-icons/bs";
+import InfoImageModel from "../../Components/Models/InfoImageModal";
+import testimonailimage from '../../Assets/testimonial.png'
 
 const AddTestimonial = () => {
   const { id } = useParams();
@@ -100,22 +103,36 @@ const AddTestimonial = () => {
     setLoading(false);
   };
 
+   const [infoopen, setInfoOpen] = useState(false);
+    const [infoboxheading, setInfoBoxHeading] = useState(false);
+    const [infoboximage, setInfoBoxImage] = useState(false);
+   const openinfobox = (heading, image) => {
+    setInfoBoxImage(image);
+    setInfoBoxHeading(heading);
+    setInfoOpen(true);
+  };
+
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
+     
+            <InfoImageModel
+              open={infoopen}
+              onClose={() => setInfoOpen(false)}
+              heading={infoboxheading}
+              image={infoboximage}
+            />
       <Typography variant="h5" gutterBottom>
-        {id ? "Edit Testimonial" : "Add Testimonial"}
+        {id ? "Edit Testimonial" : "Add Testimonial"} <BsInfoCircle
+                          style={{ fontSize: "16px" }}
+                          onClick={() => {
+                            openinfobox("Testimonial Section",
+                              testimonailimage
+                              );
+                          }}
+                        />
       </Typography>
 
-      <Typography variant="h6" mt={3} mb={1}>
-        Upload Image
-      </Typography>
-      <UploadFile
-        multiple={false}
-        accept="image/*"
-        initialFile={image}
-        error={errors.image}
-        onUploadComplete={(path) => setImage(path)}
-      />
+      
 
       {/* What We Did */}
       <TextField
@@ -181,6 +198,16 @@ const AddTestimonial = () => {
         error={!!errors.boosttext}
         helperText={errors.boosttext}
         margin="normal"
+      />
+        <Typography variant="h6" mt={3} mb={1}>
+        Company Logo
+      </Typography>
+      <UploadFile
+        multiple={false}
+        accept="image/*"
+        initialFile={image}
+        error={errors.image}
+        onUploadComplete={(path) => setImage(path)}
       />
 
       {/* Published */}

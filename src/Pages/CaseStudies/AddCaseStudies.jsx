@@ -13,7 +13,10 @@ import UploadFile from "../../Components/Models/UploadFile";
 import { updateCaseStudy } from "../../DAL/edit";
 import { fetchcasestudy } from "../../DAL/fetch";
 import { useAlert } from "../../Components/Alert/AlertContext";
+import InfoImageModel from "../../Components/Models/InfoImageModal";
 
+import casestudyimage from '../../Assets/casetudy.png'
+import { BsInfoCircle } from "react-icons/bs";
 const AddCaseStudies = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -76,10 +79,32 @@ const AddCaseStudies = () => {
     }
   };
 
+   const [infoopen, setInfoOpen] = useState(false);
+      const [infoboxheading, setInfoBoxHeading] = useState(false);
+      const [infoboximage, setInfoBoxImage] = useState(false);
+     const openinfobox = (heading, image) => {
+      setInfoBoxImage(image);
+      setInfoBoxHeading(heading);
+      setInfoOpen(true);
+    };
+  
   return (
     <Box sx={{ maxWidth: "100%", margin: "0 auto", p: 3 }}>
+        <InfoImageModel
+                    open={infoopen}
+                    onClose={() => setInfoOpen(false)}
+                    heading={infoboxheading}
+                    image={infoboximage}
+                  />
       <Typography variant="h6" mb={2}>
-        {isEdit ? "Edit Case Study" : "Add Case Study"}
+        {isEdit ? "Edit Case Study" : "Add Case Study"}<BsInfoCircle
+                          style={{ fontSize: "16px" }}
+                          onClick={() => {
+                            openinfobox("Case Study Section",
+                              casestudyimage
+                              );
+                          }}
+                        />
       </Typography>
 
       <TextField
@@ -124,7 +149,7 @@ const AddCaseStudies = () => {
       />
 
       <Typography variant="h6" mt={3} mb={1}>
-        Upload File
+        Upload PDF File
       </Typography>
       <UploadFile
         multiple={false}

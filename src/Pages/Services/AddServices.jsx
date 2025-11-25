@@ -6,8 +6,8 @@ import { createNewService } from "../../DAL/create";
 import { updateService } from "../../DAL/edit";
 import { FaCircleInfo } from "react-icons/fa6";
 import { BsInfoCircle } from "react-icons/bs";
-import faqssectionimg from "../../Assets/Faqssection.png";
-import serviceiconimg from "../../Assets/serviceiconimg.png";
+// import faqssectionimg from "../../Assets/Faqssection.png";
+// import serviceiconimg from "../../Assets/serviceiconimg.png";
 import {
   Box,
   Button,
@@ -329,7 +329,9 @@ const AddServices = () => {
           <BsInfoCircle
             style={{ fontSize: "16px" }}
             onClick={() => {
-              openinfobox("Upload Service Icon", serviceiconimg);
+              openinfobox("Upload Service Icon",
+                //  serviceiconimg
+                );
             }}
           />
         </Typography>
@@ -349,7 +351,9 @@ const AddServices = () => {
           <BsInfoCircle
             style={{ fontSize: "16px" }}
             onClick={() => {
-              openinfobox("Upload Service Menu Image", serviceiconimg);
+              openinfobox("Upload Service Menu Image",
+                //  serviceiconimg
+                );
             }}
           />
         </Typography>
@@ -514,7 +518,9 @@ const AddServices = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("FAQs Section", faqssectionimg);
+                    openinfobox("FAQs Section",
+                      //  faqssectionimg
+                      );
                   }}
                 />
               </Typography>

@@ -13,7 +13,10 @@ import UploadFile from "../../Components/Models/UploadFile";
 import { updateIndustries } from "../../DAL/edit";
 import { fetchindustry } from "../../DAL/fetch";
 import { useAlert } from "../../Components/Alert/AlertContext";
+import InfoImageModel from "../../Components/Models/InfoImageModal";
 
+import industryimage from '../../Assets/industriespage.png'
+import { BsInfoCircle } from "react-icons/bs";
 const AddIndustries = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -71,10 +74,32 @@ const AddIndustries = () => {
     }
   };
 
+   const [infoopen, setInfoOpen] = useState(false);
+    const [infoboxheading, setInfoBoxHeading] = useState(false);
+    const [infoboximage, setInfoBoxImage] = useState(false);
+   const openinfobox = (heading, image) => {
+    setInfoBoxImage(image);
+    setInfoBoxHeading(heading);
+    setInfoOpen(true);
+  };
+
   return (
     <Box sx={{ maxWidth: "100%", margin: "0 auto", p: 3 }}>
+        <InfoImageModel
+              open={infoopen}
+              onClose={() => setInfoOpen(false)}
+              heading={infoboxheading}
+              image={infoboximage}
+            />
       <Typography variant="h6" mb={2}>
-        {isEdit ? "Edit Industry" : "Add Industry"}
+        {isEdit ? "Edit Industry" : "Add Industry"}<BsInfoCircle
+                          style={{ fontSize: "16px" }}
+                          onClick={() => {
+                            openinfobox("Testimonial Section",
+                              industryimage
+                              );
+                          }}
+                        />
       </Typography>
 
       <TextField

@@ -6,10 +6,10 @@ import { createNewSubService } from "../../DAL/create";
 import { updateSubService } from "../../DAL/edit";
 import { FaCircleInfo } from "react-icons/fa6";
 import { BsInfoCircle } from "react-icons/bs";
-import howwedelivered from "../../Assets/howwedelivered.png";
-import faqssectionimg from "../../Assets/Faqssection.png";
-import portfoliosectionimg from "../../Assets/portfolioimg.png";
-import serviceiconimg from "../../Assets/serviceiconimg.png";
+// import howwedelivered from "../../Assets/howwedelivered.png";
+// import faqssectionimg from "../../Assets/Faqssection.png";
+// import portfoliosectionimg from "../../Assets/portfolioimg.png";
+// import serviceiconimg from "../../Assets/serviceiconimg.png";
 import {
   Box,
   Button,
@@ -430,7 +430,9 @@ const AddSubService = () => {
           <BsInfoCircle
             style={{ fontSize: "16px" }}
             onClick={() => {
-              openinfobox("Upload Service Icon", serviceiconimg);
+              openinfobox("Upload Service Icon",
+                //  serviceiconimg
+                );
             }}
           />
         </Typography>
@@ -483,7 +485,9 @@ const AddSubService = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("How We Delivered Section", howwedelivered);
+                    openinfobox("How We Delivered Section", 
+                      // howwedelivered
+                    );
                   }}
                 />
               </Typography>
@@ -570,7 +574,9 @@ const AddSubService = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("How We Delivered Section", howwedelivered);
+                    openinfobox("How We Delivered Section", 
+                      // howwedelivered
+                    );
                   }}
                 />
               </Typography>
@@ -640,7 +646,11 @@ const AddSubService = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("FAQs Section", faqssectionimg);
+                    openinfobox("FAQs Section",
+                      
+                      // faqssectionimg
+                    
+                    );
                   }}
                 />
               </Typography>
@@ -689,7 +699,9 @@ const AddSubService = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("How We Delivered Section", howwedelivered);
+                    openinfobox("How We Delivered Section",
+                      //  howwedelivered
+                      );
                   }}
                 />
               </Typography>
@@ -776,7 +788,9 @@ const AddSubService = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("FAQs Section", faqssectionimg);
+                    openinfobox("FAQs Section",
+                      //  faqssectionimg
+                      );
                   }}
                 />
               </Typography>
@@ -835,7 +849,9 @@ const AddSubService = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("How We Delivered Section", howwedelivered);
+                    openinfobox("How We Delivered Section",
+                      //  howwedelivered
+                      );
                   }}
                 />
               </Typography>
@@ -907,7 +923,9 @@ const AddSubService = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("Portfolio Section", portfoliosectionimg);
+                    openinfobox("Portfolio Section", 
+                      // portfoliosectionimg
+                    );
                   }}
                 />
               </Typography>
