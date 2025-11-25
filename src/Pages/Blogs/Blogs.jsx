@@ -10,6 +10,7 @@ const Blogs = () => {
     { id: "published", label: "Visibility" },
     { id: "views", label: "Views" },
     { id: "createdAt", label: "Created At" },
+    { id: "publishedDate", label: "Published Date" },
   ];
 
  

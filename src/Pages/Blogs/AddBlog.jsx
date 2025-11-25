@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -11,7 +11,6 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import JoditEditor from "jodit-react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../Components/Alert/AlertContext";
 import { fetchBlogById, fetchcategorylist } from "../../DAL/fetch";
@@ -20,6 +19,7 @@ import { createBlog } from "../../DAL/create";
 import { baseUrl } from "../../Config/Config";
 import UploadFile from "../../Components/Models/UploadFile";
 import RichTextEditor from "../../Components/RichTextEditor/RichTextEditor";
+
 
 const style = {
   Width: "100%",
@@ -48,17 +48,11 @@ const AddBlog = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [publishedDate, setPublishedDate] = useState("");
 
-  const editor = useRef(null);
 
-  const config = useMemo(
-    () => ({
-      readonly: false,
-      uploader: { insertImageAsBase64URI: true },
-      placeholder: "Start typing...",
-    }),
-    []
-  );
+
+
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -78,11 +72,13 @@ const AddBlog = () => {
             setSlug(blog.slug || "");
             setCategoryId(blog.category?._id || "");
             setImage(blog.thumbnail);
-
             setFaqSchemaText(blog.faqSchema || "{}");
             setIsFeatured(blog?.featured);
             setIsVisible(blog?.published);
             setAuthor(blog.author || "");
+            setPublishedDate(blog.publishedDate || "");
+
+
           }
         } catch (error) {
           console.error("Error fetching blog:", error);
@@ -136,6 +132,9 @@ const AddBlog = () => {
     formData.append("faqSchema", faqSchemaText);
     formData.append("author", author || newauthor);
     formData.append("thumbnail", image ? image.replace(baseUrl, "") : "");
+    formData.append("publishedDate", publishedDate);
+
+
 
     try {
       const response = id
@@ -207,18 +206,6 @@ const AddBlog = () => {
           sx={{ mb: 2 }}
         />
 
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          label="FAQ Schema (JSON)"
-          value={faqSchemaText}
-          onChange={(e) => setFaqSchemaText(e.target.value)}
-          error={!!errors.faqSchema}
-          helperText={errors.faqSchema}
-          sx={{ mb: 2 }}
-        />
-
         <Typography variant="h6" mt={3} mb={1}>
           Upload Thumbnail
         </Typography>
@@ -262,11 +249,36 @@ const AddBlog = () => {
             )}
           </FormControl>
         </Box>
+        <TextField
+        fullWidth
+          multiline
+          rows={4}
+          label="FAQ Schema (JSON)"
+          value={faqSchemaText}
+          onChange={(e) => setFaqSchemaText(e.target.value)}
+          error={!!errors.faqSchema}
+          helperText={errors.faqSchema}
+          sx={{ mb: 2 }}
+        />
+
+
+        <TextField
         
+          type="datetime-local"
+          label="Publish Date & Time"
+          value={publishedDate}
+          onChange={(e) => setPublishedDate(e.target.value)}
+          error={!!errors.publishDate}
+          helperText={errors.publishDate}
+          sx={{ mb: 2 }}
+          InputLabelProps={{ shrink: true }}
+        />
+
+
         <RichTextEditor
-  data={detail} 
-  onChange={(val) => setDetail(val)}  // save new edits
-/>
+          data={detail}
+          onChange={(val) => setDetail(val)}  // save new edits
+        />
         {errors.detail && (
           <Typography color="error">{errors.detail}</Typography>
         )}
