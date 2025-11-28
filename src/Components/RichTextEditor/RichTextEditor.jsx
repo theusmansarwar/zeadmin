@@ -141,6 +141,35 @@ export default function RichTextEditor({ onChange, data }) {
     });
     triggerChange();
   };
+  const fixListWrapping = () => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const lists = editor.querySelectorAll("ul, ol");
+
+    lists.forEach((list) => {
+      const children = [...list.childNodes];
+
+      children.forEach((node) => {
+        // If a paragraph exists directly in a UL/OL — convert it to LI
+        if (node.nodeName === "P") {
+          const li = document.createElement("li");
+          li.innerHTML = node.innerHTML;
+          list.replaceChild(li, node);
+        }
+
+        // If text node exists directly inside UL/OL — wrap it
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "") {
+          const li = document.createElement("li");
+          li.textContent = node.textContent;
+          list.replaceChild(li, node);
+        }
+      });
+    });
+
+    triggerChange();
+  };
+
 
   const openLinkDialog = () => {
     saveSelection();
@@ -251,16 +280,26 @@ export default function RichTextEditor({ onChange, data }) {
         </div>
         <div
           className={activeFormats.unorderedList ? "active" : ""}
-          onMouseDown={(e) => { e.preventDefault(); doExec("insertUnorderedList"); }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            doExec("insertUnorderedList");
+            setTimeout(fixListWrapping, 10);
+          }}
         >
           • List
         </div>
+
         <div
           className={activeFormats.orderedList ? "active" : ""}
-          onMouseDown={(e) => { e.preventDefault(); doExec("insertOrderedList"); }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            doExec("insertOrderedList");
+            setTimeout(fixListWrapping, 10);
+          }}
         >
           1. List
         </div>
+
         <div onMouseDown={(e) => { e.preventDefault(); openLinkDialog(); }}>🔗 Link</div>
         <div onMouseDown={(e) => { e.preventDefault(); openImageDialog(); }}>🖼️ Image</div>
       </div>
