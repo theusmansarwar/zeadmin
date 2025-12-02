@@ -24,7 +24,8 @@ export default function ViewLead({ open, setOpen, Modeldata ,refreshdata}) {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
-    const [budget, setBudget] = React.useState("");
+  const [hasWebsite, setHasWebsite] = React.useState("");
+  const [website, setWebsite] = React.useState("");
   const [subject, setSubject] = React.useState("");
   const [query, setQuery] = React.useState("");
   const [createdAt, setCreatedAt] = React.useState("");
@@ -38,10 +39,11 @@ export default function ViewLead({ open, setOpen, Modeldata ,refreshdata}) {
       setName(Modeldata.name || "");
       setEmail(Modeldata.email || "");
       setPhone(Modeldata.phone || "");
+      setHasWebsite(Modeldata.hasWebsite || "");
+      setWebsite(Modeldata.website || "N/A");
       setSubject(Modeldata.subject || "");
       setQuery(Modeldata.query || "");
       setCreatedAt(Modeldata.createdAt || "");
-      setBudget(Modeldata.budget|| "N/A")
     }
   }, [Modeldata]);
 
@@ -62,9 +64,6 @@ export default function ViewLead({ open, setOpen, Modeldata ,refreshdata}) {
   };
 
   const handleClose = () => setOpen(false);
-
-
-
   return (
     <Modal
       open={open}
@@ -88,17 +87,12 @@ export default function ViewLead({ open, setOpen, Modeldata ,refreshdata}) {
             </div>
 
             <div className="email-body">
-      
-             
-
-            
-             
-
               <div className="ticketdata">
                 <p><strong>Name:</strong> {name}</p>
                 <p><strong>Email:</strong> <a href={`mailto:${email}`}>{email}</a></p>
                 <p><strong>Phone:</strong> <a href={`tel:${phone}`}>{phone}</a></p>
-                  <p><strong>Budget:</strong> {budget}</p>
+                  <p><strong>Has Website:</strong> {hasWebsite}</p>
+                  <p><strong>Website Url:</strong> {website}</p>
                 <p><strong>Subject:</strong> {subject}</p>
                 <pre className="pretag"><strong>Query:</strong> {query}</pre>
               </div>
