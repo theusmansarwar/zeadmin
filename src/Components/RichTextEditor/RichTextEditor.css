@@ -138,3 +138,21 @@
 .hidden {
   display: none;
 }
+
+.rte-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.rte-editor th,
+.rte-editor td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  min-width: 50px;
+}
+
+.rte-editor th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
