@@ -23,6 +23,28 @@ export const createNewProvenStep = async (data) => {
   };
   return invokeApi(reqObj);
 };
+export const createNewWhyStep = async (data) => {
+  const reqObj = {
+    path: "/whySteps/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const createNewSecond = async (data) => {
+  const reqObj = {
+    path: "/second/add",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 export const createNewFaq = async (data) => {
   const reqObj = {
     path: "/faqs/add",

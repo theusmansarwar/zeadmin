@@ -22,6 +22,8 @@ import { useTable3 } from "../../Components/Models/useTable3";
 import InfoModal from "../../Components/Models/InfoModal";
 import InfoImageModel from "../../Components/Models/InfoImageModal";
 import UploadFile from "../../Components/Models/UploadFile";
+import { useTable6 } from "../../Components/Models/useTable6";
+import { useTable7 } from "../../Components/Models/useTable7";
 
 const AddServices = () => {
   const navigate = useNavigate();
@@ -51,6 +53,17 @@ const AddServices = () => {
     items: [],
   });
   // Nested states
+  const [secondSection, setSecondSection] = useState({
+    title: "",
+    image: "",
+    published: false,
+  });
+  const [whySteps, setWhySteps] = useState({
+    title: "",
+    description: "",
+    image: "",
+    published: false,
+  });
   const [faqs, setFaqs] = useState({
     title: "",
     description: "",
@@ -65,7 +78,7 @@ const AddServices = () => {
     published: false,
   });
 
-  const [lastSection, setLastSection] = useState({
+  const [firstSection, setFirstSection] = useState({
     title: "",
     description: "",
     image: null,
@@ -78,7 +91,6 @@ const AddServices = () => {
   // Misc
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-
 
   const fetchService = async () => {
     if (!id) return;
@@ -96,10 +108,12 @@ const AddServices = () => {
         setIcon(service.icon || "");
         setMenuImage(service.menuImg || "");
         setFaqs(service.faqs || {});
+        setSecondSection(service.secondSection || {});
+        setWhySteps(service.whySteps || {});
         setPortfolio(service.portfolio || {});
         setSubServices(service.subServices || {});
         setImageSection(service.imageSection || {});
-        setLastSection(service.lastSection || {});
+        setFirstSection(service.firstSection || {});
 
         if (service.icon) setIconPreview(baseUrl + service.icon);
         if (service.menuImg) setMenuImagePreview(baseUrl + service.menuImg);
@@ -109,13 +123,10 @@ const AddServices = () => {
     }
   };
 
-
   // Keep the useEffect to auto-load
   useEffect(() => {
     fetchService();
   }, [id]);
-
-
 
   // --- Submit handler ---
   const handleSubmit = async (event) => {
@@ -158,6 +169,23 @@ const AddServices = () => {
       );
 
       formData.append(
+        "secondSection",
+        JSON.stringify({
+          title: secondSection.title,
+          image: secondSection.image,
+          published: secondSection.published,
+        })
+      );
+      formData.append(
+        "whySteps",
+        JSON.stringify({
+          title: whySteps.title,
+          description: whySteps.description,
+          image: whySteps.image,
+          published: whySteps.published,
+        })
+      );
+      formData.append(
         "faqs",
         JSON.stringify({
           title: faqs.title,
@@ -176,12 +204,12 @@ const AddServices = () => {
       );
 
       formData.append(
-        "lastSection",
+        "firstSection",
         JSON.stringify({
-          title: lastSection.title,
-          description: lastSection.description,
-          image: lastSection.image,
-          published: lastSection.published,
+          title: firstSection.title,
+          description: firstSection.description,
+          image: firstSection.image,
+          published: firstSection.published,
         })
       );
 
@@ -237,6 +265,28 @@ const AddServices = () => {
     reFetch: fetchService,
     tableType: "Sub Services",
     data: subServices?.items || [],
+  });
+
+  const attributes6 = [
+    { id: "image", label: "Icon" },
+    { id: "title", label: "Title" },
+    { id: "description", label: "Description" },
+  ];
+
+  const { tableUI6 } = useTable6({
+    attributes6,
+    tableType: "Second Section",
+    data: secondSection?.items || [],
+  });
+  const attributes7 = [
+    { id: "stepTitle", label: "Step Title" },
+    { id: "stepDescription", label: "Step Description" },
+  ];
+
+  const { tableUI7 } = useTable7({
+    attributes7,
+    tableType: "Why Steps",
+    data: whySteps?.items || [],
   });
 
   const openinfobox = (heading, image) => {
@@ -329,9 +379,10 @@ const AddServices = () => {
           <BsInfoCircle
             style={{ fontSize: "16px" }}
             onClick={() => {
-              openinfobox("Upload Service Icon",
+              openinfobox(
+                "Upload Service Icon"
                 //  serviceiconimg
-                );
+              );
             }}
           />
         </Typography>
@@ -351,9 +402,10 @@ const AddServices = () => {
           <BsInfoCircle
             style={{ fontSize: "16px" }}
             onClick={() => {
-              openinfobox("Upload Service Menu Image",
+              openinfobox(
+                "Upload Service Menu Image"
                 //  serviceiconimg
-                );
+              );
             }}
           />
         </Typography>
@@ -365,7 +417,6 @@ const AddServices = () => {
           error={errors.menuImg}
           onUploadComplete={(path) => setMenuImage(path)}
         />
-
 
         <TextField
           fullWidth
@@ -388,6 +439,94 @@ const AddServices = () => {
 
         {id && (
           <>
+            {/* First Section */}
+            <Box
+              sx={{
+                borderRadius: "var(--default-border-radius)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
+                boxShadow: "2px 0px 10px var(--shadow-low1)",
+                padding: "20px",
+                height: "fit-content",
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{ color: "var(--background-color)" }}
+              >
+                Service First Section{" "}
+                <BsInfoCircle
+                  style={{ fontSize: "16px" }}
+                  onClick={() => {
+                    openinfobox("How We Delivered Section", imageSection);
+                  }}
+                />
+              </Typography>
+              <TextField
+                fullWidth
+                label="First Section Title"
+                multiline
+                rows={1}
+                value={firstSection.title}
+                onChange={(e) =>
+                  setFirstSection({
+                    ...firstSection,
+                    title: e.target.value,
+                  })
+                }
+                error={!!errors["firstSection.title"]}
+                helperText={errors["firstSection.title"]}
+              />
+              <TextField
+                fullWidth
+                label="First Section description"
+                multiline
+                rows={6}
+                value={firstSection.description}
+                onChange={(e) =>
+                  setFirstSection({
+                    ...firstSection,
+                    description: e.target.value,
+                  })
+                }
+                error={!!errors["firstSection.description"]}
+                helperText={errors["firstSection.description"]}
+              />
+              <Typography
+                variant="h6"
+                mt={1}
+                sx={{ color: "var(--background-color)" }}
+              >
+                Upload Image
+              </Typography>
+              <UploadFile
+                multiple={false}
+                accept="image/*"
+                error={errors["firstSection.image"]}
+                initialFile={
+                  firstSection.image ? baseUrl + firstSection.image : null
+                }
+                onUploadComplete={(path) =>
+                  setFirstSection({ ...firstSection, image: path })
+                }
+              />
+
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={firstSection.published}
+                    onChange={() =>
+                      setFirstSection({
+                        ...firstSection,
+                        published: !firstSection.published,
+                      })
+                    }
+                  />
+                }
+                label={firstSection.published ? "Published" : "Draft"}
+              />
+            </Box>
             {/* Sub Services Section */}
             <Box
               sx={{
@@ -423,9 +562,167 @@ const AddServices = () => {
 
               {/* Sub Services Table */}
               {tableUI3}
-              <p style={{ color: "red", fontSize: "12px" }}>{errors["subServices.items"]}</p>
+              <p style={{ color: "red", fontSize: "12px" }}>
+                {errors["subServices.items"]}
+              </p>
+            </Box>
+            <Box
+              sx={{
+                borderRadius: "var(--default-border-radius)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
+                boxShadow: "2px 0px 10px var(--shadow-low1)",
+                padding: "20px",
+                height: "fit-content",
+              }}
+            >
+              {/* Second Section */}
+              <Typography
+                variant="h5"
+                sx={{ color: "var(--background-color)" }}
+              >
+                Service Second Section{" "}
+                <BsInfoCircle
+                  style={{ fontSize: "16px" }}
+                  onClick={() => {
+                    openinfobox(
+                      "FAQs Section"
+                      //  faqssectionimg
+                    );
+                  }}
+                />
+              </Typography>
+              <TextField
+                fullWidth
+                label="Second Section Title"
+                value={secondSection.title}
+                onChange={(e) =>
+                  setSecondSection({ ...secondSection, title: e.target.value })
+                }
+                error={!!errors["secondSection.title"]}
+                helperText={errors["secondSection.title"]}
+              />
+              <Typography
+                variant="h6"
+                mt={1}
+                sx={{ color: "var(--background-color)" }}
+              >
+                Upload Image
+              </Typography>
+              <UploadFile
+                multiple={false}
+                accept="image/*"
+                error={errors["secondSection.image"]}
+                initialFile={
+                  secondSection.image ? baseUrl + secondSection.image : null
+                }
+                onUploadComplete={(path) =>
+                  setSecondSection({ ...secondSection, image: path })
+                }
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={secondSection.published}
+                    onChange={() =>
+                      setSecondSection({
+                        ...secondSection,
+                        published: !secondSection.published,
+                      })
+                    }
+                  />
+                }
+                label={secondSection.published ? "Published" : "Draft"}
+              />{" "}
+              {tableUI6}
+              <p style={{ color: "red", fontSize: "12px" }}>
+                {errors["secondSection.items"]}
+              </p>
             </Box>
 
+            <Box
+              sx={{
+                borderRadius: "var(--default-border-radius)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
+                boxShadow: "2px 0px 10px var(--shadow-low1)",
+                padding: "20px",
+                height: "fit-content",
+              }}
+            >
+              {/* WHy Steps Section */}
+              <Typography
+                variant="h5"
+                sx={{ color: "var(--background-color)" }}
+              >
+                Why Steps Section{" "}
+                <BsInfoCircle
+                  style={{ fontSize: "16px" }}
+                  onClick={() => {
+                    openinfobox(
+                      "FAQs Section"
+                      //  faqssectionimg
+                    );
+                  }}
+                />
+              </Typography>
+              <TextField
+                fullWidth
+                label="Why Steps Title"
+                value={whySteps.title}
+                onChange={(e) =>
+                  setWhySteps({ ...whySteps, title: e.target.value })
+                }
+                error={!!errors["whySteps.title"]}
+                helperText={errors["whySteps.title"]}
+              />
+              <TextField
+                fullWidth
+                label="Why Steps Description"
+                value={whySteps.description}
+                onChange={(e) =>
+                  setWhySteps({ ...whySteps, description: e.target.value })
+                }
+                error={!!errors["whySteps.description"]}
+                helperText={errors["whySteps.description"]}
+              />
+              <Typography
+                variant="h6"
+                mt={1}
+                sx={{ color: "var(--background-color)" }}
+              >
+                Upload Image
+              </Typography>
+              <UploadFile
+                multiple={false}
+                accept="image/*"
+                error={errors["whySteps.image"]}
+                initialFile={whySteps.image ? baseUrl + whySteps.image : null}
+                onUploadComplete={(path) =>
+                  setWhySteps({ ...whySteps, image: path })
+                }
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={whySteps.published}
+                    onChange={() =>
+                      setWhySteps({
+                        ...whySteps,
+                        published: !whySteps.published,
+                      })
+                    }
+                  />
+                }
+                label={whySteps.published ? "Published" : "Draft"}
+              />{" "}
+              {tableUI7}
+              <p style={{ color: "red", fontSize: "12px" }}>
+                {errors["whySteps.items"]}
+              </p>
+            </Box>
             <Box
               sx={{
                 borderRadius: "var(--default-border-radius)",
@@ -518,9 +815,10 @@ const AddServices = () => {
                 <BsInfoCircle
                   style={{ fontSize: "16px" }}
                   onClick={() => {
-                    openinfobox("FAQs Section",
+                    openinfobox(
+                      "FAQs Section"
                       //  faqssectionimg
-                      );
+                    );
                   }}
                 />
               </Typography>
@@ -555,96 +853,10 @@ const AddServices = () => {
                 }
                 label={faqs.published ? "Published" : "Draft"}
               />{" "}
-
               {tableUI1}
-              <p style={{ color: "red", fontSize: "12px" }}>{errors["faqs.items"]}</p>
-            </Box>
-            <Box
-              sx={{
-                borderRadius: "var(--default-border-radius)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-                boxShadow: "2px 0px 10px var(--shadow-low1)",
-                padding: "20px",
-                height: "fit-content",
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{ color: "var(--background-color)" }}
-              >
-                Service Last Section{" "}
-                <BsInfoCircle
-                  style={{ fontSize: "16px" }}
-                  onClick={() => {
-                    openinfobox("How We Delivered Section", imageSection);
-                  }}
-                />
-              </Typography>
-              <TextField
-                fullWidth
-                label="Last Section Title"
-                multiline
-                rows={1}
-                value={lastSection.title}
-                onChange={(e) =>
-                  setLastSection({
-                    ...lastSection,
-                    title: e.target.value,
-                  })
-                }
-                error={!!errors["lastSection.title"]}
-                helperText={errors["lastSection.title"]}
-              />
-              <TextField
-                fullWidth
-                label="Last Section description"
-                multiline
-                rows={6}
-                value={lastSection.description}
-                onChange={(e) =>
-                  setLastSection({
-                    ...lastSection,
-                    description: e.target.value,
-                  })
-                }
-                error={!!errors["lastSection.description"]}
-                helperText={errors["lastSection.description"]}
-              />
-              <Typography
-                variant="h6"
-                mt={1}
-                sx={{ color: "var(--background-color)" }}
-              >
-                Upload Image
-              </Typography>
-              <UploadFile
-                multiple={false}
-                accept="image/*"
-                error={errors["lastSection.image"]}
-                initialFile={
-                  lastSection.image ? baseUrl + lastSection.image : null
-                }
-                onUploadComplete={(path) =>
-                  setLastSection({ ...lastSection, image: path })
-                }
-              />
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={lastSection.published}
-                    onChange={() =>
-                      setLastSection({
-                        ...lastSection,
-                        published: !lastSection.published,
-                      })
-                    }
-                  />
-                }
-                label={lastSection.published ? "Published" : "Draft"}
-              />
+              <p style={{ color: "red", fontSize: "12px" }}>
+                {errors["faqs.items"]}
+              </p>
             </Box>
           </>
         )}

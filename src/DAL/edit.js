@@ -68,6 +68,28 @@ export const updateProvenSteps = async (id, data) => {
   };
   return invokeApi(reqObj);
 };
+export const updateWhySteps = async (id, data) => {
+  const reqObj = {
+    path: `/whySteps/update/${id}`,
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
+export const updateSecond = async (id, data) => {
+  const reqObj = {
+    path: `/second/update/${id}`,
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  return invokeApi(reqObj);
+};
 export const updateFaq = async (id, data) => {
   const reqObj = {
     path: `/faqs/update/${id}`,

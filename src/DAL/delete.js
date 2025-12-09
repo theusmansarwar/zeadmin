@@ -132,6 +132,32 @@ export const deleteAllServicesCategories = async (data) => {
   
   return invokeApi(reqObj);
 };
+export const deleteAllSeconds = async (data) => {
+  const reqObj = {
+    path: `/second/delete`,
+    method: "DELETE", 
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
+export const deleteAllWhy = async (data) => {
+  const reqObj = {
+    path: `/whySteps/delete`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    },
+    postData: data,
+  };
+  
+  return invokeApi(reqObj);
+};
 export const deleteAllFaqs = async (data) => {
   const reqObj = {
     path: `/faqs/delete`,
