@@ -69,9 +69,7 @@ const AddServices = () => {
     description: "",
     published: false,
   });
-  const [portfolio, setPortfolio] = useState({
-    published: false,
-  });
+
   const [imageSection, setImageSection] = useState({
     title: "",
     image: null,
@@ -85,8 +83,6 @@ const AddServices = () => {
     published: false,
   });
 
-  // Upload states
-  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   // Misc
   const [errors, setErrors] = useState({});
@@ -110,7 +106,6 @@ const AddServices = () => {
         setFaqs(service.faqs || {});
         setSecondSection(service.secondSection || {});
         setWhySteps(service.whySteps || {});
-        setPortfolio(service.portfolio || {});
         setSubServices(service.subServices || {});
         setImageSection(service.imageSection || {});
         setFirstSection(service.firstSection || {});

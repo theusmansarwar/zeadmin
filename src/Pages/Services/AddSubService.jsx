@@ -8,7 +8,6 @@ import { FaCircleInfo } from "react-icons/fa6";
 import { BsInfoCircle } from "react-icons/bs";
 // import howwedelivered from "../../Assets/howwedelivered.png";
 // import faqssectionimg from "../../Assets/Faqssection.png";
-// import portfoliosectionimg from "../../Assets/portfolioimg.png";
 // import serviceiconimg from "../../Assets/serviceiconimg.png";
 import {
   Box,
@@ -19,7 +18,6 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { baseUrl } from "../../Config/Config";
-import { useTable2 } from "../../Components/Models/useTable2";
 import InfoModal from "../../Components/Models/InfoModal";
 import InfoImageModel from "../../Components/Models/InfoImageModal";
 import UploadFile from "../../Components/Models/UploadFile";
@@ -86,10 +84,7 @@ const AddSubService = () => {
     published: false,
   });
 
-  const [portfolio, setPortfolio] = useState({
-    title: "",
-    published: false,
-  });
+ 
 
   // Image preview states for each section
   const [introImagePreview, setIntroImagePreview] = useState(null);
@@ -161,13 +156,7 @@ const AddSubService = () => {
           }
 
 
-          // Load Portfolio
-          setPortfolio(
-            service.portfolio || {
-              title: "",
-              published: false,
-            }
-          );
+         
 
           // Load icon preview
           if (service?.icon) {
@@ -268,13 +257,7 @@ const AddSubService = () => {
         })
       );
 
-      // Portfolio
-      formData.append("portfolio",
-        JSON.stringify({
-          title: portfolio.title,
-          published: portfolio.published,
-        })
-      );
+     
 
       // API call
       let response = subServiceId
@@ -317,17 +300,7 @@ const AddSubService = () => {
     data: faqs?.items || [],
   });
 
-  const attributes2 = [
-    { id: "title", label: "Title" },
-    { id: "description", label: "Description" },
-    { id: "published", label: "Visibility" },
-  ];
-
-  const { tableUI2 } = useTable2({
-    attributes2,
-    tableType: "Portfolio",
-    data: portfolio?.items || [],
-  });
+ 
   const attributes5 = [
     { id: "question", label: "Step Title" },
     { id: "answer", label: "Step Description" },
@@ -902,66 +875,7 @@ const AddSubService = () => {
               />
             </Box>
 
-            {/* Portfolio Section */}
-            <Box
-              sx={{
-                borderRadius: "var(--default-border-radius)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-                boxShadow: "2px 0px 10px var(--shadow-low1)",
-                padding: "20px",
-                height: "fit-content",
-              }}
-            >
-
-              <Typography
-                variant="h5"
-                sx={{ color: "var(--background-color)" }}
-              >
-                Portfolios Section{" "}
-                <BsInfoCircle
-                  style={{ fontSize: "16px" }}
-                  onClick={() => {
-                    openinfobox("Portfolio Section", 
-                      // portfoliosectionimg
-                    );
-                  }}
-                />
-              </Typography>
-              <TextField
-                fullWidth
-                label="Portfolio Section Title"
-                multiline
-                rows={1}
-                value={portfolio.title || ""}
-                onChange={(e) =>
-                  setPortfolio({
-                    ...portfolio,
-                    title: e.target.value,
-                  })
-                }
-                error={!!errors["portfolio.title"]}
-                helperText={errors["portfolio.title"]}
-              />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={portfolio.published}
-                    onChange={() =>
-                      setPortfolio({
-                        ...portfolio,
-                        published: !portfolio.published,
-                      })
-                    }
-                  />
-                }
-                label={portfolio.published ? "Published" : "Draft"}
-              />
-
-              {tableUI2}
-              <p style={{ color: "red", fontSize: "12px" }}>{errors["portfolio.items"]}</p>
-            </Box>
+           
           </>
         )}
 
