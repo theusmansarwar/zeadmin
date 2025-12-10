@@ -82,6 +82,11 @@ const AddServices = () => {
     image: null,
     published: false,
   });
+  const [contentSection, setContentSection] = useState({
+    title: "",
+    description: "",
+    published: false,
+  });
 
 
   // Misc
@@ -104,11 +109,12 @@ const AddServices = () => {
         setIcon(service.icon || "");
         setMenuImage(service.menuImg || "");
         setFaqs(service.faqs || {});
+        setFirstSection(service.firstSection || {});
+        setContentSection(service.contentSection || {});
         setSecondSection(service.secondSection || {});
         setWhySteps(service.whySteps || {});
         setSubServices(service.subServices || {});
         setImageSection(service.imageSection || {});
-        setFirstSection(service.firstSection || {});
 
         if (service.icon) setIconPreview(baseUrl + service.icon);
         if (service.menuImg) setMenuImagePreview(baseUrl + service.menuImg);
@@ -205,6 +211,14 @@ const AddServices = () => {
           description: firstSection.description,
           image: firstSection.image,
           published: firstSection.published,
+        })
+      );
+      formData.append(
+        "contentSection",
+        JSON.stringify({
+          title: contentSection.title,
+          description: contentSection.description,
+          published: contentSection.published,
         })
       );
 
@@ -520,6 +534,76 @@ const AddServices = () => {
                   />
                 }
                 label={firstSection.published ? "Published" : "Draft"}
+              />
+            </Box>
+            {/* Content Section */}
+            <Box
+              sx={{
+                borderRadius: "var(--default-border-radius)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
+                boxShadow: "2px 0px 10px var(--shadow-low1)",
+                padding: "20px",
+                height: "fit-content",
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{ color: "var(--background-color)" }}
+              >
+                Service Content Section{" "}
+                <BsInfoCircle
+                  style={{ fontSize: "16px" }}
+                  onClick={() => {
+                    openinfobox("How We Delivered Section", imageSection);
+                  }}
+                />
+              </Typography>
+              <TextField
+                fullWidth
+                label="Content Section Title"
+                multiline
+                rows={1}
+                value={contentSection.title}
+                onChange={(e) =>
+                  setContentSection({
+                    ...contentSection,
+                    title: e.target.value,
+                  })
+                }
+                error={!!errors["contentSection.title"]}
+                helperText={errors["contentSection.title"]}
+              />
+              <TextField
+                fullWidth
+                label="Content Section description"
+                multiline
+                rows={6}
+                value={contentSection.description}
+                onChange={(e) =>
+                  setContentSection({
+                    ...contentSection,
+                    description: e.target.value,
+                  })
+                }
+                error={!!errors["contentSection.description"]}
+                helperText={errors["contentSection.description"]}
+              />
+
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={contentSection.published}
+                    onChange={() =>
+                      setContentSection({
+                        ...contentSection,
+                        published: !contentSection.published,
+                      })
+                    }
+                  />
+                }
+                label={contentSection.published ? "Published" : "Draft"}
               />
             </Box>
             {/* Sub Services Section */}
