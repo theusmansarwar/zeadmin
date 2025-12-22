@@ -76,7 +76,12 @@ const AddBlog = () => {
             setIsFeatured(blog?.featured);
             setIsVisible(blog?.published);
             setAuthor(blog.author || "");
-            setPublishedDate(blog.publishedDate || "");
+           if (blog.publishedDate) {
+             const date = new Date(blog.publishedDate);
+             const localDate = date.toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm
+             setPublishedDate(localDate);
+           }
+
 
 
           }
