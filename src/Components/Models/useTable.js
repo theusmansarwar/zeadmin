@@ -122,6 +122,9 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       clearTimeout(handler);
     };
   }, [searchQuery]);
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
 
   useEffect(() => {
     localStorage.setItem(
@@ -206,14 +209,12 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         setData(response?.Products || []);
         setPage(response.currentPage);
         setTotalRecords(response.totalProducts);
-      }  else if (tableType === "Portfolio") {
+      } else if (tableType === "Portfolio") {
         response = await fetchallportfoliolist(page, rowsPerPage, searchQuery);
         setData(response?.portfolios || []);
         setPage(response.page);
         setTotalRecords(response.totalItems);
-      } 
-      
-      else if (tableType === "Team Category") {
+      } else if (tableType === "Team Category") {
         response = await fetchallTeamCategories(page, rowsPerPage, searchQuery);
         setData(response.categories);
         setTotalRecords(response.totalCategories);
@@ -221,8 +222,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
           localStorage.removeItem("Token");
           navigate("/login");
         }
-      }
-       else if (tableType === "Team") {
+      } else if (tableType === "Team") {
         response = await fetchTeamMember(page, rowsPerPage, searchQuery);
         setData(response.members);
         setTotalRecords(response?.total);
@@ -310,13 +310,11 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setModelData(category);
       setModeltype("Update");
       setOpenRoleModal(true);
-    }
-     else if (tableType === "Portfolio") {
+    } else if (tableType === "Portfolio") {
       setModelData(category);
       setModeltype("Update");
       setOpenPortfolioModal(true);
-    }
-     else if (tableType === "Blogs") {
+    } else if (tableType === "Blogs") {
       navigate(`/edit-blog/${category._id}`);
     } else if (tableType === "Featured Blogs") {
       navigate(`/edit-featuredblog/${category._id}`);
@@ -390,8 +388,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
         response = await deleteAllProducts({ ids: selected });
       } else if (tableType === "Industries") {
         response = await deleteAllIndustries({ ids: selected });
-      }
-       else if (tableType === "Portfolio") {
+      } else if (tableType === "Portfolio") {
         response = await deleteAllPortfolios({ ids: selected });
       }
       if (response.status === 200) {
@@ -431,9 +428,7 @@ export function useTable({ attributes, tableType, limitPerPage = 25 }) {
       setOpenPortfolioModal(true);
       setModeltype("Add");
       setModelData();
-    }
-    
-    else if (tableType === "Blogs") {
+    } else if (tableType === "Blogs") {
       navigate("/add-blog");
     } else if (tableType === "Featured Blogs") {
       navigate("/add-blog");
